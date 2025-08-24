@@ -42,7 +42,7 @@ public class CodeService {
     }
 
     public boolean confirmCode(String email, String code) {
-        boolean confirmed = codeRepository.findByUserEmail(email, CodeEntity.class)
+        return codeRepository.findByUserEmail(email, CodeEntity.class)
                 .stream()
                 .filter(not(CodeEntity::isUsed))
                 .filter(c -> c.getExpiresAt().isAfter(Instant.now()))
@@ -52,16 +52,5 @@ public class CodeService {
                     codeRepository.save(c);
                     return true;
                 });
-
-        if (confirmed) {
-            userRepository.findByEmail(email, UserEntity.class)
-                    .ifPresent(user -> {
-                        user.setVerified(true);
-                        user.setActive(true);
-                        userRepository.save(user);
-                    });
-        }
-
-        return confirmed;
     }
 }

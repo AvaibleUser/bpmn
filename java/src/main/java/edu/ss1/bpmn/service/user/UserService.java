@@ -36,6 +36,35 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    public Optional<UserDto> findAndVerifyUser(String email) {
+        UserEntity user = userRepository.findByEmail(email, UserEntity.class)
+                .orElseThrow(() -> new RequestConflictException("No se pudo encontrar al usuario"));
+
+        user.setVerified(true);
+        user.setActive(true);
+        userRepository.saveAndFlush(user);
+
+        return userRepository.findByEmail(email, UserDto.class);
+    }
+
+    @Transactional
+    public Optional<UserDto> changePassword(String email, String oldPassword, String newPassword) {
+        if (!oldPassword.equals(newPassword)) {
+            throw new RequestConflictException("Las contraseñas no coinciden");
+        }
+
+        UserEntity user = userRepository.findByEmail(email, UserEntity.class)
+                .orElseThrow(() -> new RequestConflictException("No se pudo encontrar al usuario"));
+
+        String encryptedPassword = encoder.encode(newPassword);
+        user.setPassword(encryptedPassword);
+
+        userRepository.saveAndFlush(user);
+
+        return userRepository.findByEmail(email, UserDto.class);
+    }
+
+    @Transactional
     public UserDto registerUser(AddUserDto user) {
         if (userRepository.existsByEmail(user.email())) {
             throw new RequestConflictException("El email que se intenta registrar ya esta en uso");

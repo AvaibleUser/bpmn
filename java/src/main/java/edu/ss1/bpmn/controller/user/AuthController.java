@@ -5,6 +5,7 @@ import static org.springframework.security.authentication.UsernamePasswordAuthen
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ss1.bpmn.domain.dto.user.AddUserDto;
 import edu.ss1.bpmn.domain.dto.user.AuthUserDto;
+import edu.ss1.bpmn.domain.dto.user.ChangePasswordDto;
 import edu.ss1.bpmn.domain.dto.user.ConfirmUserDto;
+import edu.ss1.bpmn.domain.dto.user.RecoverUserDto;
 import edu.ss1.bpmn.domain.dto.user.TokenDto;
 import edu.ss1.bpmn.domain.dto.user.UserDto;
 import edu.ss1.bpmn.domain.exception.FailedAuthenticateException;
 import edu.ss1.bpmn.domain.exception.RequestConflictException;
+import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
 import edu.ss1.bpmn.service.user.CodeService;
 import edu.ss1.bpmn.service.user.JwtService;
 import edu.ss1.bpmn.service.user.UserService;
@@ -58,9 +62,9 @@ public class AuthController {
 
         try {
             emailService.sendHtmlEmail("BPMN", user.email(),
-                    "Confirmacion de usuario en BPMN", confirmationHtml);
+                    "Confirmación de usuario en BPMN", confirmationHtml);
         } catch (MessagingException e) {
-            throw new RequestConflictException("No se pudo enviar el correo de confirmacion");
+            throw new RequestConflictException("No se pudo enviar el correo de confirmación");
         }
     }
 
@@ -71,7 +75,7 @@ public class AuthController {
             throw new FailedAuthenticateException("No se pudo confirmar la cuenta");
         }
 
-        return userService.findUserByEmail(user.email())
+        return userService.findAndVerifyUser(user.email())
                 .map(this::toTokenDto)
                 .get();
     }
@@ -89,21 +93,54 @@ public class AuthController {
 
         try {
             emailService.sendHtmlEmail("BPMN", user.email(),
-                    "Confirmacion de usuario en BPMN", confirmationHtml);
+                    "Confirmación de usuario en BPMN", confirmationHtml);
         } catch (MessagingException e) {
-            throw new RequestConflictException("No se pudo enviar el correo de confirmacion");
+            throw new RequestConflictException("No se pudo enviar el correo de confirmación");
         }
     }
 
     @PutMapping("/sign-in/2fa")
-    public TokenDto confirmSignIn(@RequestBody @Valid ConfirmUserDto user) {
+    public TokenDto signInWith2fa(@RequestBody @Valid ConfirmUserDto user) {
         boolean confirmed = codeService.confirmCode(user.email(), user.code());
         if (!confirmed) {
-            throw new FailedAuthenticateException("No se pudo confirmar la cuenta");
+            throw new FailedAuthenticateException("No se pudo confirmar el código de autenticación en dos pasos");
         }
 
         return userService.findUserByEmail(user.email())
                 .map(this::toTokenDto)
                 .get();
+    }
+
+    @PostMapping("/password/recovery")
+    public void recoverPassword(@RequestBody @Valid RecoverUserDto user) {
+        Optional<UserDto> savedUser = userService.findUserByEmail(user.email());
+
+        if (savedUser.isEmpty()) {
+            return;
+        }
+        UserDto userDto = savedUser.get();
+
+        String code = codeService.generateCode(userDto.id());
+        Map<String, Object> templateVariables = Map.of("code", code.toCharArray(), "user", userDto);
+        String confirmationHtml = templateRendererService.renderTemplate("recovery", templateVariables);
+
+        try {
+            emailService.sendHtmlEmail("BPMN", user.email(),
+                    "Recuperación de contraseña en BPMN", confirmationHtml);
+        } catch (MessagingException e) {
+            throw new RequestConflictException("No se pudo enviar el correo de recuperación");
+        }
+    }
+
+    @PutMapping("/password/recovery")
+    public TokenDto changePassword(@RequestBody @Valid ChangePasswordDto user) {
+        boolean confirmed = codeService.confirmCode(user.email(), user.code());
+        if (!confirmed) {
+            throw new FailedAuthenticateException("No se pudo confirmar la posición de la cuenta");
+        }
+
+        return userService.changePassword(user.email(), user.password(), user.newPassword())
+                .map(this::toTokenDto)
+                .orElseThrow(() -> new ValueNotFoundException("No se encontró el usuario"));
     }
 }
