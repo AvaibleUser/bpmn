@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.service.user;
+package edu.ss1.bpmn.service.interactivity;
 
 import static edu.ss1.bpmn.domain.type.RoleType.CLIENT;
 
@@ -13,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.ss1.bpmn.domain.dto.user.AddUserDto;
 import edu.ss1.bpmn.domain.dto.user.UserDto;
-import edu.ss1.bpmn.domain.entity.user.UserEntity;
+import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;
 import edu.ss1.bpmn.domain.exception.RequestConflictException;
-import edu.ss1.bpmn.repository.user.UserRepository;
+import edu.ss1.bpmn.repository.interactivity.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service

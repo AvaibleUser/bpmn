@@ -15,8 +15,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import edu.ss1.bpmn.annotation.CurrentUser;
-import edu.ss1.bpmn.domain.entity.user.UserEntity;
-import edu.ss1.bpmn.repository.user.UserRepository;
+import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;
+import edu.ss1.bpmn.repository.interactivity.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

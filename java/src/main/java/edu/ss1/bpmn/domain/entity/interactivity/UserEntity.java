@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.domain.entity.user;
+package edu.ss1.bpmn.domain.entity.interactivity;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
@@ -69,21 +69,16 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false)
     private String lastname;
 
-    @Column
     private boolean verified;
 
-    @Column
     private boolean active;
 
-    @Column
     private boolean banned;
 
     @CreationTimestamp
-    @Column
     private Instant createdAt;
 
     @UpdateTimestamp
-    @Column
     private Instant updatedAt;
 
     @Override

@@ -1,11 +1,11 @@
-package edu.ss1.bpmn.repository.user;
+package edu.ss1.bpmn.repository.interactivity;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import edu.ss1.bpmn.domain.entity.user.CodeEntity;
+import edu.ss1.bpmn.domain.entity.interactivity.CodeEntity;
 
 @Repository
 public interface CodeRepository extends JpaRepository<CodeEntity, Long> {

@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.service.user;
+package edu.ss1.bpmn.service.interactivity;
 
 import java.time.Instant;
 import java.util.Collection;

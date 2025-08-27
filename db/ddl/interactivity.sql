@@ -4,10 +4,12 @@ CREATE TYPE interactivity.role_type AS ENUM ('CLIENT', 'ADMIN');
 
 CREATE TABLE interactivity.users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role interactivity.role_type NOT NULL,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
     verified BOOLEAN NOT NULL DEFAULT FALSE,
     active BOOLEAN NOT NULL DEFAULT FALSE,
     banned BOOLEAN NOT NULL DEFAULT FALSE,
@@ -45,5 +47,8 @@ CREATE TABLE interactivity.ratings (
         rating > 0
         AND rating < 6
     ),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL
 );

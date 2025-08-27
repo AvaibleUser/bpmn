@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.domain.entity.user;
+package edu.ss1.bpmn.domain.entity.interactivity;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
@@ -6,6 +6,7 @@ import static lombok.AccessLevel.PRIVATE;
 import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,14 +46,13 @@ public class CodeEntity {
     @Column(nullable = false)
     private String code;
 
-    @Column
     private boolean used;
 
-    @NonNull
-    @Column(nullable = false)
     private Instant expiresAt;
 
     @CreationTimestamp
-    @Column
     private Instant createdAt;
+
+    @UpdateTimestamp
+    private Instant updatedAt;
 }

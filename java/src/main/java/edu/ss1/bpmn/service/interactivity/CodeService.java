@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.service.user;
+package edu.ss1.bpmn.service.interactivity;
 
 import static java.util.function.Predicate.not;
 
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 
-import edu.ss1.bpmn.domain.entity.user.CodeEntity;
-import edu.ss1.bpmn.domain.entity.user.UserEntity;
-import edu.ss1.bpmn.repository.user.CodeRepository;
-import edu.ss1.bpmn.repository.user.UserRepository;
+import edu.ss1.bpmn.domain.entity.interactivity.CodeEntity;
+import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;
+import edu.ss1.bpmn.repository.interactivity.CodeRepository;
+import edu.ss1.bpmn.repository.interactivity.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service

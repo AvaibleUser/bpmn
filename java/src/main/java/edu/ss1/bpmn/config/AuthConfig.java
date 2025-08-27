@@ -36,9 +36,9 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 
 import edu.ss1.bpmn.config.property.RsaProperty;
-import edu.ss1.bpmn.repository.user.UserRepository;
-import edu.ss1.bpmn.service.user.AuthManager;
-import edu.ss1.bpmn.service.user.UserService;
+import edu.ss1.bpmn.repository.interactivity.UserRepository;
+import edu.ss1.bpmn.service.interactivity.AuthManager;
+import edu.ss1.bpmn.service.interactivity.UserService;
 
 @Configuration
 @EnableWebSecurity

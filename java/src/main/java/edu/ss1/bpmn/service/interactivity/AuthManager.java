@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.service.user;
+package edu.ss1.bpmn.service.interactivity;
 
 import static org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated;
 
@@ -10,8 +10,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.ss1.bpmn.domain.entity.user.UserEntity;
-import edu.ss1.bpmn.repository.user.UserRepository;
+import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;
+import edu.ss1.bpmn.repository.interactivity.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

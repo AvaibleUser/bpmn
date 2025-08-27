@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.controller.user;
+package edu.ss1.bpmn.controller.interactivity;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.security.authentication.UsernamePasswordAuthenticationToken.unauthenticated;
@@ -25,9 +25,9 @@ import edu.ss1.bpmn.domain.dto.user.UserDto;
 import edu.ss1.bpmn.domain.exception.FailedAuthenticateException;
 import edu.ss1.bpmn.domain.exception.RequestConflictException;
 import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
-import edu.ss1.bpmn.service.user.CodeService;
-import edu.ss1.bpmn.service.user.JwtService;
-import edu.ss1.bpmn.service.user.UserService;
+import edu.ss1.bpmn.service.interactivity.CodeService;
+import edu.ss1.bpmn.service.interactivity.JwtService;
+import edu.ss1.bpmn.service.interactivity.UserService;
 import edu.ss1.bpmn.service.util.JavaMailService;
 import edu.ss1.bpmn.service.util.ThymeleafService;
 import jakarta.mail.MessagingException;
