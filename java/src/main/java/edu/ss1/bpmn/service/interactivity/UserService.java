@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ss1.bpmn.domain.dto.user.AddUserDto;
+import edu.ss1.bpmn.domain.dto.user.UpdateUserRoleDto;
 import edu.ss1.bpmn.domain.dto.user.UserDto;
 import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;
 import edu.ss1.bpmn.domain.exception.RequestConflictException;
+import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
 import edu.ss1.bpmn.repository.interactivity.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +35,16 @@ public class UserService implements UserDetailsService {
 
     public Optional<UserDto> findUserByEmail(String email) {
         return userRepository.findByEmail(email, UserDto.class);
+    }
+
+    @Transactional
+    public void changeRole(UpdateUserRoleDto user) {
+        UserEntity userEntity = userRepository.findById(user.userId())
+                .orElseThrow(() -> new ValueNotFoundException("No se encontró el usuario"));
+
+        userEntity.setRole(user.role());
+
+        userRepository.save(userEntity);
     }
 
     @Transactional
