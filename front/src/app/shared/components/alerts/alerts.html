@@ -1,0 +1,35 @@
+<div class="fixed right-4 bottom-4 w-fit z-50 flex flex-col gap-2 items-center">
+  @for (alert of alertStore.alerts(); track alert) {
+  <div
+    role="alert"
+    class="alert alert-soft"
+    [ngClass]="{
+        'alert-success': alert.type === 'success',
+        'alert-warning': alert.type === 'warning',
+        'alert-error': alert.type === 'error',
+        'alert-info': alert.type === 'info',
+      }"
+  >
+    <span>{{ alert.message }}</span>
+    @if (alert.accept || alert.dismiss) {
+    <div class="flex gap-2 items-center">
+      @if (alert.accept) {
+      <button
+        class="btn btn-xs btn-primary"
+        (click)="alertStore.removeAlert(alert); alert.accept()"
+      >
+        Aceptar
+      </button>
+      } @if (alert.dismiss) {
+      <button
+        class="btn btn-xs btn-error btn-outline"
+        (click)="alertStore.removeAlert(alert); alert.dismiss()"
+      >
+        Cerrar
+      </button>
+      }
+    </div>
+    }
+  </div>
+  }
+</div>
