@@ -1,0 +1,32 @@
+INSERT INTO
+    interactivity.users (
+        username,
+        email,
+        password,
+        role,
+        firstname,
+        lastname,
+        verified,
+        active
+    )
+VALUES
+    (
+        'admin',
+        'dylan.daev@gmail.com',
+        '12345',
+        'ADMIN',
+        'Admin',
+        'User',
+        TRUE,
+        TRUE
+    ),
+    (
+        'user',
+        'dylanelias201931369@cunoc.edu.gt',
+        '12345',
+        'CLIENT',
+        'User',
+        'User',
+        TRUE,
+        TRUE
+    );
