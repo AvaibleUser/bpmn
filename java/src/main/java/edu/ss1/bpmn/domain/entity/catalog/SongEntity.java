@@ -3,13 +3,7 @@ package edu.ss1.bpmn.domain.entity.catalog;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import edu.ss1.bpmn.domain.type.FormatType;
+import edu.ss1.bpmn.domain.type.SideType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -27,57 +21,31 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-@Entity(name = "discographies")
-@Table(name = "discographies", schema = "catalog")
+@Entity(name = "songs")
+@Table(name = "songs", schema = "catalog")
 @Data
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor(access = PRIVATE)
-public class DiscographyEntity {
+public class SongEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @NonNull
-    @Column(nullable = false)
-    private String title;
-
-    @NonNull
-    @Column(nullable = false)
-    private String artist;
-
-    @NonNull
     @ManyToOne(optional = false)
-    @JoinColumn(name = "genre_id", nullable = false)
-    private GenreEntity genre;
+    @JoinColumn(name = "discography_id", nullable = false)
+    private DiscographyEntity discography;
 
     @NonNull
     @Column(nullable = false)
-    private Integer year;
+    private String name;
 
-    @NonNull
-    @Column(nullable = false)
-    private BigDecimal price;
-
-    private Integer stock;
-
-    @NonNull
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private FormatType format;
+    private SideType side;
 
-    private boolean visible;
-
-    private Instant release;
-
-    @CreationTimestamp
-    private Instant createdAt;
-
-    @UpdateTimestamp
-    private Instant updatedAt;
-
-    private Instant deletedAt;
+    private String url;
 }
