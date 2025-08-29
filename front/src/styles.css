@@ -1,12 +1,16 @@
-@import "tailwindcss";
-@import "@catppuccin/tailwindcss/mocha.css";
+@import 'tailwindcss';
+@import '@catppuccin/tailwindcss/mocha.css';
 
 @plugin "daisyui" {
-    themes: false;
+  themes: false;
 }
 
 @plugin "./mocha.config.ts";
 
 body {
   @apply bg-base-100 text-base-content;
+}
+
+.a-ghost {
+  @apply text-base-content/70 hover:text-accent hover:underline cursor-pointer transition-colors duration-200;
 }

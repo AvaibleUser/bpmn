@@ -1,0 +1,60 @@
+<div class="text-center mb-2">
+  <h1 class="text-3xl font-bold text-primary">Iniciar Sesión</h1>
+</div>
+
+<form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-5">
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">
+      <span>Correo Electrónico</span>
+    </legend>
+    <input
+      type="email"
+      formControlName="email"
+      name="email"
+      class="input input-bordered w-full"
+      [class.input-error]="checkField('email')"
+    />
+  </fieldset>
+
+  <fieldset class="fieldset relative">
+    <legend class="fieldset-legend">
+      <span>Contraseña</span>
+    </legend>
+    <input
+      [type]="showPassword() ? 'text' : 'password'"
+      formControlName="password"
+      name="password"
+      class="input input-bordered w-full"
+      [class.input-error]="checkField('password')"
+    />
+
+    <button
+      type="button"
+      class="absolute right-1 bottom-3 btn btn-ghost btn-circle btn-accent btn-xs z-50"
+      (click)="showPassword.set(!showPassword())"
+    >
+      <i-lucide [img]="showPassword() ? invisible : visible" size="18" />
+    </button>
+  </fieldset>
+
+  <div class="text-end">
+    <a class="text-sm a-ghost" routerLink="/auth/recover"> ¿Olvidaste tu contraseña? </a>
+  </div>
+
+  <button
+    type="submit"
+    class="btn w-full font-semibold"
+    [class.btn-primary]="!waiting()"
+    [class.btn-disabled]="waiting()"
+  >
+    @if (waiting()) {
+    <span class="loading loading-dots loading-xs"></span>
+    } @else { Iniciar Sesión }
+  </button>
+</form>
+
+<div class="divider my-6">O</div>
+
+<a routerLink="/auth/register" class="btn btn-outline btn-primary w-full font-semibold">
+  Registrarse
+</a>

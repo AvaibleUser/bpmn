@@ -1,0 +1,42 @@
+<div class="text-center mb-6">
+  <h1 class="text-3xl font-bold text-primary">Confirmación de e-mail</h1>
+  <p class="text-base-content/70 mt-2">
+    Ingresa el código que te hemos enviado a
+    <span class="font-bold">{{ confirmForm.get('email')?.value }}</span>
+  </p>
+</div>
+
+<form [formGroup]="confirmForm" (ngSubmit)="confirm()" class="space-y-5">
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">
+      <span>Código</span>
+    </legend>
+    <input
+      type="text"
+      formControlName="code"
+      name="code"
+      minlength="6"
+      maxlength="6"
+      class="input input-bordered w-full"
+      [class.input-error]="checkField('code')"
+    />
+  </fieldset>
+
+  <button
+    type="submit"
+    class="btn w-full font-semibold"
+    [class.btn-primary]="!waiting()"
+    [class.btn-disabled]="waiting()"
+  >
+    @if (waiting()) {
+    <span class="loading loading-dots loading-xs"></span>
+    } @else { Confirmar }
+  </button>
+
+  <div class="text-start">
+    <a class="text-sm a-ghost flex items-center gap-2" routerLink="/auth/register">
+      <i-lucide [img]="Back" size="18" />
+      Regresar
+    </a>
+  </div>
+</form>
