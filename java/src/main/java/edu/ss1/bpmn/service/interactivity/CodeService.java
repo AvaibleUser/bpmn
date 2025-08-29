@@ -1,10 +1,9 @@
 package edu.ss1.bpmn.service.interactivity;
 
-import static java.util.function.Predicate.not;
-
 import java.time.Instant;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
@@ -23,6 +22,7 @@ public class CodeService {
     private final CodeRepository codeRepository;
     private final GoogleAuthenticator googleAuth;
 
+    @Transactional
     public String generateCode(long userId) {
         UserEntity user = userRepository.findById(userId, UserEntity.class)
                 .orElseThrow(() -> new RuntimeException("No se encontro el usuario"));
@@ -33,7 +33,7 @@ public class CodeService {
         CodeEntity code = CodeEntity.builder()
                 .user(user)
                 .code(totp)
-                .expiresAt(user.getCreatedAt().plusSeconds(300))
+                .expiresAt(Instant.now().plusSeconds(300))
                 .build();
 
         codeRepository.save(code);
@@ -41,12 +41,11 @@ public class CodeService {
         return totp;
     }
 
+    @Transactional
     public boolean confirmCode(String email, String code) {
-        return codeRepository.findByUserEmail(email, CodeEntity.class)
+        return codeRepository.findByCodeAndUserEmailAndUsedFalse(code, email, CodeEntity.class)
                 .stream()
-                .filter(not(CodeEntity::isUsed))
                 .filter(c -> c.getExpiresAt().isAfter(Instant.now()))
-                .filter(c -> c.getCode().equals(code))
                 .anyMatch(c -> {
                     c.setUsed(true);
                     codeRepository.save(c);

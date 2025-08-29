@@ -10,5 +10,5 @@ import edu.ss1.bpmn.domain.entity.interactivity.CodeEntity;
 @Repository
 public interface CodeRepository extends JpaRepository<CodeEntity, Long> {
 
-    <T> List<T> findByUserEmail(String email, Class<T> type);
+    <T> List<T> findByCodeAndUserEmailAndUsedFalse(String code, String email, Class<T> type);
 }

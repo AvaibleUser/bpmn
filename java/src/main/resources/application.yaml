@@ -23,7 +23,7 @@ spring:
   datasource:
     username: ${DB_USER}
     password: ${DB_PASS}
-    url: jdbc:postgresql://${DB_HOST}/${DB_DATABASE}
+    url: jdbc:postgresql://${DB_HOST}/${DB_DATABASE}?stringtype=unspecified
 
   jackson:
     time-zone: UTC
