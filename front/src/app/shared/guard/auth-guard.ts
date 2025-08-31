@@ -9,6 +9,7 @@ export const authGuard: CanActivateFn = (route) => {
 
   if (!session.token) {
     authStore.logout();
+    router.navigate(['/auth']);
     return true;
   }
   if (route.data['role'] && session.role !== route.data['role']) {

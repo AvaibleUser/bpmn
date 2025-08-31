@@ -6,6 +6,7 @@ import { AuthApi } from '@core/auth/api/auth-api';
 import { CheckCode } from '@core/auth/models/auth.model';
 import { AlertStore } from '@shared/stores/alert-store';
 import { AuthStore } from '@shared/stores/auth-store';
+import { CacheStore } from '@shared/stores/cache-store';
 import { LocalStore } from '@shared/stores/local-store';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
 
@@ -18,6 +19,7 @@ export class Mfa implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly alertStore = inject(AlertStore);
   private readonly localStore = inject(LocalStore);
+  private readonly cacheStore = inject(CacheStore);
   private readonly authStore = inject(AuthStore);
   private readonly authApi = inject(AuthApi);
   private readonly router = inject(Router);
@@ -60,7 +62,7 @@ export class Mfa implements OnInit {
           type: 'success',
         });
         this.waiting.set(false);
-        this.router.navigate([`/${session.role.toLocaleLowerCase()}`]);
+        this.router.navigate([this.cacheStore.cache()?.['redirect'] || `/${session.role.toLocaleLowerCase()}`]);
       },
       error: (error: HttpErrorResponse) => {
         this.alertStore.addAlert({

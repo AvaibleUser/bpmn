@@ -1,0 +1,51 @@
+@let discography$ = discography();
+
+<div class="card rounded-none overflow-hidden group shadow-xs shadow-base-content">
+  <div class="relative h-48 overflow-hidden">
+    <img
+      [src]="discography$.image_url || 'assets/default-cover.jpg'"
+      alt="{{ discography$.title }}"
+      class="w-full h-full object-cover"
+    />
+
+    <div
+      class="absolute inset-0 bg-base-300/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+    >
+      <button class="btn btn-primary gap-4">
+        <i-lucide [img]="ShoppingCart" size="25" />
+        <span class="">Add to cart</span>
+      </button>
+    </div>
+
+    <div
+      class="absolute top-2 left-2 z-50 star bg-warning/70 text-warning-content text-lg font-semibold w-8 h-8 flex items-center justify-center"
+    >
+      {{ discography$.rating }}
+    </div>
+
+    <div class="absolute top-2 right-2">
+      <img
+        [src]="'assets/images/' + discography$.format.toLowerCase() + '.png'"
+        alt="Icono de formato"
+        height="60"
+        width="60"
+      />
+    </div>
+  </div>
+
+  <!-- Información principal -->
+
+  <a [routerLink]="['/products', discography$.id]" class="relative p-4 hover:text-accent">
+    <h3 class="font-bold text-lg truncate">{{ discography$.title }}</h3>
+    <p class="text-sm truncate">{{ discography$.artist }}</p>
+
+    <div class="absolute top-0 right-4 py-4 flex flex-col justify-around items-end h-full bg-base-100">
+      <span class="text-success font-semibold">
+        {{ discography$.price | currency : 'GTQ' : 'symbol-narrow' }}
+      </span>
+      <span class="text-base-content/70 text-xs">
+        {{ discography$.release ? `Disponible el ${discography$.release | date : 'dd/MM'}` : discography$.year }}
+      </span>
+    </div>
+  </a>
+</div>

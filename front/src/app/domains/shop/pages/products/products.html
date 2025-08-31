@@ -1,0 +1,42 @@
+<div class="py-12 px-4 flex flex-col justify-evenly md:flex-row gap-4">
+  <div class="bg-base-300 p-4 rounded-lg h-fit">
+    <shop-filters (filter)="filter($event)" [(waiting)]="waitingFilter" />
+  </div>
+
+  <div class="md:max-w-6xl grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-3 w-full">
+    @if (!discographies.content.length) {
+    <div class="text-center text-accent h-full flex items-center lg:col-span-2 xl:col-span-3">
+      <p class="text-5xl">
+        Buscando artistas que cambien el juego para tener existencias disponibles...
+      </p>
+    </div>
+    } @else { @for (discography of discographies.content; track discography) {
+    <shop-discography [discography]="discography" />
+    }
+
+    <div class="flex justify-center items-center gap-2 mt-auto lg:col-span-2 xl:col-span-3">
+      <button
+        class="btn btn-sm btn-ghost btn-circle"
+        [class.btn-disabled]="discographies.first"
+        [class.text-primary]="!discographies.first"
+        (click)="!discographies.first && page.set(page() - 1)"
+      >
+        <i-lucide [img]="Previous" size="24" />
+      </button>
+
+      <span class="text-xs text-center">
+        {{ (discographies.number || 0) + 1 }} de {{ discographies.totalPages || 0 }}
+      </span>
+
+      <button
+        class="btn btn-sm btn-ghost btn-circle"
+        [class.btn-disabled]="discographies.last"
+        [class.text-primary]="!discographies.last"
+        (click)="!discographies.last && page.set(page() + 1)"
+      >
+        <i-lucide [img]="Next" size="24" />
+      </button>
+    </div>
+    }
+  </div>
+</div>

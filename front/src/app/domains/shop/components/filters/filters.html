@@ -1,0 +1,110 @@
+<span class="text-lg font-semibold text-base-content/70">Filtrar por:</span>
+
+<form [formGroup]="filtersForm" (ngSubmit)="filterDiscography()" class="flex flex-col gap-4 my-4">
+  <fieldset class="fieldset">
+    <legend class="legend" [class.text-accent]="filtersForm.get('genreId')?.value">
+      <span>Género</span>
+    </legend>
+    <select formControlName="genreId" name="genreId" class="select select-bordered w-full">
+      <option selected value="">Seleccionar género</option>
+      @for (genre of genres; track genre) {
+      <option [ngValue]="genre.id">{{ genre.name }}</option>
+      }
+    </select>
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend class="legend" [class.text-accent]="filtersForm.get('title')?.value">
+      <span>Titulo</span>
+    </legend>
+    <input type="text" formControlName="title" name="title" class="input input-bordered w-full" />
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend class="legend" [class.text-accent]="filtersForm.get('artist')?.value">
+      <span>Artista</span>
+    </legend>
+    <input type="text" formControlName="artist" name="artist" class="input input-bordered w-full" />
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend class="legend" [class.text-accent]="filtersForm.get('year')?.value">
+      <span>Año</span>
+    </legend>
+    <input type="number" formControlName="year" name="year" class="input input-bordered w-full" />
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend
+      class="legend flex justify-between items-center w-full"
+      [class.text-accent]="filtersForm.get('price')?.value"
+    >
+      <span>Precio</span>
+    </legend>
+
+    <div class="my-2">
+      <legend
+        class="legend flex justify-between items-center w-full"
+        [class.text-accent]="filtersForm.get('priceMin')?.value"
+      >
+        <span>Mínimo</span>
+        <span class="text-base-content/70">
+          {{ -(filtersForm.get('priceMin')?.value || 0) | currency : 'GTQ' : 'symbol-narrow' }}
+        </span>
+      </legend>
+      <input
+        type="range"
+        min="-1000"
+        max="0"
+        formControlName="priceMin"
+        name="priceMin"
+        class="range range-xs rotate-y-180"
+      />
+    </div>
+
+    <div class="my-2">
+      <legend
+        class="legend flex justify-between items-center w-full"
+        [class.text-accent]="filtersForm.get('priceMax')?.value"
+      >
+        <span>Máximo</span>
+        <span class="text-base-content/70">
+          {{
+            1000 + (filtersForm.get('priceMax')?.value || 0) | currency : 'GTQ' : 'symbol-narrow'
+          }}
+        </span>
+      </legend>
+      <input
+        type="range"
+        min="-1000"
+        max="0"
+        formControlName="priceMax"
+        name="priceMax"
+        class="range range-xs"
+      />
+    </div>
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend class="legend" [class.text-accent]="filtersForm.get('format')?.value">
+      <span>Formato</span>
+    </legend>
+    <select formControlName="format" name="format" class="select select-bordered w-full">
+      <option selected value="">Seleccionar formato</option>
+      <option value="VINYL">Vinyl</option>
+      <option value="CASSETTE">Cassette</option>
+      <option value="CD">CD</option>
+    </select>
+  </fieldset>
+
+  <button
+    type="submit"
+    class="btn btn-soft w-full font-semibold"
+    [class.btn-primary]="!waiting()"
+    [class.btn-disabled]="waiting()"
+  >
+    @if (waiting()) {
+    <span class="loading loading-dots loading-xs"></span>
+    } @else { Filtrar }
+  </button>
+</form>
