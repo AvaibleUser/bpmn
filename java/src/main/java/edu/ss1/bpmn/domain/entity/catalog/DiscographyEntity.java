@@ -49,6 +49,8 @@ public class DiscographyEntity {
     @Column(nullable = false)
     private String artist;
 
+    private String imageUrl;
+
     @NonNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "genre_id", nullable = false)

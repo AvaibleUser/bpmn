@@ -11,6 +11,7 @@ CREATE TABLE catalog.discographies (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
     artist VARCHAR(150) NOT NULL,
+    image_url VARCHAR(255) NULL,
     genre_id BIGINT NOT NULL REFERENCES catalog.genres (id),
     year INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
