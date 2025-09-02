@@ -36,6 +36,7 @@ public class S3Service {
             throw new BadRequestException("The file must have any content.");
         }
 
+        filename = filename + "." + file.getContentType().split("/")[1];
         try {
             return store(filename, file.getInputStream(), file.getContentType(), file.getSize());
         } catch (IOException e) {

@@ -18,6 +18,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -82,4 +83,13 @@ public class DiscographyEntity {
     private Instant updatedAt;
 
     private Instant deletedAt;
+
+    @OneToOne(mappedBy = "discography")
+    private VinylEntity vinyl;
+
+    @OneToOne(mappedBy = "discography")
+    private CassetteEntity cassette;
+
+    @OneToOne(mappedBy = "discography")
+    private CdEntity cd;
 }
