@@ -35,7 +35,7 @@ public class DiscographyController {
     private final DiscographyService discographyService;
 
     @GetMapping
-    public Page<DiscographyDto> findAllDiscographies(FilterDiscographyDto filter, Pageable pageable) {
+    public Page<DiscographyDto.Complete> findAllDiscographies(FilterDiscographyDto filter, Pageable pageable) {
         return discographyService.findAllDiscographies(filter, pageable);
     }
 

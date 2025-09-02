@@ -20,7 +20,7 @@ CREATE TABLE commerce.promotions (
     id BIGSERIAL PRIMARY KEY,
     group_type_id BIGINT NOT NULL REFERENCES commerce.grouping_types (id),
     start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
+    end_date DATE NULL,
     active BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL

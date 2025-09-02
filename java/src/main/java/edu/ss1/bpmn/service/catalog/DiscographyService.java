@@ -10,8 +10,12 @@ import static edu.ss1.bpmn.specification.DiscographySpecification.byStock;
 import static edu.ss1.bpmn.specification.DiscographySpecification.byTitleWith;
 import static edu.ss1.bpmn.specification.DiscographySpecification.byVisible;
 import static edu.ss1.bpmn.specification.DiscographySpecification.byYear;
+import static edu.ss1.bpmn.specification.DiscographySpecification.orderByBestSellers;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 import java.time.Instant;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +28,7 @@ import edu.ss1.bpmn.domain.dto.catalog.discography.AddDiscographyDto;
 import edu.ss1.bpmn.domain.dto.catalog.discography.DiscographyDto;
 import edu.ss1.bpmn.domain.dto.catalog.discography.FilterDiscographyDto;
 import edu.ss1.bpmn.domain.dto.catalog.discography.UpdateDiscographyDto;
+import edu.ss1.bpmn.domain.dto.rating.RatingDto;
 import edu.ss1.bpmn.domain.entity.catalog.DiscographyEntity;
 import edu.ss1.bpmn.domain.entity.catalog.GenreEntity;
 import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
@@ -43,20 +48,30 @@ public class DiscographyService {
     private final CassetteService cassetteService;
     private final CdService cdService;
 
-    public Page<DiscographyDto> findAllDiscographies(FilterDiscographyDto filter, Pageable pageable) {
+    public Page<DiscographyDto.Complete> findAllDiscographies(FilterDiscographyDto filter, Pageable pageable) {
         Specification<DiscographyEntity> specification = byVisible()
                 .and(byNonDeleted())
-                .and(byStock())
+                .and(byStock(filter.stock()))
+                .and(orderByBestSellers(filter.bestSellers()))
                 .and(byTitleWith(filter.title()))
                 .and(byArtistWith(filter.artist()))
                 .and(byGenreWithId(filter.genreId()))
                 .and(byYear(filter.year()))
-                .and(byPriceGreaterThan(filter.priceLower()))
-                .and(byPriceLessThan(filter.priceUpper()))
+                .and(byPriceGreaterThan(filter.priceMin()))
+                .and(byPriceLessThan(filter.priceMax()))
                 .and(byFormat(filter.format()));
 
-        return discographyRepository.findBy(specification, pageable, DiscographyDto.class);
+        Page<DiscographyDto> discographies = discographyRepository.findBy(specification, pageable,
+                DiscographyDto.class);
+        Map<Long, RatingDto> ratings = discographyRepository
+                .findRatings(discographies.map(DiscographyDto::id).getContent())
+                .stream()
+                .collect(toMap(RatingDto::id, identity()));
 
+        return discographies.map(discography -> DiscographyDto.Complete.builder()
+                .discography(discography)
+                .rating(ratings.get(discography.id()).rating())
+                .build());
     }
 
     public DiscographyDto findDiscographyById(Long id) {

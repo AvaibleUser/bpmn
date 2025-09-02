@@ -11,7 +11,7 @@ public record CommentDto(
         long id,
         String content,
         @JsonProperty("username") String userUsername,
-        @JsonProperty("reply_to") long replyToId,
+        @JsonProperty("replyTo") long replyToId,
         Instant createdAt,
         Instant updatedAt) {
 }

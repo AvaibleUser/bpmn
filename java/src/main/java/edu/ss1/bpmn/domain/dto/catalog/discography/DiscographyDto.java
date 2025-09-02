@@ -3,6 +3,8 @@ package edu.ss1.bpmn.domain.dto.catalog.discography;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import edu.ss1.bpmn.domain.type.ConditionType;
 import edu.ss1.bpmn.domain.type.FormatType;
 import lombok.Builder;
@@ -25,4 +27,16 @@ public record DiscographyDto(
         ConditionType cassetteCondition,
         Integer vinylSize,
         String vinylSpecialEdition) {
+
+    @Builder(toBuilder = true)
+    public static record Complete(
+            @JsonUnwrapped DiscographyDto discography,
+            Integer rating) {
+    }
+
+    @Builder(toBuilder = true)
+    public static record Rating(
+            Long id,
+            Integer rating) {
+    }
 }

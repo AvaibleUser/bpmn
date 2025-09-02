@@ -1,5 +1,7 @@
 package edu.ss1.bpmn.specification;
 
+import static jakarta.persistence.criteria.JoinType.LEFT;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -51,10 +53,33 @@ public interface DiscographySpecification {
         return (root, query, builder) -> builder.lt(root.get("price"), price);
     }
 
-    static Specification<DiscographyEntity> byStock() {
+    static Specification<DiscographyEntity> byStock(Integer stock) {
+        if (stock == null) {
+            return Specification.unrestricted();
+        }
         return (root, query, builder) -> builder.or(
-                builder.gt(root.get("stock"), 0),
-                builder.isNull(root.get("stock")));
+                builder.greaterThanOrEqualTo(root.get("stock"), stock),
+                builder.and(
+                        builder.isNull(root.get("stock")),
+                        builder.isNull(root.get("release"))));
+    }
+
+    static Specification<DiscographyEntity> orderByBestSellers(Boolean bestSeller) {
+        if (!Boolean.TRUE.equals(bestSeller)) {
+            return Specification.unrestricted();
+        }
+        return (root, query, builder) -> {
+            var id = root.get("id");
+            var itemIds = root.join("items", LEFT).get("id");
+            var genre = root.join("genre").get("id");
+            var cassette = root.join("cassette", LEFT).get("id");
+            var vinyl = root.join("vinyl", LEFT).get("id");
+            var cd = root.join("cd", LEFT).get("id");
+            return query
+                    .groupBy(itemIds, id, genre, cassette, vinyl, cd)
+                    .orderBy(builder.desc(itemIds))
+                    .getRestriction();
+        };
     }
 
     static Specification<DiscographyEntity> byVisible() {

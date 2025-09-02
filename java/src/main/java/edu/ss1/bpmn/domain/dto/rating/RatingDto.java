@@ -4,5 +4,6 @@ import lombok.Builder;
 
 @Builder(toBuilder = true)
 public record RatingDto(
-        int rating) {
+        Long id,
+        Integer rating) {
 }
