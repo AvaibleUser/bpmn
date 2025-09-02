@@ -1,6 +1,8 @@
+import { ProductsApi } from '@/shop/api/products-api';
 import { DiscographyQuery, Format } from '@/shop/models/discography.model';
+import { Genre } from '@/shop/models/genre.model';
 import { CommonModule } from '@angular/common';
-import { Component, inject, model, output, signal } from '@angular/core';
+import { Component, inject, model, OnInit, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { AlertStore } from '@shared/stores/alert-store';
 
@@ -9,12 +11,17 @@ import { AlertStore } from '@shared/stores/alert-store';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './filters.html',
 })
-export class Filters {
+export class Filters implements OnInit {
+  private readonly productsApi = inject(ProductsApi);
   private readonly formBuilder = inject(FormBuilder);
   private readonly alertStore = inject(AlertStore);
 
+  readonly filter = output<DiscographyQuery>();
+  readonly waiting = model.required<boolean>();
   readonly filtersForm = this.formBuilder.group({
     genreId: [0],
+    stock: [0],
+    bestSellers: [false],
     title: [''],
     artist: [''],
     year: [0],
@@ -23,8 +30,13 @@ export class Filters {
     format: ['' as Format],
   });
 
-  readonly filter = output<DiscographyQuery>();
-  readonly waiting = model.required<boolean>();
+  genres?: Genre[];
+
+  ngOnInit() {
+    this.productsApi.getGenres().subscribe((genres) => {
+      this.genres = genres;
+    });
+  }
 
   filterDiscography() {
     this.waiting.set(true);
@@ -43,30 +55,15 @@ export class Filters {
         delete filters[key];
       }
     });
-    if ((filters.priceMin || 0) > (filters.priceMax || 1000)) {
-      delete filters.priceMax;
-    }
     if (filters.priceMin) {
       filters.priceMin = -filters.priceMin;
     }
     if (filters.priceMax) {
       filters.priceMax = 1000 + filters.priceMax;
     }
+    if ((filters.priceMin || 0) > (filters.priceMax || 1000)) {
+      delete filters.priceMax;
+    }
     this.filter.emit(filters);
   }
-
-  genres = [
-    {
-      id: 1,
-      name: 'Rock',
-    },
-    {
-      id: 2,
-      name: 'Pop',
-    },
-    {
-      id: 3,
-      name: 'Jazz',
-    },
-  ];
 }

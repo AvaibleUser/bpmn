@@ -1,9 +1,9 @@
 @let discography$ = discography();
 
 <div class="card rounded-none overflow-hidden group shadow-xs shadow-base-content">
-  <div class="relative h-48 overflow-hidden">
+  <div class="relative overflow-hidden aspect-square">
     <img
-      [src]="discography$.image_url || 'assets/default-cover.jpg'"
+      [src]="discography$.imageUrl || 'assets/default-cover.jpg'"
       alt="{{ discography$.title }}"
       class="w-full h-full object-cover"
     />

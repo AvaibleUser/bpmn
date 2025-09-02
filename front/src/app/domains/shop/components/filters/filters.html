@@ -1,12 +1,16 @@
 <span class="text-lg font-semibold text-base-content/70">Filtrar por:</span>
 
-<form [formGroup]="filtersForm" (ngSubmit)="filterDiscography()" class="flex flex-col gap-4 my-4">
+<form [formGroup]="filtersForm" (ngSubmit)="filterDiscography()" class="flex flex-col gap-2">
   <fieldset class="fieldset">
-    <legend class="legend" [class.text-accent]="filtersForm.get('genreId')?.value">
+    <legend class="fieldset-legend" [class.text-accent]="filtersForm.get('genreId')?.value">
       <span>Género</span>
     </legend>
-    <select formControlName="genreId" name="genreId" class="select select-bordered w-full">
-      <option selected value="">Seleccionar género</option>
+    <select
+      formControlName="genreId"
+      name="genreId"
+      class="select select-sm select-bordered w-full"
+    >
+      <option selected value="0">Cualquier género</option>
       @for (genre of genres; track genre) {
       <option [ngValue]="genre.id">{{ genre.name }}</option>
       }
@@ -14,37 +18,35 @@
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="legend" [class.text-accent]="filtersForm.get('title')?.value">
-      <span>Titulo</span>
+    <legend class="fieldset-legend" [class.text-accent]="filtersForm.get('format')?.value">
+      <span>Formato</span>
     </legend>
-    <input type="text" formControlName="title" name="title" class="input input-bordered w-full" />
+    <select formControlName="format" name="format" class="select select-sm select-bordered w-full">
+      <option selected value="">Cualquier formato</option>
+      <option value="VINYL">Vinilo</option>
+      <option value="CASSETTE">Cassette</option>
+      <option value="CD">CD</option>
+    </select>
+  </fieldset>
+
+  <fieldset class="fieldset flex flex-row items-center w-full gap-4">
+    <input
+      type="checkbox"
+      formControlName="bestSellers"
+      name="bestSellers"
+      class="checkbox checkbox-sm"
+    />
+    <span [class.text-accent]="filtersForm.get('bestSellers')?.value">Mas Vendidos</span>
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="legend" [class.text-accent]="filtersForm.get('artist')?.value">
-      <span>Artista</span>
-    </legend>
-    <input type="text" formControlName="artist" name="artist" class="input input-bordered w-full" />
-  </fieldset>
-
-  <fieldset class="fieldset">
-    <legend class="legend" [class.text-accent]="filtersForm.get('year')?.value">
-      <span>Año</span>
-    </legend>
-    <input type="number" formControlName="year" name="year" class="input input-bordered w-full" />
-  </fieldset>
-
-  <fieldset class="fieldset">
-    <legend
-      class="legend flex justify-between items-center w-full"
-      [class.text-accent]="filtersForm.get('price')?.value"
-    >
+    <legend class="fieldset-legend flex justify-between items-center w-full">
       <span>Precio</span>
     </legend>
 
-    <div class="my-2">
+    <div>
       <legend
-        class="legend flex justify-between items-center w-full"
+        class="fieldset-legend flex justify-between items-center w-full"
         [class.text-accent]="filtersForm.get('priceMin')?.value"
       >
         <span>Mínimo</span>
@@ -62,9 +64,9 @@
       />
     </div>
 
-    <div class="my-2">
+    <div>
       <legend
-        class="legend flex justify-between items-center w-full"
+        class="fieldset-legend flex justify-between items-center w-full"
         [class.text-accent]="filtersForm.get('priceMax')?.value"
       >
         <span>Máximo</span>
@@ -86,15 +88,55 @@
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="legend" [class.text-accent]="filtersForm.get('format')?.value">
-      <span>Formato</span>
+    <legend class="fieldset-legend" [class.text-accent]="filtersForm.get('stock')?.value">
+      <span>Existencias</span>
     </legend>
-    <select formControlName="format" name="format" class="select select-bordered w-full">
-      <option selected value="">Seleccionar formato</option>
-      <option value="VINYL">Vinyl</option>
-      <option value="CASSETTE">Cassette</option>
-      <option value="CD">CD</option>
-    </select>
+    <input
+      type="number"
+      formControlName="stock"
+      name="stock"
+      placeholder="Cualquier cantidad"
+      class="input input-sm input-bordered w-full"
+    />
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend" [class.text-accent]="filtersForm.get('title')?.value">
+      <span>Titulo</span>
+    </legend>
+    <input
+      type="text"
+      formControlName="title"
+      name="title"
+      placeholder="Cualquier titulo"
+      class="input input-sm input-bordered w-full"
+    />
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend" [class.text-accent]="filtersForm.get('artist')?.value">
+      <span>Artista</span>
+    </legend>
+    <input
+      type="text"
+      formControlName="artist"
+      name="artist"
+      placeholder="Cualquier artista"
+      class="input input-sm input-bordered w-full"
+    />
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend" [class.text-accent]="filtersForm.get('year')?.value">
+      <span>Año</span>
+    </legend>
+    <input
+      type="number"
+      formControlName="year"
+      name="year"
+      placeholder="Cualquier año"
+      class="input input-sm input-bordered w-full"
+    />
   </fieldset>
 
   <button

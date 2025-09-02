@@ -2,11 +2,11 @@ import { Pageable } from '@shared/models/pageable.model';
 
 export type Format = 'VINYL' | 'CASSETTE' | 'CD';
 
-interface DiscographyCreateBase {
+interface DiscographyCreate {
   title: string;
   artist: string;
-  image_url?: string;
-  genre_id: number;
+  imageUrl?: string;
+  genreId: number;
   year: number;
   price: number;
   stock?: number;
@@ -16,45 +16,52 @@ interface DiscographyCreateBase {
 
 export type VinylSize = 7 | 10 | 12;
 
-export type VinylCreate = DiscographyCreateBase & {
+export type VinylCreate = DiscographyCreate & {
   format: 'VINYL';
   size: VinylSize;
-  special_edition?: string;
+  specialEdition?: string;
 };
 
 export type CassetteCondition = 'NEW' | 'SEMI_USED' | 'USED';
 
-export type CassetteCreate = DiscographyCreateBase & {
+export type CassetteCreate = DiscographyCreate & {
   format: 'CASSETTE';
   condition: CassetteCondition;
 };
 
-export type CdCreate = DiscographyCreateBase & {
+export type CdCreate = DiscographyCreate & {
   format: 'CD';
 };
-
-export type DiscographyCreate = VinylCreate | CassetteCreate | CdCreate;
 
 interface DiscographyExtras {
   id: number;
   rating: number;
   genre: string;
-  created_at: Date;
+  createdAt: Date;
 }
 
-type Info<Create extends VinylCreate | CassetteCreate | CdCreate> = Omit<Create, 'genre_id'> &
-  DiscographyExtras;
+type Prefix<T, K extends string> = { [P in keyof T as `${K}${Capitalize<string & P>}`]: T[P] };
 
-export type Vinyl = Info<VinylCreate>;
+type Info<
+  FormatExtras extends VinylCreate | CassetteCreate | CdCreate,
+  PrefixKey extends string
+> = DiscographyExtras &
+  Omit<DiscographyCreate, 'genreId'> &
+  Prefix<Omit<FormatExtras, keyof DiscographyCreate | 'genreId'>, PrefixKey> &
+  Pick<FormatExtras, 'format'>;
 
-export type Cassette = Info<CassetteCreate>;
+export type Vinyl = Info<VinylCreate, 'vinyl'>;
 
-export type Cd = Info<CdCreate>;
+export type Cassette = Info<CassetteCreate, 'cassette'>;
+
+export type Cd = Info<CdCreate, 'cd'>;
 
 export type DiscographyInfo = Vinyl | Cassette | Cd;
 
 export type DiscographyQuery = Pageable<{
   genreId: number;
+  stock: number;
+  bestSellers: boolean;
   title: string;
   artist: string;
   year: number;
