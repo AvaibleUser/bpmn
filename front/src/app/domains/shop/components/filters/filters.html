@@ -30,13 +30,15 @@
   </fieldset>
 
   <fieldset class="fieldset flex flex-row items-center w-full gap-4">
-    <input
-      type="checkbox"
-      formControlName="bestSellers"
-      name="bestSellers"
-      class="checkbox checkbox-sm"
-    />
-    <span [class.text-accent]="filtersForm.get('bestSellers')?.value">Mas Vendidos</span>
+    <label [class.text-accent]="filtersForm.get('bestSellers')?.value">
+      <input
+        type="checkbox"
+        formControlName="bestSellers"
+        name="bestSellers"
+        class="checkbox checkbox-sm"
+      />
+      Mas Vendidos
+    </label>
   </fieldset>
 
   <fieldset class="fieldset">

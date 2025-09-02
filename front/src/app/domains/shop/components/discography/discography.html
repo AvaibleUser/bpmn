@@ -17,19 +17,32 @@
       </button>
     </div>
 
-    <div
-      class="absolute top-2 left-2 z-50 star bg-warning/70 text-warning-content text-lg font-semibold w-8 h-8 flex items-center justify-center"
-    >
-      {{ discography$.rating }}
-    </div>
+    <div class="absolute top-2 right-0 z-20 px-2 flex items-center justify-between w-full">
+      <div class="badge badge-warning badge-soft rounded-4xl gap-1 px-2">
+        <span>{{ discography$.rating || '?' }}</span>
+        <span class="star bg-warning w-5 h-5 flex"> </span>
+      </div>
 
-    <div class="absolute top-2 right-2">
       <img
         [src]="'assets/images/' + discography$.format.toLowerCase() + '.png'"
         alt="Icono de formato"
         height="60"
         width="60"
       />
+    </div>
+
+    <div class="absolute bottom-2 right-2 z-20">
+      @if (discography$.release) {
+      <span class="badge badge-warning badge-sm"
+        >Lanzamiento {{ discography$.release | date : 'yyyy' }}</span
+      >
+      } @else if (typeof discography$.stock === 'number') { @if (discography$.stock > 0) {
+      <span class="badge badge-success badge-sm">Ultimas existencias</span>
+      } @else {
+      <span class="badge badge-error badge-sm">Agotado</span>
+      } } @else {
+      <span class="badge badge-success badge-sm">Disponible</span>
+      }
     </div>
   </div>
 
@@ -39,7 +52,9 @@
     <h3 class="font-bold text-lg truncate">{{ discography$.title }}</h3>
     <p class="text-sm truncate">{{ discography$.artist }}</p>
 
-    <div class="absolute top-0 right-4 py-4 flex flex-col justify-around items-end h-full bg-base-100">
+    <div
+      class="absolute top-0 right-4 py-4 flex flex-col justify-around items-end h-full bg-base-100"
+    >
       <span class="text-success font-semibold">
         {{ discography$.price | currency : 'GTQ' : 'symbol-narrow' }}
       </span>
