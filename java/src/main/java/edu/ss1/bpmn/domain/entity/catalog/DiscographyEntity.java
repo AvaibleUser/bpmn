@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import edu.ss1.bpmn.domain.entity.commerce.ItemEntity;
+import edu.ss1.bpmn.domain.entity.interactivity.RatingEntity;
 import edu.ss1.bpmn.domain.type.FormatType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -98,4 +99,7 @@ public class DiscographyEntity {
 
     @OneToMany(mappedBy = "discography")
     private Set<ItemEntity> items;
+
+    @OneToMany(mappedBy = "discography")
+    private Set<RatingEntity> ratings;
 }

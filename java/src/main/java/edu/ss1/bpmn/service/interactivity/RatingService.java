@@ -14,6 +14,7 @@ import edu.ss1.bpmn.domain.entity.catalog.DiscographyEntity;
 import edu.ss1.bpmn.domain.entity.interactivity.RatingEntity;
 import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;
 import edu.ss1.bpmn.domain.exception.BadRequestException;
+import edu.ss1.bpmn.domain.exception.RequestConflictException;
 import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
 import edu.ss1.bpmn.repository.catalog.DiscographyRepository;
 import edu.ss1.bpmn.repository.interactivity.RatingRepository;
@@ -28,12 +29,16 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final DiscographyRepository discographyRepository;
 
-    public RatingStatsDto findRating(long discographyId) {
+    public RatingStatsDto findRating(long userId, long discographyId) {
         List<RatingDto> rating = ratingRepository.findAllByDiscographyIdAndDeletedFalse(discographyId, RatingDto.class);
+        Integer userRating = ratingRepository.findByUserIdAndDiscographyId(userId, discographyId, RatingDto.class)
+                .map(RatingDto::rating)
+                .orElse(null);
 
         Function<Integer, Long> count = (stars) -> rating.stream().filter(r -> r.rating() == stars).count();
 
         return RatingStatsDto.builder()
+                .userRating(userRating)
                 .mean(rating.stream().mapToInt(RatingDto::rating).average().orElse(0))
                 .total(rating.size())
                 .fiveStars(count.apply(5))
@@ -52,6 +57,9 @@ public class RatingService {
         DiscographyEntity discography = discographyRepository.findById(discographyId)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró la discografía"));
 
+        if (ratingRepository.existsByUserIdAndDiscographyId(userId, discographyId)) {
+            throw new RequestConflictException("Ya existe una calificación para esta discografía");
+        }
         if (rating.rating() < 1 || rating.rating() > 5) {
             throw new BadRequestException("La calificación debe ser un número entre 1 y 5");
         }
@@ -66,8 +74,9 @@ public class RatingService {
     }
 
     @Transactional
-    public void updateRating(long ratingId, AddRatingDto rating) {
-        RatingEntity ratingEntity = ratingRepository.findById(ratingId)
+    public void updateRating(long discographyId, long userId, AddRatingDto rating) {
+        RatingEntity ratingEntity = ratingRepository
+                .findByUserIdAndDiscographyId(userId, discographyId, RatingEntity.class)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró la calificación"));
 
         if (rating.rating() < 1 || rating.rating() > 5) {
@@ -80,8 +89,8 @@ public class RatingService {
     }
 
     @Transactional
-    public void deleteRating(long ratingId) {
-        ratingRepository.findById(ratingId)
+    public void deleteRating(long discographyId, long userId) {
+        ratingRepository.findByUserIdAndDiscographyId(userId, discographyId, RatingEntity.class)
                 .ifPresent(r -> {
                     r.setDeleted(true);
                     r.setDeletedAt(Instant.now());

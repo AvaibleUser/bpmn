@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder(toBuilder = true)
 public record RatingStatsDto(
+        Integer userRating,
         double mean,
         long total,
         long fiveStars,

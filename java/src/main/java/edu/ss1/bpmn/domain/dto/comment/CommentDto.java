@@ -10,6 +10,7 @@ import lombok.Builder;
 public record CommentDto(
         long id,
         String content,
+        long userId,
         @JsonProperty("username") String userUsername,
         @JsonProperty("replyTo") long replyToId,
         Instant createdAt,

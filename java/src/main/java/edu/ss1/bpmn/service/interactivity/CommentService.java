@@ -1,8 +1,9 @@
 package edu.ss1.bpmn.service.interactivity;
 
 import java.time.Instant;
-import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +26,13 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final DiscographyRepository discographyRepository;
 
-    public List<CommentDto> findAllComments(long discographyId) {
-        return commentRepository.findAllByDiscographyIdAndDeletedFalse(discographyId, CommentDto.class);
+    public Page<CommentDto> findRootComments(long discographyId, Pageable pageable) {
+        return commentRepository.findRootComments(discographyId, pageable,
+                CommentDto.class);
+    }
+
+    public Page<CommentDto> findReplyComments(long discographyId, long replyToId, Pageable pageable) {
+        return commentRepository.findReplyComments(discographyId, replyToId, pageable, CommentDto.class);
     }
 
     @Transactional

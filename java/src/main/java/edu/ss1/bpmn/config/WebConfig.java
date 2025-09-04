@@ -9,8 +9,10 @@ import org.springframework.core.MethodParameter;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -42,18 +44,29 @@ class CurrentUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(@NonNull MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(CurrentUser.class);
+        if (!parameter.hasParameterAnnotation(CurrentUser.class)) {
+            return false;
+        }
+        if (parameter.getParameterType().equals(UserEntity.class)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public Object resolveArgument(@NonNull MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
             @NonNull NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String subject = authentication.getName();
         Class<?> dtoType = parameter.getParameterType();
-        if (dtoType.equals(UserEntity.class)) {
-            throw new IllegalArgumentException("La clase UserEntity no puede ser utilizada como argumento");
+        if (dtoType.equals(long.class)) {
+            if (authentication instanceof AnonymousAuthenticationToken) {
+                return 0L;
+            }
+            if (authentication.getPrincipal() instanceof Jwt jwt) {
+                return Long.parseLong(jwt.getSubject());
+            }
         }
+        String subject = authentication.getName();
         return userRepository.findUnknownById(Long.parseLong(subject), dtoType).orElseThrow();
     }
 }
