@@ -7,9 +7,9 @@ import java.util.function.Function;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.ss1.bpmn.domain.dto.rating.AddRatingDto;
-import edu.ss1.bpmn.domain.dto.rating.RatingDto;
-import edu.ss1.bpmn.domain.dto.rating.RatingStatsDto;
+import edu.ss1.bpmn.domain.dto.interactivity.rating.AddRatingDto;
+import edu.ss1.bpmn.domain.dto.interactivity.rating.RatingDto;
+import edu.ss1.bpmn.domain.dto.interactivity.rating.RatingStatsDto;
 import edu.ss1.bpmn.domain.entity.catalog.DiscographyEntity;
 import edu.ss1.bpmn.domain.entity.interactivity.RatingEntity;
 import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;

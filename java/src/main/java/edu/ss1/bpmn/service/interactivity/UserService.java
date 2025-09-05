@@ -11,9 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.ss1.bpmn.domain.dto.user.AddUserDto;
-import edu.ss1.bpmn.domain.dto.user.UpdateUserRoleDto;
-import edu.ss1.bpmn.domain.dto.user.UserDto;
+import edu.ss1.bpmn.domain.dto.interactivity.user.AddUserDto;
+import edu.ss1.bpmn.domain.dto.interactivity.user.UpdateUserRoleDto;
+import edu.ss1.bpmn.domain.dto.interactivity.user.UserDto;
 import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;
 import edu.ss1.bpmn.domain.exception.RequestConflictException;
 import edu.ss1.bpmn.domain.exception.ValueNotFoundException;

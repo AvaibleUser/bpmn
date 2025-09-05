@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ss1.bpmn.annotation.CurrentUserId;
-import edu.ss1.bpmn.domain.dto.comment.CommentDto;
-import edu.ss1.bpmn.domain.dto.comment.UpsertCommentDto;
+import edu.ss1.bpmn.domain.dto.interactivity.comment.CommentDto;
+import edu.ss1.bpmn.domain.dto.interactivity.comment.UpsertCommentDto;
 import edu.ss1.bpmn.service.interactivity.CommentService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;

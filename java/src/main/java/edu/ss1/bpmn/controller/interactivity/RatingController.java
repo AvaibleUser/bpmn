@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ss1.bpmn.annotation.CurrentUser;
 import edu.ss1.bpmn.annotation.CurrentUserId;
-import edu.ss1.bpmn.domain.dto.rating.AddRatingDto;
-import edu.ss1.bpmn.domain.dto.rating.RatingStatsDto;
+import edu.ss1.bpmn.domain.dto.interactivity.rating.AddRatingDto;
+import edu.ss1.bpmn.domain.dto.interactivity.rating.RatingStatsDto;
 import edu.ss1.bpmn.service.interactivity.RatingService;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;

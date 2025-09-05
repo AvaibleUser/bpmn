@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.domain.dto.comment;
+package edu.ss1.bpmn.domain.dto.interactivity.comment;
 
 import java.time.Instant;
 

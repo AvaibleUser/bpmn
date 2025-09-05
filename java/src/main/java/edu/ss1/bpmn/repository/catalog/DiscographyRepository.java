@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import edu.ss1.bpmn.domain.dto.rating.RatingDto;
+import edu.ss1.bpmn.domain.dto.interactivity.rating.RatingDto;
 import edu.ss1.bpmn.domain.entity.catalog.DiscographyEntity;
 
 @Repository
@@ -20,7 +20,7 @@ public interface DiscographyRepository
         extends JpaRepository<DiscographyEntity, Long>, JpaSpecificationExecutor<DiscographyEntity> {
 
     @Query("""
-            SELECT NEW edu.ss1.bpmn.domain.dto.rating.RatingDto(d.id, CAST(ROUND(AVG(r.rating)) AS Integer))
+            SELECT NEW edu.ss1.bpmn.domain.dto.interactivity.rating.RatingDto(d.id, CAST(ROUND(AVG(r.rating)) AS Integer))
             FROM discographies d
             LEFT JOIN d.ratings r
             WHERE d.id in (:ids)

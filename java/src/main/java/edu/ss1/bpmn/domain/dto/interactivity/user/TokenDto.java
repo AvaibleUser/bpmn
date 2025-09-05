@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.domain.dto.user;
+package edu.ss1.bpmn.domain.dto.interactivity.user;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 

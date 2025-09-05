@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.ss1.bpmn.domain.dto.comment.CommentDto;
-import edu.ss1.bpmn.domain.dto.comment.UpsertCommentDto;
+import edu.ss1.bpmn.domain.dto.interactivity.comment.CommentDto;
+import edu.ss1.bpmn.domain.dto.interactivity.comment.UpsertCommentDto;
 import edu.ss1.bpmn.domain.entity.catalog.DiscographyEntity;
 import edu.ss1.bpmn.domain.entity.interactivity.CommentEntity;
 import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;

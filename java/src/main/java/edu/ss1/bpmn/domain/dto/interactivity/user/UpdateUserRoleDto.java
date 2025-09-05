@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.domain.dto.user;
+package edu.ss1.bpmn.domain.dto.interactivity.user;
 
 import edu.ss1.bpmn.domain.type.RoleType;
 import jakarta.validation.constraints.Min;

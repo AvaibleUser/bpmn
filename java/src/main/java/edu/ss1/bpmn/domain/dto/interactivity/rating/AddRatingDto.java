@@ -1,4 +1,4 @@
-package edu.ss1.bpmn.domain.dto.rating;
+package edu.ss1.bpmn.domain.dto.interactivity.rating;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

@@ -28,7 +28,7 @@ import edu.ss1.bpmn.domain.dto.catalog.discography.AddDiscographyDto;
 import edu.ss1.bpmn.domain.dto.catalog.discography.DiscographyDto;
 import edu.ss1.bpmn.domain.dto.catalog.discography.FilterDiscographyDto;
 import edu.ss1.bpmn.domain.dto.catalog.discography.UpdateDiscographyDto;
-import edu.ss1.bpmn.domain.dto.rating.RatingDto;
+import edu.ss1.bpmn.domain.dto.interactivity.rating.RatingDto;
 import edu.ss1.bpmn.domain.entity.catalog.DiscographyEntity;
 import edu.ss1.bpmn.domain.entity.catalog.GenreEntity;
 import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
