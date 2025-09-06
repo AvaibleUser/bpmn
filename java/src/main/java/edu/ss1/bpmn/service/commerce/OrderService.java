@@ -9,6 +9,7 @@ import edu.ss1.bpmn.domain.dto.commerce.order.OrderDto;
 import edu.ss1.bpmn.domain.dto.commerce.order.UpdateOrderDto;
 import edu.ss1.bpmn.domain.entity.commerce.OrderEntity;
 import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;
+import edu.ss1.bpmn.domain.exception.RequestConflictException;
 import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
 import edu.ss1.bpmn.domain.type.StatusType;
 import edu.ss1.bpmn.repository.commerce.OrderRepository;
@@ -38,6 +39,10 @@ public class OrderService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el usuario"));
 
+        if (orderRepository.existsByUserIdAndStatus(userId, StatusType.ON_HOLD)) {
+            throw new RequestConflictException("El usuario ya tiene un pedido en espera");
+        }
+
         orderRepository.save(OrderEntity.builder()
                 .user(user)
                 .total(BigDecimal.ZERO)
@@ -57,7 +62,7 @@ public class OrderService {
         orderRepository.findByIdAndUserId(orderId, userId, OrderEntity.class)
                 .ifPresent(order -> {
                     if (order.getStatus() != StatusType.ON_HOLD) {
-                        throw new RuntimeException("El pedido no puede ser borrado");
+                        throw new RequestConflictException("El pedido no puede ser borrado, ni ser cancelado");
                     }
                     orderRepository.delete(order);
                 });
