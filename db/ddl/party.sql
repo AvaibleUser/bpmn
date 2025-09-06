@@ -5,7 +5,7 @@ CREATE TABLE party.events (
     organizer_id BIGINT NOT NULL REFERENCES interactivity.users (id),
     title VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
-    event_datetime TIMESTAMP NOT NULL,
+    starts_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL
 );

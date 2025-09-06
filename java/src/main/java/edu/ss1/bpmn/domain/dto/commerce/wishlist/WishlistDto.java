@@ -3,13 +3,15 @@ package edu.ss1.bpmn.domain.dto.commerce.wishlist;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Builder;
 
 @Builder(toBuilder = true)
 public record WishlistDto(
         Long id,
         Long userId,
-        String userUsername,
+        @JsonProperty("username") String userUsername,
         Long discographyId,
         String discographyTitle,
         String discographyArtist,
