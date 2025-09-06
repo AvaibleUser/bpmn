@@ -6,6 +6,7 @@ CREATE TABLE party.events (
     title VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
     starts_at TIMESTAMP NOT NULL,
+    finished_at TIMESTAMP NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL
 );

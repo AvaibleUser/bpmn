@@ -1,5 +1,6 @@
 package edu.ss1.bpmn.service.party;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -22,6 +23,13 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+
+    public boolean isEventFinished(long id) {
+        EventDto event = eventRepository.findById(id, EventDto.class)
+                .orElseThrow(() -> new ValueNotFoundException("No se encontró el evento"));
+
+        return !(event.finishedAt() == null || event.finishedAt().isAfter(Instant.now()));
+    }
 
     public EventDto findUpcomingEvent(long id) {
         return eventRepository.findUpcomingEvent(id, EventDto.class)
@@ -52,9 +60,14 @@ public class EventService {
         EventEntity event = eventRepository.findByIdAndOrganizerId(eventId, organizerId, EventEntity.class)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el evento"));
 
+        if (event.getFinishedAt().isBefore(Instant.now())) {
+            throw new RequestConflictException("El evento ya ha terminado");
+        }
+
         event.setTitle(eventDto.title());
         event.setDescription(eventDto.description());
         event.setStartsAt(eventDto.startsAt());
+        event.setFinishedAt(eventDto.finishedAt());
 
         eventRepository.save(event);
     }

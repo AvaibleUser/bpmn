@@ -46,6 +46,10 @@ public class RegistrationService {
         EventEntity event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el evento"));
 
+        if (event.getFinishedAt().isBefore(Instant.now())) {
+            throw new RequestConflictException("El evento ya ha terminado");
+        }
+
         registrationRepository.save(RegistrationEntity.builder()
                 .user(user)
                 .event(event)

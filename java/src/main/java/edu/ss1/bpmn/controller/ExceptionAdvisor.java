@@ -3,6 +3,7 @@ package edu.ss1.bpmn.controller;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.time.Instant;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import edu.ss1.bpmn.domain.exception.BadRequestException;
 import edu.ss1.bpmn.domain.exception.FailedAuthenticateException;
 import edu.ss1.bpmn.domain.exception.RequestConflictException;
+import edu.ss1.bpmn.domain.exception.TimedOutException;
 import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
 
 @ControllerAdvice
@@ -51,6 +53,12 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionInfo> handleValueNotFound(ValueNotFoundException ex, WebRequest request) {
         ExceptionInfo info = new ExceptionInfo(ex.getMessage(), Instant.now());
         return new ResponseEntity<>(info, NOT_FOUND);
+    }
+
+    @ExceptionHandler(TimedOutException.class)
+    public ResponseEntity<ExceptionInfo> handleTimeout(TimedOutException ex, WebRequest request) {
+        ExceptionInfo info = new ExceptionInfo(ex.getMessage(), Instant.now());
+        return new ResponseEntity<>(info, REQUEST_TIMEOUT);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

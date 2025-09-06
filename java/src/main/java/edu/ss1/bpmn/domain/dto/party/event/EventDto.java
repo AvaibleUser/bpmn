@@ -13,6 +13,7 @@ public record EventDto(
         String title,
         String description,
         Instant startsAt,
+        Instant finishedAt,
         Instant createdAt,
         Instant updatedAt) {
 }

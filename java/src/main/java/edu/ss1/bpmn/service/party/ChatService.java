@@ -1,5 +1,6 @@
 package edu.ss1.bpmn.service.party;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import edu.ss1.bpmn.domain.dto.party.chat.AddChatDto;
 import edu.ss1.bpmn.domain.dto.party.chat.ChatDto;
 import edu.ss1.bpmn.domain.entity.party.ChatEntity;
 import edu.ss1.bpmn.domain.entity.party.RegistrationEntity;
+import edu.ss1.bpmn.domain.exception.RequestConflictException;
 import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
 import edu.ss1.bpmn.repository.party.ChatRepository;
 import edu.ss1.bpmn.repository.party.RegistrationRepository;
@@ -32,6 +34,10 @@ public class ChatService {
         RegistrationEntity registration = registrationRepository
                 .findByUserIdAndEventId(userId, eventId, RegistrationEntity.class)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró la inscripción al evento"));
+
+        if (registration.getEvent().getFinishedAt().isBefore(Instant.now())) {
+            throw new RequestConflictException("El evento ya ha terminado");
+        }
 
         chatRepository.save(ChatEntity.builder()
                 .registration(registration)

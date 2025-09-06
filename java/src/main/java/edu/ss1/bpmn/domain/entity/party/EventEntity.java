@@ -57,6 +57,8 @@ public class EventEntity {
     @Column(nullable = false)
     private Instant startsAt;
 
+    private Instant finishedAt;
+
     @CreationTimestamp
     private Instant createdAt;
 

@@ -35,6 +35,11 @@ public class EventController {
         return eventService.findUpcomingEvents();
     }
 
+    @GetMapping("/{eventId}/finished")
+    public boolean isEventFinished(@PathVariable long eventId) {
+        return eventService.isEventFinished(eventId);
+    }
+
     @GetMapping("/organizers/{organizerId}")
     public List<EventDto> findByOrganizerId(@PathVariable long organizerId) {
         return eventService.findByOrganizerId(organizerId);
