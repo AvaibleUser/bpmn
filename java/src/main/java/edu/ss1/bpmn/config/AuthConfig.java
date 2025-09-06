@@ -60,7 +60,9 @@ public class AuthConfig {
                                 "/swagger-ui.html",
                                 "/genres/**",
                                 "/discographies/**",
-                                "/songs/**")
+                                "/songs/**",
+                                "/groups/**",
+                                "/promotions/**")
                         .permitAll()
                         .requestMatchers("/**").authenticated()
                         .anyRequest().permitAll())

@@ -1,19 +1,24 @@
 package edu.ss1.bpmn.domain.entity.commerce;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import edu.ss1.bpmn.domain.entity.catalog.CdEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -56,4 +61,8 @@ public class PromotionEntity {
 
     @UpdateTimestamp
     private Instant updatedAt;
+
+    @ManyToMany(cascade = ALL)
+    @JoinTable(name = "promoted_cds", schema = "commerce", joinColumns = @JoinColumn(name = "promotion_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "cd_id", referencedColumnName = "discography_id"))
+    private Set<CdEntity> cds;
 }

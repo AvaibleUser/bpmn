@@ -70,14 +70,19 @@ public interface DiscographySpecification {
         }
         return (root, query, builder) -> {
             var id = root.get("id");
-            var itemIds = root.join("items", LEFT).get("id");
             var genre = root.join("genre").get("id");
             var cassette = root.join("cassette", LEFT).get("id");
             var vinyl = root.join("vinyl", LEFT).get("id");
             var cd = root.join("cd", LEFT).get("id");
+
+            var itemsJoin = root.join("items", LEFT);
+            var orderJoin = itemsJoin.join("order", LEFT);
+            orderJoin.on(builder.notEqual(orderJoin.get("status"), "ON_HOLD"));
+            var soldQuantity = builder.sum(itemsJoin.get("quantity"));
+
             return query
-                    .groupBy(itemIds, id, genre, cassette, vinyl, cd)
-                    .orderBy(builder.desc(itemIds))
+                    .groupBy(id, genre, cassette, vinyl, cd)
+                    .orderBy(builder.desc(soldQuantity))
                     .getRestriction();
         };
     }

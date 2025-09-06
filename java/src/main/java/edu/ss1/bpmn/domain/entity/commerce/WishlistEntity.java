@@ -3,17 +3,13 @@ package edu.ss1.bpmn.domain.entity.commerce;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import edu.ss1.bpmn.domain.entity.catalog.DiscographyEntity;
 import edu.ss1.bpmn.domain.entity.interactivity.UserEntity;
-import edu.ss1.bpmn.domain.type.StatusType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -27,15 +23,15 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-@Entity(name = "orders")
-@Table(name = "orders", schema = "commerce")
+@Entity(name = "wishlists")
+@Table(name = "wishlists", schema = "commerce")
 @Data
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor(access = PRIVATE)
-public class OrderEntity {
+public class WishlistEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -47,13 +43,11 @@ public class OrderEntity {
     private UserEntity user;
 
     @NonNull
-    @Column(nullable = false)
-    private BigDecimal total;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "discography_id", nullable = false)
+    private DiscographyEntity discography;
 
-    @NonNull
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private StatusType status;
+    private boolean paid;
 
     @CreationTimestamp
     private Instant createdAt;
