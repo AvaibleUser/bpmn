@@ -1,6 +1,7 @@
 package edu.ss1.bpmn.service.interactivity;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,10 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final DiscographyRepository discographyRepository;
+
+    public List<CommentDto> findCommentsDeletedByAdmin(long userId) {
+        return commentRepository.findAllByUserIdAndDeletedTrue(userId, CommentDto.class);
+    }
 
     public Page<CommentDto> findRootComments(long discographyId, Pageable pageable) {
         return commentRepository.findRootComments(discographyId, pageable,
@@ -75,10 +80,19 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(long commentId) {
+    public void deleteCommentByAdmin(long commentId) {
         commentRepository.findById(commentId)
                 .ifPresent(c -> {
                     c.setDeleted(true);
+                    c.setDeletedAt(Instant.now());
+                    commentRepository.save(c);
+                });
+    }
+
+    @Transactional
+    public void deleteComment(long commentId) {
+        commentRepository.findById(commentId)
+                .ifPresent(c -> {
                     c.setDeletedAt(Instant.now());
                     commentRepository.save(c);
                 });

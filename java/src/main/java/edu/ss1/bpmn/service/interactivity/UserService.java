@@ -38,13 +38,31 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void changeRole(UpdateUserRoleDto user) {
-        UserEntity userEntity = userRepository.findById(user.userId())
+    public void changeRole(long userId, UpdateUserRoleDto user) {
+        UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el usuario"));
 
         userEntity.setRole(user.role());
 
         userRepository.save(userEntity);
+    }
+
+    @Transactional
+    public void changeActive(long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new ValueNotFoundException("No se encontró el usuario"));
+
+        user.setActive(!user.isActive());
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void changeBanned(long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new ValueNotFoundException("No se encontró el usuario"));
+
+        user.setBanned(!user.isBanned());
+        userRepository.save(user);
     }
 
     @Transactional

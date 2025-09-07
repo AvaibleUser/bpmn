@@ -1,10 +1,9 @@
 package edu.ss1.bpmn.domain.dto.interactivity.user;
 
-import edu.ss1.bpmn.domain.type.RoleType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder(toBuilder = true)
-public record UpdateUserRoleDto(
-        @NotNull RoleType role) {
+public record UpdateUserActiveDto(
+        @NotNull Boolean active) {
 }
