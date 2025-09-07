@@ -31,7 +31,7 @@ CREATE TABLE commerce.promoted_cds (
     cd_id BIGINT NOT NULL REFERENCES catalog.cds (discography_id)
 );
 
-CREATE TYPE commerce.order_status AS ENUM ('ON_HOLD', 'PENDING', 'SENDING', 'COMPLETED');
+CREATE TYPE commerce.order_status AS ENUM ('CART', 'PAID', 'SENT');
 
 CREATE TABLE commerce.orders (
     id BIGSERIAL PRIMARY KEY,
@@ -54,4 +54,14 @@ CREATE TABLE commerce.order_items (
         discography_id IS NOT NULL
         OR promotion_id IS NOT NULL
     )
+);
+
+CREATE TABLE commerce.purchases (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES interactivity.users (id),
+    discography_id BIGINT NULL REFERENCES catalog.discographies (id),
+    quantity INT NOT NULL CHECK (quantity > 0),
+    unit_price DECIMAL(10, 2) NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
