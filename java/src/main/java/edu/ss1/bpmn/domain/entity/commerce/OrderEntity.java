@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -18,6 +19,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,4 +59,7 @@ public class OrderEntity {
 
     @CreationTimestamp
     private Instant createdAt;
+
+    @OneToMany(mappedBy = "order")
+    private Set<ItemEntity> items;
 }

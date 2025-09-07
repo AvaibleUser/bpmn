@@ -47,9 +47,16 @@ public class OrderController {
         orderService.createOrder(userId);
     }
 
-    @PutMapping("/{orderId}")
+    @PutMapping("/{orderId}/complete")
     @ResponseStatus(NO_CONTENT)
-    public void updateOrder(@CurrentUserId long userId, @PathVariable long orderId, UpdateOrderDto order) {
+    public void completeOrder(@CurrentUserId long userId, @PathVariable long orderId) {
+        orderService.completeOrder(userId, orderId);
+    }
+
+    @RolesAllowed("ADMIN")
+    @PutMapping("/{orderId}/user/{userId}")
+    @ResponseStatus(NO_CONTENT)
+    public void updateOrder(@PathVariable long userId, @PathVariable long orderId, UpdateOrderDto order) {
         orderService.updateOrder(userId, orderId, order);
     }
 

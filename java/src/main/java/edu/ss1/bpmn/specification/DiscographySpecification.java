@@ -2,6 +2,8 @@ package edu.ss1.bpmn.specification;
 
 import static jakarta.persistence.criteria.JoinType.LEFT;
 
+import java.time.Instant;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -57,15 +59,17 @@ public interface DiscographySpecification {
         if (stock == null) {
             return Specification.unrestricted();
         }
-        return (root, query, builder) -> builder.or(
-                builder.greaterThanOrEqualTo(root.get("stock"), stock),
-                builder.and(
-                        builder.isNull(root.get("stock")),
-                        builder.isNull(root.get("release"))));
+        return (root, query, builder) -> builder.and(
+                builder.or(
+                        root.get("release").isNull(),
+                        builder.lessThan(root.get("release"), Instant.now())),
+                builder.or(
+                        builder.greaterThanOrEqualTo(root.get("stock"), stock),
+                        root.get("stock").isNull()));
     }
 
     static Specification<DiscographyEntity> orderByBestSellers(Boolean bestSeller) {
-        if (!Boolean.TRUE.equals(bestSeller)) {
+        if (bestSeller == null) {
             return Specification.unrestricted();
         }
         return (root, query, builder) -> {
@@ -82,7 +86,7 @@ public interface DiscographySpecification {
 
             return query
                     .groupBy(id, genre, cassette, vinyl, cd)
-                    .orderBy(builder.desc(soldQuantity))
+                    .orderBy(bestSeller ? builder.desc(soldQuantity) : builder.asc(soldQuantity))
                     .getRestriction();
         };
     }
