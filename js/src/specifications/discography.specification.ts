@@ -1,4 +1,4 @@
-import { FilterDiscography } from "@/models/discography.model";
+import { FilterDiscography } from "@/models/catalog/discography.model";
 import { Prisma } from "@prisma/client";
 
 type Field<K extends keyof FilterDiscography> = FilterDiscography[K];

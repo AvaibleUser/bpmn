@@ -1,8 +1,8 @@
 import {
   BadRequestException,
   UnauthorizedException,
-} from "@/models/exception.model";
-import { App } from "@/models/util.model";
+} from "@/models/util/exception.model";
+import { App } from "@/models/util/util.model";
 import { zValidator } from "@hono/zod-validator";
 import { Role } from "@prisma/client";
 import { ErrorHandler, MiddlewareHandler, ValidationTargets } from "hono";

@@ -1,4 +1,4 @@
-import { App } from "@/models/util.model";
+import { App } from "@/models/util/util.model";
 import { routes } from "@/routes";
 import { exceptionHandler } from "@/routes/middleware";
 import { Hono } from "hono";

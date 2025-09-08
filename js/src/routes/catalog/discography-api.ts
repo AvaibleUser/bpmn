@@ -1,6 +1,6 @@
-import { discographyController as controller } from "@/controller/discography.controller";
-import { addDiscography, filterDiscography } from "@/models/discography.model";
-import { App, idParam, image } from "@/models/util.model";
+import { discographyController as controller } from "@/controller/catalog/discography.controller";
+import { addDiscography, filterDiscography } from "@/models/catalog/discography.model";
+import { App, idParam, image } from "@/models/util/util.model";
 import { authenticated, rolesAllowed, zv } from "@/routes/middleware";
 import { Hono } from "hono";
 

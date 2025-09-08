@@ -1,4 +1,4 @@
-import { pageable } from "@/models/util.model";
+import { pageable } from "@/models/util/util.model";
 import { Condition, Format, Prisma } from "@prisma/client";
 import * as z from "zod";
 

@@ -1,14 +1,14 @@
-import { s3Controller as storage } from "@/controller/storage.controller";
+import { s3Controller as storage } from "@/controller/util/storage.controller";
 import {
   AddDiscographyDto,
   DiscographyDto,
   FilterDiscography,
-} from "@/models/discography.model";
+} from "@/models/catalog/discography.model";
 import {
   BadRequestException,
   NotFoundException,
-} from "@/models/exception.model";
-import { PageModel } from "@/models/util.model";
+} from "@/models/util/exception.model";
+import { PageModel } from "@/models/util/util.model";
 import { DiscographySpecification } from "@/specifications/discography.specification";
 import { Format, Prisma, PrismaClient } from "@prisma/client";
 
