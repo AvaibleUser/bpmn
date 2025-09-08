@@ -1,4 +1,5 @@
 import { App } from "@/models/util.model";
+import { routes } from "@/routes";
 import { exceptionHandler } from "@/routes/middleware";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -12,7 +13,8 @@ const app = new Hono<App>()
       origin: "*",
       allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     })
-  );
+  )
+  .route("/api", routes);
 
 export default {
   fetch: app.fetch,
