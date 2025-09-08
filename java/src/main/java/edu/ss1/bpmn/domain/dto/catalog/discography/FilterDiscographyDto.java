@@ -14,9 +14,5 @@ public record FilterDiscographyDto(
         Integer priceMin,
         Integer priceMax,
         FormatType format,
-        Boolean released,
-        Integer page,
-        Integer size,
-        String sort,
-        String order) {
+        Boolean released) {
 }

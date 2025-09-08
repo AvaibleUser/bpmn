@@ -34,7 +34,7 @@ public class GenreEntity {
     private Long id;
 
     @NonNull
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @OneToMany(mappedBy = "genre")

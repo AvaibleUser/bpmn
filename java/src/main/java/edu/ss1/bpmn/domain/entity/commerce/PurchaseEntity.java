@@ -45,8 +45,9 @@ public class PurchaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @OneToOne
-    @JoinColumn(name = "discography_id")
+    @NonNull
+    @OneToOne(optional = false)
+    @JoinColumn(name = "discography_id", nullable = false)
     private DiscographyEntity discography;
 
     @NonNull

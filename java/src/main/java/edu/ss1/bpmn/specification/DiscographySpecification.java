@@ -75,14 +75,15 @@ public interface DiscographySpecification {
         return (root, query, builder) -> {
             var id = root.get("id");
             var genre = root.join("genre").get("id");
-            var cassette = root.join("cassette", LEFT).get("id");
-            var vinyl = root.join("vinyl", LEFT).get("id");
-            var cd = root.join("cd", LEFT).get("id");
+            var cassette = root.join("cassette", LEFT).get("discographyId");
+            var vinyl = root.join("vinyl", LEFT).get("discographyId");
+            var cd = root.join("cd", LEFT).get("discographyId");
 
             var itemsJoin = root.join("items", LEFT);
             var orderJoin = itemsJoin.join("order", LEFT);
-            orderJoin.on(builder.notEqual(orderJoin.get("status"), "ON_HOLD"));
+            itemsJoin.on(builder.notEqual(orderJoin.get("status"), "CART"));
             var soldQuantity = builder.sum(itemsJoin.get("quantity"));
+            soldQuantity = builder.coalesce(soldQuantity, 0);
 
             return query
                     .groupBy(id, genre, cassette, vinyl, cd)

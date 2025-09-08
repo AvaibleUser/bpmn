@@ -155,7 +155,7 @@ public class DiscographyService {
         DiscographyEntity discography = discographyRepository.findById(id)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró la discografía"));
 
-        String path = s3Service.store("discography_" + id, image);
+        String path = s3Service.store("fotos/discography_" + id, image);
         discography.setImageUrl(path);
         discographyRepository.save(discography);
     }

@@ -27,6 +27,6 @@ public record AddDiscographyDto(
         @NotNull FormatType format,
         boolean visible,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") @Future Instant release,
-        @JsonUnwrapped @Valid AddCassetteDto cassette,
-        @JsonUnwrapped @Valid AddVinylDto vinyl) {
+        @JsonUnwrapped AddCassetteDto cassette,
+        @JsonUnwrapped AddVinylDto vinyl) {
 }

@@ -28,7 +28,8 @@ CREATE TABLE commerce.promotions (
 
 CREATE TABLE commerce.promoted_cds (
     promotion_id BIGINT NOT NULL REFERENCES commerce.promotions (id),
-    cd_id BIGINT NOT NULL REFERENCES catalog.cds (discography_id)
+    cd_id BIGINT NOT NULL REFERENCES catalog.cds (discography_id),
+    PRIMARY KEY (promotion_id, cd_id)
 );
 
 CREATE TYPE commerce.order_status AS ENUM ('CART', 'PAID', 'SENT');
@@ -59,7 +60,7 @@ CREATE TABLE commerce.order_items (
 CREATE TABLE commerce.purchases (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES interactivity.users (id),
-    discography_id BIGINT NULL REFERENCES catalog.discographies (id),
+    discography_id BIGINT NOT NULL REFERENCES catalog.discographies (id),
     quantity INT NOT NULL CHECK (quantity > 0),
     unit_price DECIMAL(10, 2) NOT NULL,
     total DECIMAL(10, 2) NOT NULL,

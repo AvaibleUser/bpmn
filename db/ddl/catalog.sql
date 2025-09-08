@@ -2,7 +2,7 @@ CREATE SCHEMA catalog;
 
 CREATE TABLE catalog.genres (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TYPE catalog.format_type AS ENUM ('VINYL', 'CASSETTE', 'CD');
