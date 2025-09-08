@@ -1,0 +1,112 @@
+model Wishlist {
+  id            BigInt   @id @default(autoincrement())
+  userId        BigInt   @map("user_id")
+  discographyId BigInt   @map("discography_id")
+  paid          Boolean  @default(false)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user        User        @relation(fields: [userId], references: [id])
+  discography Discography @relation(fields: [discographyId], references: [id])
+
+  @@map("wishlists")
+  @@schema("commerce")
+}
+
+model GroupingType {
+  id          BigInt  @id @default(autoincrement())
+  name        String
+  discount    Decimal
+  cdsLimit    Int     @map("cds_limit")
+  limitedTime Boolean @default(false) @map("limited_time")
+
+  promotions Promotion[]
+
+  @@map("grouping_types")
+  @@schema("commerce")
+}
+
+model Promotion {
+  id          BigInt    @id @default(autoincrement())
+  groupTypeId BigInt    @map("group_type_id")
+  startDate   DateTime  @map("start_date")
+  endDate     DateTime? @map("end_date")
+  active      Boolean   @default(false)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @map("updated_at")
+
+  groupType   GroupingType @relation(fields: [groupTypeId], references: [id])
+  promotedCds PromotedCd[]
+  items       Item[]
+
+  @@map("promotions")
+  @@schema("commerce")
+}
+
+model PromotedCd {
+  promotionId BigInt @map("promotion_id")
+  cdId        BigInt @map("cd_id")
+
+  promotion Promotion @relation(fields: [promotionId], references: [id])
+  cd        Cd        @relation(fields: [cdId], references: [discographyId])
+
+  @@id([promotionId, cdId])
+  @@map("promoted_cds")
+  @@schema("commerce")
+}
+
+enum Status {
+  CART
+  PAID
+  SENT
+
+  @@map("order_status")
+  @@schema("commerce")
+}
+
+model Order {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  total     Decimal
+  status    Status
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User   @relation(fields: [userId], references: [id])
+  items Item[]
+
+  @@map("orders")
+  @@schema("commerce")
+}
+
+model Item {
+  id            BigInt   @id @default(autoincrement())
+  orderId       BigInt   @map("order_id")
+  discographyId BigInt   @map("discography_id")
+  promotionId   BigInt   @map("promotion_id")
+  quantity      Int
+  unitPrice     Decimal  @map("unit_price")
+  subtotal      Decimal
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  order       Order       @relation(fields: [orderId], references: [id])
+  discography Discography @relation(fields: [discographyId], references: [id])
+  promotion   Promotion   @relation(fields: [promotionId], references: [id])
+
+  @@map("order_items")
+  @@schema("commerce")
+}
+
+model Purchase {
+  id            BigInt   @id @default(autoincrement())
+  userId        BigInt   @map("user_id")
+  discographyId BigInt   @map("discography_id")
+  quantity      Int
+  unitPrice     Decimal  @map("unit_price")
+  total         Decimal
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user        User        @relation(fields: [userId], references: [id])
+  discography Discography @relation(fields: [discographyId], references: [id])
+
+  @@map("purchases")
+  @@schema("commerce")
+}

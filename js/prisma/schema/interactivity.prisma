@@ -1,0 +1,83 @@
+enum Role {
+  CLIENT
+  ADMIN
+
+  @@map("role_type")
+  @@schema("interactivity")
+}
+
+model User {
+  id        BigInt    @id @default(autoincrement())
+  username  String    @unique
+  email     String    @unique
+  role      Role
+  firstname String
+  lastname  String
+  verified  Boolean   @default(false)
+  active    Boolean   @default(false)
+  banned    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  userCodes     UserCode[]
+  comments      Comment[]
+  events        Event[]
+  registrations Registration[]
+  ratings       Rating[]
+  wishlists     Wishlist[]
+  orders        Order[]
+  purchases     Purchase[]
+
+  @@map("users")
+  @@schema("interactivity")
+}
+
+model UserCode {
+  id        BigInt    @id @default(autoincrement())
+  userId    BigInt    @map("user_id")
+  code      String
+  expiresAt DateTime? @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_codes")
+  @@schema("interactivity")
+}
+
+model Comment {
+  id            BigInt    @id @default(autoincrement())
+  discographyId BigInt    @map("discography_id")
+  userId        BigInt    @map("user_id")
+  commentId     BigInt?   @map("comment_id")
+  content       String
+  deleted       Boolean   @default(false)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  user    User      @relation(fields: [userId], references: [id])
+  replyTo Comment?  @relation("replies", fields: [commentId], references: [id])
+  replies Comment[] @relation("replies")
+
+  @@map("comments")
+  @@schema("interactivity")
+}
+
+model Rating {
+  id            BigInt    @id @default(autoincrement())
+  discographyId BigInt    @map("discography_id")
+  userId        BigInt    @map("user_id")
+  rating        Int
+  deleted       Boolean   @default(false)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  discography Discography @relation(fields: [discographyId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
+
+  @@map("ratings")
+  @@schema("interactivity")
+}

@@ -1,0 +1,109 @@
+model Genre {
+  id   BigInt @id @default(autoincrement())
+  name String @unique
+
+  discographies Discography[]
+
+  @@map("genres")
+  @@schema("catalog")
+}
+
+enum Format {
+  VINYL
+  CASSETTE
+  CD
+
+  @@map("format_type")
+  @@schema("catalog")
+}
+
+model Discography {
+  id        BigInt    @id @default(autoincrement())
+  title     String
+  artist    String
+  imageUrl  String?   @map("image_url")
+  genreId   BigInt    @map("genre_id")
+  year      Int
+  price     Decimal
+  stock     Int?
+  format    Format
+  visible   Boolean   @default(false)
+  release   DateTime?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  genre     Genre      @relation(fields: [genreId], references: [id])
+  songs     Song[]
+  vinyl     Vinyl?
+  cassette  Cassette?
+  cd        Cd?
+  ratings   Rating[]
+  wishlists Wishlist[]
+  items     Item[]
+  purchases Purchase[]
+
+  @@map("discographies")
+  @@schema("catalog")
+}
+
+enum Side {
+  A
+  B
+
+  @@map("discography_sides")
+  @@schema("catalog")
+}
+
+model Song {
+  id            BigInt  @id @default(autoincrement())
+  discographyId BigInt  @map("discography_id")
+  name          String
+  side          Side?
+  url           String?
+
+  discography Discography @relation(fields: [discographyId], references: [id])
+
+  @@map("songs")
+  @@schema("catalog")
+}
+
+model Vinyl {
+  discographyId  BigInt  @id @map("discography_id")
+  size           Int
+  specialEdition String? @map("special_edition")
+
+  discography Discography @relation(fields: [discographyId], references: [id])
+
+  @@map("vinyls")
+  @@schema("catalog")
+}
+
+enum Condition {
+  NEW
+  SEMI_USED
+  USED
+
+  @@map("cassette_condition")
+  @@schema("catalog")
+}
+
+model Cassette {
+  discographyId BigInt    @id @map("discography_id")
+  condition     Condition
+
+  discography Discography @relation(fields: [discographyId], references: [id])
+
+  @@map("cassettes")
+  @@schema("catalog")
+}
+
+model Cd {
+  discographyId BigInt @id @map("discography_id")
+
+  discography Discography  @relation(fields: [discographyId], references: [id])
+  promotedCds PromotedCd[]
+
+  @@map("cds")
+  @@schema("catalog")
+}

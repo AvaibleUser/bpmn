@@ -1,0 +1,10 @@
+# deps
+node_modules/
+build/
+dist/
+
+private-key.pem
+
+.env
+
+/src/generated/prisma
