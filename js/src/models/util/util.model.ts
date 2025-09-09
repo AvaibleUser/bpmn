@@ -32,6 +32,9 @@ export interface PageModel<T> {
 
 export const idParam = z.object({ id: z.string().pipe(z.coerce.bigint()) });
 
+export const otherIdParam = <T extends string>(idName: T) =>
+  z.object({ [idName]: z.string().pipe(z.coerce.bigint()) });
+
 export const image = z.object({ image: z.instanceof(File) });
 
 export const song = z.object({ song: z.instanceof(File) });
