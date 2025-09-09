@@ -1,3 +1,4 @@
+import { password } from "bun";
 import { readFileSync as readFile } from "fs";
 
 export const jwtConfig = {
@@ -13,3 +14,11 @@ export const jwtConfig = {
   },
   alg: "RS512" as const,
 };
+
+export async function verify(pass: string, hash: string): Promise<boolean> {
+  return await password.verify(pass, hash, "bcrypt");
+}
+
+export async function encode(pass: string): Promise<string> {
+  return await password.hash(pass, "bcrypt");
+}

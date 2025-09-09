@@ -81,6 +81,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
+    @ResponseStatus(CREATED)
     public void signIn(@RequestBody @Valid AuthUserDto user) {
         var authenticableUser = unauthenticated(user.email(), user.password());
         authManager.authenticate(authenticableUser);
@@ -112,6 +113,7 @@ public class AuthController {
     }
 
     @PostMapping("/password/recovery")
+    @ResponseStatus(CREATED)
     public void recoverPassword(@RequestBody @Valid RecoverUserDto user) {
         Optional<UserDto> savedUser = userService.findUserByEmail(user.email());
 
