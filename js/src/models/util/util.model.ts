@@ -20,6 +20,8 @@ export const pageable = z.object({
   order: z.string().optional(),
 });
 
+export type Pageable = z.infer<typeof pageable>;
+
 export interface PageModel<T> {
   content: T[];
   page: {
