@@ -1,5 +1,10 @@
 import { App } from "@/models/util/util.model";
+import { catalogRoutes } from "@/routes/catalog";
+import { commerceRoutes } from "@/routes/commerce";
+import { interactivityRoutes } from "@/routes/interactivity";
 import { Hono } from "hono";
-import { discographyApi } from "./catalog/discography-api";
 
-export const routes = new Hono<App>().route("/", discographyApi);
+export const routes = new Hono<App>()
+  .route("/", catalogRoutes)
+  .route("/", interactivityRoutes)
+  .route("/", commerceRoutes);

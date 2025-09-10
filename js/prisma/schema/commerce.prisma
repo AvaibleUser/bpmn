@@ -80,16 +80,16 @@ model Order {
 model Item {
   id            BigInt   @id @default(autoincrement())
   orderId       BigInt   @map("order_id")
-  discographyId BigInt   @map("discography_id")
-  promotionId   BigInt   @map("promotion_id")
+  discographyId BigInt?  @map("discography_id")
+  promotionId   BigInt?  @map("promotion_id")
   quantity      Int
   unitPrice     Decimal  @map("unit_price")
   subtotal      Decimal
   createdAt     DateTime @default(now()) @map("created_at")
 
-  order       Order       @relation(fields: [orderId], references: [id])
-  discography Discography @relation(fields: [discographyId], references: [id])
-  promotion   Promotion   @relation(fields: [promotionId], references: [id])
+  order       Order        @relation(fields: [orderId], references: [id])
+  discography Discography? @relation(fields: [discographyId], references: [id])
+  promotion   Promotion?   @relation(fields: [promotionId], references: [id])
 
   @@map("order_items")
   @@schema("commerce")

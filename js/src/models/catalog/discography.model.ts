@@ -27,7 +27,7 @@ export type DiscographyDto = {
   imageUrl: string | null;
   genreName: string;
   year: number;
-  price: Prisma.Decimal;
+  price: number;
   stock: number | null;
   format: Format;
   visible: boolean;
