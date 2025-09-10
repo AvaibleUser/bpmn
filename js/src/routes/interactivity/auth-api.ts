@@ -26,7 +26,7 @@ export const authApi = new Hono<App>().basePath("/auth");
 const emails = createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: true,
+  secure: false,
   auth: {
     user: process.env.EMAIL_ADDRESS,
     pass: process.env.EMAIL_PASSWORD,
@@ -70,7 +70,7 @@ authApi.post("/sign-in", zv("json", authDto), async (c) => {
       from: "BPMN",
       to: user.email,
       subject: "Confirmación de usuario en BPMN",
-      html: raw(Confirmation({ firstname: user.firstname, code })),
+      html: raw(Confirmation({ firstname: user.firstname, code })).toString(),
     });
   } catch (error) {
     throw new ConflictException(`No se pudo enviar el correo: ${error}`);

@@ -1,3 +1,4 @@
+import { jwtConfig } from "@/config/auth.config";
 import {
   BadRequestException,
   UnauthorizedException,
@@ -9,7 +10,6 @@ import { ErrorHandler, MiddlewareHandler, ValidationTargets } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { jwt } from "hono/jwt";
 import { ZodType } from "zod";
-import { jwtConfig } from "@/config/auth.config";
 
 export const authenticated: MiddlewareHandler<App> = jwt({
   secret: jwtConfig.secret.publicKey(),
@@ -34,6 +34,15 @@ export function exceptionHandler(): ErrorHandler<App> {
       message: err.message,
       timestamp: Date.now(),
     };
+    if (
+      err.cause &&
+      "name" in (err.cause as any) &&
+      (err.cause as any).name.includes("JwtToken")
+    ) {
+      response["message"] =
+        "Su sesión ha expirado, cierra la sesión y vuelve a iniciar";
+      status = 418;
+    }
     if (err instanceof BadRequestException) {
       response["errors"] = err.errors;
     }

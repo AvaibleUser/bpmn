@@ -1,5 +1,6 @@
 import { jwtConfig, verify } from "@/config/auth.config";
 import { Authentication } from "@/models/interactivity/user.model";
+import { UnauthorizedException } from "@/models/util/exception.model";
 import { Jwt } from "@/models/util/util.model";
 import { PrismaClient, Role } from "@prisma/client";
 import { sign } from "hono/jwt";
@@ -11,7 +12,7 @@ export class AuthController {
     userId: bigint | number,
     ...roles: T[]
   ): Promise<string> {
-    const now = Date.now();
+    const now = Math.floor(Date.now() / 1000);
     const payload: Jwt = {
       iss: "self",
       sub: `${userId}`,
@@ -29,6 +30,7 @@ export class AuthController {
     const user = await this.prisma.user.findUnique({
       where: { email },
       select: {
+        id: true,
         firstname: true,
         password: true,
         role: true,
@@ -38,15 +40,22 @@ export class AuthController {
       },
     });
     if (!user || !(await verify(password, user.password))) {
-      throw new Error("El email o la contraseña son incorrectos");
+      throw new UnauthorizedException(
+        "El email o la contraseña son incorrectos"
+      );
     }
     if (!user.verified) {
-      throw new Error("El usuario no ha sido verificado por e-mail");
+      throw new UnauthorizedException(
+        "El usuario no ha sido verificado por e-mail"
+      );
     }
     if (user.banned || !user.active) {
-      throw new Error("El usuario se encuentra baneado o no está activo");
+      throw new UnauthorizedException(
+        "El usuario se encuentra baneado o no está activo"
+      );
     }
     return {
+      id: user.id,
       firstname: user.firstname,
       email,
       password,
