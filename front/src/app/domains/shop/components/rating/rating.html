@@ -1,0 +1,69 @@
+<div class="bg-base-200 p-6 rounded-lg max-w-3xl mx-auto">
+  <div class="max-w-md mx-auto">
+    <h3 class="text-2xl font-bold mb-6 text-center">Calificaciones</h3>
+    @if (!rating) {
+    <div class="flex justify-center items-center h-96">
+      <div class="loading loading-spinner loading-lg text-primary"></div>
+    </div>
+    } @else { @if (!rating.total) {
+    <div class="text-center text-base-content/60 py-8">
+      <i-lucide [img]="Star" size="48" class="mx-auto mb-4 opacity-50" />
+      <p>Aún no hay calificaciones. ¡Sé el primero en calificar!</p>
+    </div>
+    } @else {
+    <div class="flex flex-col items-center gap-4 mb-4 mx-auto w-fit">
+      <span class="text-7xl font-bold">{{ rating.mean.toFixed(1) }}</span>
+      <div class="flex">
+        @for (star of [1,2,3,4,5]; track star) {
+        <span
+          class="mask mask-star w-7 h-7 flex"
+          [ngClass]="{
+            'bg-warning': star <= rating.mean,
+            'bg-base-content/50': star > rating.mean
+          }"
+        ></span>
+        }
+      </div>
+      <span class="text-sm text-base-content/70">Basado en {{ rating.total }} calificaciones</span>
+    </div>
+
+    <div class="space-y-2">
+      @for (stars of [rating.fiveStars, rating.fourStars, rating.threeStars, rating.twoStars,
+      rating.oneStar]; track $index; let i = $index) {
+      <div class="flex items-center gap-2">
+        <input
+          type="range"
+          min="0"
+          [max]="rating.total"
+          [value]="stars"
+          class="flex-1 range range-xs range-warning pointer-events-none"
+        />
+        <span class="text-sm">{{ 5 - i }}</span>
+        <span class="mask mask-star w-5 h-5 bg-warning flex"></span>
+      </div>
+      }
+    </div>
+    }
+    <div class="flex flex-col items-center gap-4 mt-8 mb-2 mx-auto w-fit">
+      <span class="text-xl font-bold">Tu calificación:</span>
+      <form [formGroup]="ratingForm" (change)="rate()" class="join gap-2 rating">
+        @for (star of [1,2,3,4,5]; track star) {
+        <input
+          type="radio"
+          class="mask mask-star join-item w-7 h-7"
+          name="rating"
+          formControlName="rating"
+          [value]="star"
+          [checked]="star === ratingForm.value.rating"
+          [ariaLabel]="`${star} star`"
+          [ngClass]="{
+            'radio-warning': star <= ratingForm.value.rating,
+            'radio-neutral': star > ratingForm.value.rating
+          }"
+        />
+        }
+      </form>
+    </div>
+    }
+  </div>
+</div>

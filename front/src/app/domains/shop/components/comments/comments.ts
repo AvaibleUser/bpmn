@@ -1,4 +1,5 @@
 import { InteractionApi } from '@/shop/api/interaction-api';
+import { Replies } from '@/shop/components/replies/replies';
 import { Comment } from '@/shop/models/comment.model';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -7,14 +8,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { Page, Pageable, WithPage } from '@shared/models/pageable.model';
 import { AlertStore } from '@shared/stores/alert-store';
+import { CacheStore } from '@shared/stores/cache-store';
 import {
   LucideAngularModule,
   MessageCircle,
   MessageCirclePlus,
   SendHorizontal,
 } from 'lucide-angular';
-import { Replies } from '../replies/replies';
-import { CacheStore } from '@shared/stores/cache-store';
 
 @Component({
   selector: 'shop-comments',

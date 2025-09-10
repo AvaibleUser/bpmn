@@ -3,7 +3,7 @@
 <div class="card rounded-none overflow-hidden group shadow-xs shadow-base-content">
   <div class="relative overflow-hidden aspect-square">
     <img
-      [src]="discography$.imageUrl || 'assets/default-cover.jpg'"
+      [src]="discography$.imageUrl || '/assets/images/default-album.png'"
       alt="{{ discography$.title }}"
       class="w-full h-full object-cover"
     />
@@ -20,7 +20,7 @@
     <div class="absolute top-2 right-0 z-20 px-2 flex items-center justify-between w-full">
       <div class="badge badge-warning badge-soft rounded-4xl gap-1 px-2">
         <span>{{ discography$.rating || '?' }}</span>
-        <span class="star bg-warning w-5 h-5 flex"> </span>
+        <span class="mask mask-star bg-warning w-5 h-5 flex"> </span>
       </div>
 
       <img

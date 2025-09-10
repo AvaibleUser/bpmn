@@ -14,15 +14,15 @@ export class InteractionApi {
   private readonly http = inject(HttpClient);
 
   getRatingStats(discographyId: number): Observable<RatingStats> {
-    return this.http.get<RatingStats>(`${this.api}/discographies/${discographyId}/rating-stats`);
+    return this.http.get<RatingStats>(`${this.api}/discographies/${discographyId}/ratings`);
   }
 
-  createRating(rating: RatingCreate): Observable<void> {
-    return this.http.post<void>(`${this.api}/ratings`, rating);
+  createRating(discographyId: number, rating: RatingCreate): Observable<void> {
+    return this.http.post<void>(`${this.api}/discographies/${discographyId}/ratings`, rating);
   }
 
-  updateRating(id: number, rating: Partial<RatingCreate>): Observable<void> {
-    return this.http.put<void>(`${this.api}/ratings/${id}`, rating);
+  updateRating(discographyId: number, rating: Partial<RatingCreate>): Observable<void> {
+    return this.http.put<void>(`${this.api}/discographies/${discographyId}/ratings`, rating);
   }
 
   getComments(discographyId: number, query: Pageable<{}>): Observable<Page<Comment>> {
