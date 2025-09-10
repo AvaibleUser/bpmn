@@ -19,23 +19,32 @@ import { Confirmation } from "@/templates/confirmation";
 import { Recovery } from "@/templates/recovery";
 import { Hono } from "hono";
 import { raw } from "hono/html";
-import { Resend } from "resend";
+import { createTransport } from "nodemailer";
 
 export const authApi = new Hono<App>().basePath("/auth");
 
-const { emails } = new Resend();
+const emails = createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
 authApi.post("/sign-up", zv("json", addUserDto), async (c) => {
   const user = c.req.valid("json");
   const savedUser = await controller.registerUser(user);
   const code = await codes.generateCode(savedUser.id);
-  const { error } = await emails.send({
-    from: "BPMN",
-    to: user.email,
-    subject: "Confirmación de usuario en BPMN",
-    html: raw(Confirmation({ firstname: user.firstname, code })),
-  });
-  if (error) {
+  try {
+    await emails.sendMail({
+      from: "BPMN",
+      to: user.email,
+      subject: "Confirmación de usuario en BPMN",
+      html: raw(Confirmation({ firstname: user.firstname, code })),
+    });
+  } catch (error) {
     throw new ConflictException(`No se pudo enviar el correo: ${error}`);
   }
   return c.body(null, 201);
@@ -56,13 +65,14 @@ authApi.post("/sign-in", zv("json", authDto), async (c) => {
   const { email, password } = c.req.valid("json");
   const user = await auth.authenticate(email, password);
   const code = await codes.generateCode(user.id);
-  const { error } = await emails.send({
-    from: "BPMN",
-    to: user.email,
-    subject: "Confirmación de usuario en BPMN",
-    html: raw(Confirmation({ firstname: user.firstname, code })),
-  });
-  if (error) {
+  try {
+    await emails.sendMail({
+      from: "BPMN",
+      to: user.email,
+      subject: "Confirmación de usuario en BPMN",
+      html: raw(Confirmation({ firstname: user.firstname, code })),
+    });
+  } catch (error) {
     throw new ConflictException(`No se pudo enviar el correo: ${error}`);
   }
   return c.body(null, 201);
@@ -83,13 +93,14 @@ authApi.post("/password/recovery", zv("json", recoverDto), async (c) => {
   const { email } = c.req.valid("json");
   const user = await controller.findByEmail(email);
   const code = await codes.generateCode(user.id);
-  const { error } = await emails.send({
-    from: "BPMN",
-    to: user.email,
-    subject: "Recuperación de contraseña en BPMN",
-    html: raw(Recovery({ firstname: user.firstname, code })),
-  });
-  if (error) {
+  try {
+    await emails.sendMail({
+      from: "BPMN",
+      to: user.email,
+      subject: "Recuperación de contraseña en BPMN",
+      html: raw(Recovery({ firstname: user.firstname, code })),
+    });
+  } catch (error) {
     throw new ConflictException(`No se pudo enviar el correo: ${error}`);
   }
   return c.body(null, 201);

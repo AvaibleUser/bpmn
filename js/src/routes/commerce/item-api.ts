@@ -2,7 +2,7 @@ import { itemController as controller } from "@/controller/commerce/item.control
 import { upsertItem } from "@/models/commerce/item.model";
 import { App, idParam, otherIdParam } from "@/models/util/util.model";
 import { authenticated, zv } from "@/routes/middleware";
-import { Hono } from "hono/dist/types/hono";
+import { Hono } from "hono";
 
 export const itemApi = new Hono<App>().basePath("/orders/:orderId/items");
 
