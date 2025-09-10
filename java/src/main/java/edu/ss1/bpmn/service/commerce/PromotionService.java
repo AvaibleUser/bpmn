@@ -64,6 +64,7 @@ public class PromotionService {
                 .groupType(groupType)
                 .startDate(promotionDto.startDate())
                 .endDate(groupType.isLimitedTime() ? promotionDto.endDate() : null)
+                .active(true)
                 .cds(cds)
                 .build());
     }

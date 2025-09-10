@@ -26,6 +26,10 @@ public class PurchaseService {
     private final UserRepository userRepository;
     private final DiscographyRepository discographyRepository;
 
+    public List<PurchaseDto> findAll() {
+        return purchaseRepository.findAllBy(PurchaseDto.class);
+    }
+
     public PurchaseDto findById(long id) {
         return purchaseRepository.findById(id, PurchaseDto.class)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró la compra"));

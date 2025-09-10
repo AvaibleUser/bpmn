@@ -111,7 +111,7 @@ public class OrderService {
         if (cds.stream()
                 .map(CdEntity::getDiscography)
                 .map(DiscographyEntity::getStock)
-                .anyMatch(s -> s < item.getQuantity())) {
+                .anyMatch(s -> s != null && s < item.getQuantity())) {
             throw new RequestConflictException(
                     "No hay stock suficiente para reclamar la promoción %s veces"
                             .formatted(item.getQuantity()));

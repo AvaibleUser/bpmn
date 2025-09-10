@@ -26,6 +26,11 @@ public class PurchaseController {
     private final PurchaseService purchaseService;
 
     @GetMapping("/purchases")
+    public List<PurchaseDto> findAll() {
+        return purchaseService.findAll();
+    }
+
+    @GetMapping("/purchases/me")
     public List<PurchaseDto> findByUserId(@CurrentUserId long userId) {
         return purchaseService.findByUserId(userId);
     }

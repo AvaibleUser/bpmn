@@ -2,6 +2,7 @@ package edu.ss1.bpmn.domain.dto.commerce.item;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Set;
 
 import lombok.Builder;
 
@@ -15,8 +16,9 @@ public record ItemDto(
         BigDecimal discographyPrice,
         Instant discographyRelease,
         Long promotionId,
-        String promotionName,
-        String promotionDescription,
+        String promotionGroupTypeName,
+        BigDecimal promotionGroupTypeDiscount,
+        Set<Long> promotionCdsDiscographyId,
         Integer quantity,
         BigDecimal unitPrice,
         BigDecimal subtotal,

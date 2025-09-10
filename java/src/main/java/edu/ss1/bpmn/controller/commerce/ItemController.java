@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/orders/{orderId}/items")
-@RolesAllowed("USER")
+@RolesAllowed("CLIENT")
 @RequiredArgsConstructor
 public class ItemController {
 

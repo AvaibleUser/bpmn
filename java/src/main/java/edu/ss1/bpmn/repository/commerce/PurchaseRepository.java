@@ -11,6 +11,8 @@ import edu.ss1.bpmn.domain.entity.commerce.PurchaseEntity;
 @Repository
 public interface PurchaseRepository extends JpaRepository<PurchaseEntity, Long> {
 
+    <T> List<T> findAllBy(Class<T> type);
+
     <T> Optional<T> findById(long id, Class<T> type);
 
     <T> Optional<T> findByIdAndUserId(long id, long userId, Class<T> type);

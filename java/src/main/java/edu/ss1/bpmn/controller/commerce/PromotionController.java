@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -54,7 +55,7 @@ public class PromotionController {
     }
 
     @RolesAllowed("ADMIN")
-    @PutMapping("/promotions/{id}")
+    @DeleteMapping("/promotions/{id}")
     @ResponseStatus(NO_CONTENT)
     public void deletePromotion(long id) {
         promotionService.deletePromotion(id);

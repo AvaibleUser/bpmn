@@ -4,6 +4,7 @@ import static edu.ss1.bpmn.domain.type.StatusType.CART;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class ItemService {
 
     @Transactional
     private void createItem(long userId, long orderId, UpsertItemDto item, BigDecimal subtotal,
-            DiscographyEntity discography, PromotionEntity promotion) {
+            BigDecimal unirPrice, DiscographyEntity discography, PromotionEntity promotion) {
         OrderEntity order = orderRepository.findByIdAndUserId(orderId, userId, OrderEntity.class)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el pedido"));
 
@@ -59,8 +60,9 @@ public class ItemService {
         itemRepository.save(ItemEntity.builder()
                 .order(order)
                 .discography(discography)
+                .promotion(promotion)
                 .quantity(item.quantity())
-                .unitPrice(discography.getPrice())
+                .unitPrice(unirPrice)
                 .subtotal(subtotal)
                 .build());
 
@@ -73,7 +75,7 @@ public class ItemService {
         PromotionEntity promotion = promotionRepository.findByIdAndAvailable(promotionId, PromotionEntity.class)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró la promoción o ya terminó"));
 
-        if (itemRepository.existsByOrderIdAndPromotionId(userId, promotionId)) {
+        if (itemRepository.existsByOrderIdAndPromotionId(orderId, promotionId)) {
             throw new RequestConflictException("La promoción ya se encuentra en el pedido");
         }
         Hibernate.initialize(promotion.getCds());
@@ -81,19 +83,21 @@ public class ItemService {
                 .stream()
                 .map(CdEntity::getDiscography)
                 .map(DiscographyEntity::getStock)
-                .anyMatch(s -> s < item.quantity())) {
+                .anyMatch(s -> s != null && s < item.quantity())) {
             throw new BadRequestException(
                     "No hay stock suficiente para reclamar la promoción %s veces".formatted(item.quantity()));
         }
 
-        BigDecimal subtotalDiscounted = promotion.getCds()
+        Optional<BigDecimal> unitPrice = promotion.getCds()
                 .stream()
                 .map(CdEntity::getDiscography)
                 .map(DiscographyEntity::getPrice)
-                .reduce(BigDecimal::add)
-                .map(subtotal -> subtotal.multiply(promotion.getGroupType().getDiscount()))
+                .reduce(BigDecimal::add);
+        BigDecimal subtotalDiscounted = unitPrice
+                .map(subtotal -> subtotal.multiply(BigDecimal.ONE.subtract(promotion.getGroupType().getDiscount())))
+                .map(subtotal -> subtotal.multiply(BigDecimal.valueOf(item.quantity())))
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el descuento"));
-        createItem(userId, orderId, item, subtotalDiscounted, null, promotion);
+        createItem(userId, orderId, item, subtotalDiscounted, unitPrice.get(), null, promotion);
     }
 
     @Transactional
@@ -104,12 +108,13 @@ public class ItemService {
         if (itemRepository.existsByOrderIdAndDiscographyId(orderId, discographyId)) {
             throw new RequestConflictException("La discografía ya se encuentra en el pedido");
         }
-        if (item.quantity() > discography.getStock()) {
+        if (discography.getStock() != null && item.quantity() > discography.getStock()) {
             throw new BadRequestException("La cantidad solicitada es mayor que la existente en stock");
         }
 
-        BigDecimal subtotal = discography.getPrice().multiply(BigDecimal.valueOf(item.quantity()));
-        createItem(userId, orderId, item, subtotal, discography, null);
+        BigDecimal unitPrice = discography.getPrice();
+        BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(item.quantity()));
+        createItem(userId, orderId, item, subtotal, unitPrice, discography, null);
     }
 
     @Transactional
