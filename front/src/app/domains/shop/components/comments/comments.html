@@ -1,0 +1,64 @@
+<div class="bg-base-200 p-6 rounded-lg max-w-3xl mx-auto">
+  <h3 class="text-2xl font-bold mb-6 text-center">Comentarios</h3>
+
+  <form [formGroup]="commentForm" (ngSubmit)="comment()" class="mb-8 relative">
+    <fieldset class="fieldset">
+      <textarea
+        placeholder="Escribe tu comentario..."
+        rows="3"
+        formControlName="content"
+        name="content"
+        class="textarea textarea-bordered w-full"
+        [class.input-error]="checkField('content')"
+      ></textarea>
+    </fieldset>
+
+    <button
+      type="submit"
+      class="absolute bottom-1 right-0 btn btn-soft btn-primary btn-sm shadow-primary/80 shadow-inner"
+    >
+      @if (waiting) {
+      <span class="loading loading-spinner loading-xs"></span>
+      } @else{
+      <i-lucide [img]="Send" size="20" />
+      }
+    </button>
+  </form>
+
+  <div class="space-y-6 flex flex-col gap-8">
+    @if (!comments) {
+    <div class="flex justify-center items-center h-96">
+      <div class="loading loading-spinner loading-lg text-primary"></div>
+    </div>
+    } @else if (!comments.content.length) {
+    <div class="text-center text-base-content/60 py-8">
+      <i-lucide [img]="Message" size="48" class="mx-auto mb-4 opacity-50" />
+      <p>Aún no hay comentarios. ¡Sé el primero en comentar!</p>
+    </div>
+    } @else { @for (comment of comments.content; track comment.id) {
+    <div class="border-l-4 border-primary px-4 mb-0">
+      <div class="flex items-start justify-between mb-2">
+        <i class="font-semibold font-sans text-ctp-teal">{{ comment.username }}</i>
+        <span class="text-sm text-base-content/60">
+          {{ comment.createdAt | date : 'short' }}
+        </span>
+      </div>
+      <p class="text-base-content mb-2">{{ comment.content }}</p>
+
+      <shop-replies
+        [productId]="productId()"
+        [commendId]="comment.id"
+        [authenticated]="authenticated()"
+      />
+    </div>
+    } @if (!isLastPage(comments)) {
+    <button
+      class="btn btn-sm btn-ghost btn-secondary text-base-content/60"
+      (click)="onNext(comments, page)"
+    >
+      <i-lucide [img]="ShowMessage" size="24" />
+      <span>Ver mas comentarios ({{ comments.page.totalElements - comments.content.length }})</span>
+    </button>
+    } }
+  </div>
+</div>

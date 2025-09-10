@@ -1,5 +1,6 @@
 import { DiscographyInfo, DiscographyQuery } from '@/shop/models/discography.model';
 import { Genre } from '@/shop/models/genre.model';
+import { Song } from '@/shop/models/song.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environment/environment.development';
@@ -29,5 +30,13 @@ export class ProductsApi {
 
   getGenres(): Observable<Genre[]> {
     return this.http.get<Genre[]>(`${this.api}/genres`);
+  }
+
+  getSongs(discographyId: number): Observable<Song[]> {
+    return this.http.get<Song[]>(`${this.api}/discographies/${discographyId}/songs`);
+  }
+
+  checkCdGroup(discographyId: number): Observable<DiscographyInfo[]> {
+    return this.http.get<DiscographyInfo[]>(`${this.api}/cds/${discographyId}/promotions`);
   }
 }

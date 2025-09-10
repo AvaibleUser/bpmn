@@ -22,11 +22,11 @@ export type Page<T extends object> = {
 
 export class WithPage<T extends object> {
   isLastPage(page: Page<T>): boolean {
-    return page.page.number === page.page.totalPages - 1;
+    return page.page.number <= page.page.totalPages - 1;
   }
 
   isFirstPage(page: Page<T>): boolean {
-    return page.page.number === 0;
+    return page.page.number <= 0;
   }
 
   onPrevious(pageInfo: Page<T>, page: WritableSignal<number>): void {

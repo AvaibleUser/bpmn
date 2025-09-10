@@ -1,7 +1,7 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { Cache } from '@shared/models/cache.model';
 
-export const initialState: Cache = { cache: undefined };
+export const initialState: Cache = { cache: {} };
 
 export const CacheStore = signalStore(
   { providedIn: 'root' },
@@ -9,6 +9,9 @@ export const CacheStore = signalStore(
   withMethods((store) => ({
     set(key: string, value: unknown) {
       patchState(store, (state) => ({ ...state, [key]: value }));
+    },
+    get(key: string): unknown {
+      return store.cache()[key];
     },
   }))
 );

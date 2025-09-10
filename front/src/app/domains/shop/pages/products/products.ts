@@ -1,9 +1,10 @@
+
 import { ProductsApi } from '@/shop/api/products-api';
 import { Discography } from '@/shop/components/discography/discography';
 import { Filters } from '@/shop/components/filters/filters';
 import { DiscographyInfo, DiscographyQuery } from '@/shop/models/discography.model';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { Page, WithPage } from '@shared/models/pageable.model';
 import { ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
 
@@ -12,7 +13,7 @@ import { ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
   imports: [CommonModule, LucideAngularModule, Discography, Filters],
   templateUrl: './products.html',
 })
-export class Products extends WithPage<DiscographyInfo> implements OnInit {
+export class Products extends WithPage<DiscographyInfo> {
   private readonly productsApi = inject(ProductsApi);
 
   readonly Previous = ChevronLeft;
@@ -22,8 +23,12 @@ export class Products extends WithPage<DiscographyInfo> implements OnInit {
   waitingFilter = false;
   discographies?: Page<DiscographyInfo>;
 
-  ngOnInit() {
-    this.filter();
+  constructor() {
+    super();
+    effect(() => {
+      this.waitingFilter = true;
+      this.filter({ page: this.page() });
+    });
   }
 
   filter(filters: DiscographyQuery = {}) {

@@ -63,7 +63,7 @@ export class Confirmation implements OnInit {
         });
         this.waiting.set(false);
         this.router.navigate([
-          this.cacheStore.cache()?.['redirect'] || `/${session.role.toLocaleLowerCase()}`,
+          this.cacheStore.get('redirect') || `/${session.role.toLocaleLowerCase()}`,
         ]);
       },
       error: (error: HttpErrorResponse) => {

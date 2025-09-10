@@ -62,7 +62,9 @@ export class Mfa implements OnInit {
           type: 'success',
         });
         this.waiting.set(false);
-        this.router.navigate([this.cacheStore.cache()?.['redirect'] || `/${session.role.toLocaleLowerCase()}`]);
+        this.router.navigate([
+          this.cacheStore.get('redirect') || `/${session.role.toLocaleLowerCase()}`,
+        ]);
       },
       error: (error: HttpErrorResponse) => {
         this.alertStore.addAlert({

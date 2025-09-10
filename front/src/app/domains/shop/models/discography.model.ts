@@ -36,7 +36,7 @@ export type CdCreate = DiscographyCreate & {
 interface DiscographyExtras {
   id: number;
   rating: number;
-  genre: string;
+  genreName: string;
   createdAt: Date;
 }
 

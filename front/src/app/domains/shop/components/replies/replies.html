@@ -1,0 +1,71 @@
+@if (!show()) {
+<button
+  type="button"
+  class="btn btn-xs btn-ghost btn-secondary text-base-content/60 mb-4"
+  (click)="show.set(true)"
+>
+  <i-lucide [img]="Message" size="20" />
+  Responder
+</button>
+} @else {
+<form [formGroup]="replyForm" (ngSubmit)="reply()" class="relative w-full mb-4">
+  <fieldset class="fieldset">
+    <textarea
+      placeholder="Escribe tu respuesta..."
+      rows="3"
+      formControlName="content"
+      name="content"
+      class="textarea textarea-bordered w-full"
+      [class.input-error]="checkField('content')"
+    ></textarea>
+  </fieldset>
+
+  <button
+    type="submit"
+    class="absolute bottom-1 right-0 btn btn-soft btn-primary btn-sm shadow-primary/80 shadow-inner"
+  >
+    @if (waiting) {
+    <span class="loading loading-spinner loading-xs"></span>
+    } @else{
+    <i-lucide [img]="Send" size="20" />
+    }
+  </button>
+</form>
+}
+
+<div class="flex flex-col gap-2 items-start">
+  <div class="space-y-4 w-full flex flex-col gap-2">
+    @if (!replies) {
+    <div class="text-center text-base-content/60 mx-auto w-fit flex gap-4 mt-4 items-center">
+      <i-lucide [img]="Message" size="28" class="opacity-80" />
+      <span>Aún no hay respuestas. ¡Sé el primero en responder!</span>
+    </div>
+    } @else { @for (reply of replies.content; track reply.id) {
+    <div class="border-l-4 border-accent/50 pl-4">
+      <div class="flex items-start justify-between mb-2">
+        <i class="font-semibold font-sans text-ctp-teal">{{ reply.username }}</i>
+        <span class="text-sm text-base-content/60">
+          {{ reply.createdAt | date : 'short' }}
+        </span>
+      </div>
+      <p class="text-base-content mb-2">{{ reply.content }}</p>
+
+      <shop-replies
+        [productId]="productId()"
+        [commendId]="reply.id"
+        [authenticated]="authenticated()"
+      />
+    </div>
+    } }
+  </div>
+  @if (replies && replies.content.length && !isLastPage(replies)) {
+  <button
+    type="button"
+    class="btn btn-sm btn-ghost btn-secondary text-base-content/60"
+    (click)="onNext(replies, page)"
+  >
+    <i-lucide [img]="ShowMessage" size="20" class="opacity-80" />
+    <span>Ver mas respuestas ({{ replies.page.totalElements - replies.content.length }})</span>
+  </button>
+  }
+</div>
