@@ -14,17 +14,4 @@ export class Discography {
   readonly Star = Star;
 
   discography = input.required<DiscographyInfo>();
-
-  getFormatBadgeColor(): string {
-    switch (this.discography().format) {
-      case 'VINYL':
-        return 'badge-ctp-mauve';
-      case 'CASSETTE':
-        return 'badge-ctp-blue';
-      case 'CD':
-        return 'badge-ctp-green';
-      default:
-        return 'badge-ctp-surface0';
-    }
-  }
 }

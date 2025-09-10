@@ -1,0 +1,25 @@
+<div class="bg-base-200 p-6 rounded-lg max-w-3xl mx-auto">
+  <h3 class="text-2xl font-bold mb-6 text-center">Canciones</h3>
+  @if (!songs) {
+  <div class="flex justify-center items-center h-96">
+    <div class="loading loading-spinner loading-lg text-primary"></div>
+  </div>
+  } @else if (!songs.length) {
+  <div class="text-center text-base-content/60 py-8">
+    <i-lucide [img]="Song" size="48" class="mx-auto mb-4 opacity-50" />
+    <p>Aún no hay canciones. Estamos consiguiéndolas en la mejor calidad</p>
+  </div>
+  } @else {
+  <div class="flex flex-col gap-2 items-center">
+    @for (song of songs; track song.id; let i = $index) {
+    <div class="flex items-center gap-4 w-full px-4 py-2 bg-base-100">
+      <span class="text-sm text-base-content/60 w-8">{{ i + 1 }}</span>
+      <span class="font-medium flex-1">{{ song.name }}</span>
+      @if (song.side) {
+      <span class="badge badge-sm badge-ghost ml-2">Lado {{ song.side }}</span>
+      }
+    </div>
+    }
+  </div>
+  }
+</div>

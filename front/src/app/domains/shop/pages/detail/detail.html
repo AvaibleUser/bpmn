@@ -1,0 +1,68 @@
+<div class="min-h-screen bg-base-100 py-8">
+  @if (!discography) {
+  <div class="flex justify-center items-center h-96">
+    <div class="loading loading-spinner loading-lg text-primary"></div>
+  </div>
+  } @else if (discography) {
+  <div class="container mx-auto px-4 xl:max-w-5xl 2xl:max-w-7xl">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <figure class="overflow-hidden aspect-square">
+        <img
+          [src]="discography.imageUrl || '/assets/images/default-album.png'"
+          [alt]="discography.title"
+          class="w-full h-full object-cover"
+        />
+      </figure>
+
+      <div class="space-y-6">
+        <div>
+          <h1 class="text-6xl font-bold font-serif mb-4">{{ discography.title }}</h1>
+          <h2 class="text-3xl text-base-content/70 mb-6">{{ discography.artist }}</h2>
+          <div class="flex flex-wrap gap-4 items-center mb-4 text-xl">
+            @if (discography.format === 'CASSETTE' && discography.cassetteCondition !== 'NEW') {
+            <span class="line-through text-base-content/60">
+              {{ discography.price | currency : 'GTQ' : 'symbol-narrow' }}
+            </span>
+            <span class="font-bold text-2xl">
+              {{ discounted(discography) | currency : 'GTQ' : 'symbol-narrow' }}
+            </span>
+            <span class="badge badge-success badge-soft rounded-bl-3xl rounded-tl-3xl">
+              <span class="animate-ping rounded-full bg-error size-1"></span>
+              <i-lucide [img]="Discount" size="18" />
+              {{ discount(discography) | percent }}
+            </span>
+            } @else {
+            <span class="font-bold text-2xl">
+              {{ discography.price | currency : 'GTQ' : 'symbol-narrow' }}
+            </span>
+            }
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-xl">
+          <i-lucide [img]="ShoppingCart" size="25" />
+          <span class="">Add to cart</span>
+        </button>
+
+        <div class="flex flex-col gap-3">
+          @for(detail of details(discography); track detail.label) { @if (detail.condition ===
+          undefined || detail.condition) {
+          <div class="flex items-center gap-2">
+            <i-lucide [img]="detail.icon" size="24" class="text-ctp-teal" />
+            <span class="font-bold">{{ detail.label }}:</span>
+            <span class="text-base-content/80">{{ detail.value }}</span>
+          </div>
+          } }
+        </div>
+
+        <shop-songs [productId]="id()" [authenticated]="!!authenticated" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-6">
+      <shop-rating [productId]="id()" [authenticated]="!!authenticated" />
+      <shop-comments [productId]="id()" [authenticated]="!!authenticated" />
+    </div>
+  </div>
+  }
+</div>
