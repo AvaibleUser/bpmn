@@ -98,7 +98,7 @@ export class DiscographySpecification {
 
   byFormatRaw(format?: Field<"format">): Prisma.Sql | undefined {
     if (!format) return;
-    return Prisma.sql`d.format = ${format}`;
+    return Prisma.sql`d.format = ${format}::catalog.FORMAT_TYPE`;
   }
 
   byVisible(): WhereField<"visible"> {

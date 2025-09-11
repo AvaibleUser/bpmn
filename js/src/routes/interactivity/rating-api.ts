@@ -1,3 +1,4 @@
+import { getPayload } from "@/config/auth.config";
 import { ratingController as controller } from "@/controller/interactivity/rating.controller";
 import { upsertRating } from "@/models/interactivity/rating.model";
 import { App, otherIdParam } from "@/models/util/util.model";
@@ -9,8 +10,8 @@ export const ratingApi = new Hono<App>().basePath(
 );
 
 ratingApi.get("/", zv("param", otherIdParam("discographyId")), async (c) => {
-  const payload = c.get("jwtPayload");
-  const userId = BigInt(payload?.sub || 0);
+  const token = c.req.header("Authorization");
+  const userId = token ? BigInt((await getPayload(token)).sub) : BigInt(0);
   const { discographyId } = c.req.valid("param");
   const ratings = await controller.findStats(userId, discographyId);
   return c.json(ratings);

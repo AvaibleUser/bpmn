@@ -1,4 +1,4 @@
-import { ItemDto, UpsertItemDto } from "@/models/commerce/item.model";
+import { ItemDto } from "@/models/commerce/item.model";
 import {
   BadRequestException,
   ConflictException,

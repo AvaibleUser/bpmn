@@ -1,5 +1,7 @@
+import { Jwt } from "@/models/util/util.model";
 import { password } from "bun";
 import { readFileSync as readFile } from "fs";
+import { verify as verifyToken } from "hono/jwt";
 
 export const jwtConfig = {
   secret: {
@@ -21,4 +23,12 @@ export async function verify(pass: string, hash: string): Promise<boolean> {
 
 export async function encode(pass: string): Promise<string> {
   return await password.hash(pass, "bcrypt");
+}
+
+export async function getPayload(token: string): Promise<Jwt> {
+  return (await verifyToken(
+    token.split(" ")[1],
+    jwtConfig.secret.privateKey(),
+    jwtConfig.alg
+  )) as Jwt;
 }

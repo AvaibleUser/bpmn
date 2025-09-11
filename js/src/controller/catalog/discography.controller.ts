@@ -94,9 +94,25 @@ export class DiscographyController {
     `;
     return {
       content: result.map((d: any) => {
-        d.id = Number(d.id);
-        d.price = d.price.toNumber();
-        return d;
+        return {
+          id: Number(d.id),
+          title: d.title,
+          artist: d.artist,
+          imageUrl: d.image_url,
+          year: d.year,
+          price: d.price.toNumber(),
+          stock: d.stock,
+          format: d.format,
+          visible: d.visible,
+          release: d.release,
+          createdAt: d.created_at,
+          updatedAt: d.updated_at,
+          genreName: d.genre_name,
+          cassetteCondition: d.cassette_condition,
+          vinylSize: d.vinyl_size,
+          vinylSpecialEdition: d.vinyl_special_edition,
+          rating: d.rating,
+        } as DiscographyDto;
       }),
       page,
     };
