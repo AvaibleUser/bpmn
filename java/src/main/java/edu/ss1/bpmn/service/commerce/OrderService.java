@@ -49,7 +49,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void createOrder(long userId) {
+    public Long createOrder(long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el usuario"));
 
@@ -57,11 +57,11 @@ public class OrderService {
             throw new RequestConflictException("El usuario ya tiene un pedido en espera");
         }
 
-        orderRepository.save(OrderEntity.builder()
+        return orderRepository.saveAndFlush(OrderEntity.builder()
                 .user(user)
                 .total(BigDecimal.ZERO)
                 .status(CART)
-                .build());
+                .build()).getId();
     }
 
     @Transactional

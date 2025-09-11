@@ -146,7 +146,7 @@ export class DiscographyController {
     return this.toDto(result);
   }
 
-  async create(d: AddDiscographyDto): Promise<void> {
+  async create(d: AddDiscographyDto): Promise<number> {
     const genre = await this.prisma.genre.findUnique({
       where: { id: d.genreId },
     });
@@ -154,7 +154,17 @@ export class DiscographyController {
       throw new NotFoundException("No se ha encontrado el género");
     }
     const _d = await this.prisma.discography.create({
-      data: d,
+      data: {
+        title: d.title,
+        artist: d.artist,
+        year: d.year,
+        price: d.price,
+        stock: d.stock,
+        format: d.format,
+        visible: d.visible,
+        release: d.release,
+        genreId: d.genreId,
+      },
     });
     try {
       switch (d.format) {
@@ -162,26 +172,27 @@ export class DiscographyController {
           await this.prisma.cd.create({ data: { discographyId: _d.id } });
           break;
         case Format.VINYL:
-          if (!d.vinylSize || ![7, 10, 12].includes(d.vinylSize)) {
+          if (!d.size || ![7, 10, 12].includes(d.size)) {
             throw new BadRequestException("No se ha encontrado el tamaño");
           }
           await this.prisma.vinyl.create({
             data: {
               discographyId: _d.id,
-              size: d.vinylSize,
-              specialEdition: d.vinylSpecialEdition,
+              size: d.size,
+              specialEdition: d.specialEdition,
             },
           });
           break;
         case Format.CASSETTE:
-          if (!d.cassetteCondition) {
+          if (!d.condition) {
             throw new BadRequestException("No se ha encontrado la condición");
           }
           await this.prisma.cassette.create({
-            data: { discographyId: _d.id, condition: d.cassetteCondition },
+            data: { discographyId: _d.id, condition: d.condition },
           });
           break;
       }
+      return Number(_d.id);
     } catch (error) {
       await this.prisma.discography.delete({ where: { id: _d.id } });
       throw error;
@@ -208,23 +219,23 @@ export class DiscographyController {
           await this.prisma.cd.create({ data: { discographyId: id } });
           break;
         case Format.VINYL:
-          if (!d.vinylSize || ![7, 10, 12].includes(d.vinylSize)) {
+          if (!d.size || ![7, 10, 12].includes(d.size)) {
             throw new BadRequestException("No se ha encontrado el tamaño");
           }
           await this.prisma.vinyl.create({
             data: {
               discographyId: id,
-              size: d.vinylSize,
-              specialEdition: d.vinylSpecialEdition,
+              size: d.size,
+              specialEdition: d.specialEdition,
             },
           });
           break;
         case Format.CASSETTE:
-          if (!d.cassetteCondition) {
+          if (!d.condition) {
             throw new BadRequestException("No se ha encontrado la condición");
           }
           await this.prisma.cassette.create({
-            data: { discographyId: id, condition: d.cassetteCondition },
+            data: { discographyId: id, condition: d.condition },
           });
           break;
       }
@@ -241,15 +252,15 @@ export class DiscographyController {
             where: { discographyId: id },
             data: {
               discographyId: id,
-              size: d.vinylSize,
-              specialEdition: d.vinylSpecialEdition,
+              size: d.size,
+              specialEdition: d.specialEdition,
             },
           });
           break;
         case Format.CASSETTE:
           await this.prisma.cassette.update({
             where: { discographyId: id },
-            data: { discographyId: id, condition: d.cassetteCondition },
+            data: { discographyId: id, condition: d.condition },
           });
           break;
       }
@@ -266,7 +277,7 @@ export class DiscographyController {
       throw new NotFoundException("No se ha encontrado la discografía");
     }
     const url = await storage.store(`fotos/discography_${id}`, image);
-    this.prisma.discography.update({
+    await this.prisma.discography.update({
       where: { id },
       data: { imageUrl: url },
     });

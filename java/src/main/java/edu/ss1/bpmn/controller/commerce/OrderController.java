@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,8 +44,9 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public void createOrder(@CurrentUserId long userId) {
-        orderService.createOrder(userId);
+    public Map<String, Long> createOrder(@CurrentUserId long userId) {
+        Long id = orderService.createOrder(userId);
+        return Map.of("id", id);
     }
 
     @PutMapping("/{orderId}/complete")

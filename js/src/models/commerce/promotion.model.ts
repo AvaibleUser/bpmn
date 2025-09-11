@@ -11,8 +11,8 @@ export interface PromotionDto {
 }
 
 export const upsertPromotion = z.object({
-  startDate: z.date().nonoptional(),
-  endDate: z.date().optional(),
+  startDate: z.coerce.date().nonoptional(),
+  endDate: z.coerce.date().optional(),
   cdIds: z.array(z.bigint()).nonempty().nonoptional(),
 });
 

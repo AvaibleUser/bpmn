@@ -1,5 +1,5 @@
 import { pageable } from "@/models/util/util.model";
-import { Condition, Format, Prisma } from "@prisma/client";
+import { Condition, Format } from "@prisma/client";
 import * as z from "zod";
 
 export const filterDiscography = z
@@ -41,12 +41,12 @@ export type DiscographyDto = {
 };
 
 const addCassette = z.object({
-  cassetteCondition: z.enum(Object.values(Condition)).optional(),
+  condition: z.enum(Object.values(Condition)).optional(),
 });
 
 const addVinyl = z.object({
-  vinylSize: z.int().optional(),
-  vinylSpecialEdition: z.string().optional(),
+  size: z.int().optional(),
+  specialEdition: z.string().optional(),
 });
 
 export const addDiscography = z
@@ -60,7 +60,7 @@ export const addDiscography = z
     stock: z.int().nonnegative().optional(),
     format: z.enum(Object.values(Format)).nonoptional(),
     visible: z.boolean().default(false),
-    release: z.date().optional(),
+    release: z.coerce.date().optional(),
   })
   .and(addCassette)
   .and(addVinyl);

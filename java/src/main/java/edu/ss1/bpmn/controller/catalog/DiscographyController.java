@@ -3,6 +3,8 @@ package edu.ss1.bpmn.controller.catalog;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,8 +49,9 @@ public class DiscographyController {
     @RolesAllowed("ADMIN")
     @PostMapping
     @ResponseStatus(CREATED)
-    public void createDiscography(@RequestBody @Valid AddDiscographyDto discographyDto) {
-        discographyService.createDiscography(discographyDto);
+    public Map<String, Long> createDiscography(@RequestBody @Valid AddDiscographyDto discographyDto) {
+        Long id = discographyService.createDiscography(discographyDto);
+        return Map.of("id", id);
     }
 
     @RolesAllowed("ADMIN")

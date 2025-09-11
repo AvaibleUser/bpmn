@@ -1,5 +1,8 @@
 import { discographyController as controller } from "@/controller/catalog/discography.controller";
-import { addDiscography, filterDiscography } from "@/models/catalog/discography.model";
+import {
+  addDiscography,
+  filterDiscography,
+} from "@/models/catalog/discography.model";
 import { App, idParam, image } from "@/models/util/util.model";
 import { authenticated, rolesAllowed, zv } from "@/routes/middleware";
 import { Hono } from "hono";
@@ -25,8 +28,8 @@ discographyApi.post(
   zv("json", addDiscography),
   async (c) => {
     const discography = c.req.valid("json");
-    await controller.create(discography);
-    return c.body(null, 201);
+    const id = await controller.create(discography);
+    return c.json({ id }, 201);
   }
 );
 

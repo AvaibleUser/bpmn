@@ -80,7 +80,7 @@ public class DiscographyService {
     }
 
     @Transactional
-    public void createDiscography(AddDiscographyDto discographyDto) {
+    public Long createDiscography(AddDiscographyDto discographyDto) {
         GenreEntity genre = genreRepository.findById(discographyDto.genreId())
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el género"));
 
@@ -104,6 +104,7 @@ public class DiscographyService {
             case VINYL -> vinylService.createVinyl(discography.getId(), discographyDto.vinyl());
             case CD -> cdService.createCd(discography.getId());
         }
+        return discography.getId();
     }
 
     @Transactional
