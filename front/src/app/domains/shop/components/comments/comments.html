@@ -36,7 +36,7 @@
       <p>Aún no hay comentarios. ¡Sé el primero en comentar!</p>
     </div>
     } @else { @for (comment of comments.content; track comment.id) {
-    <div class="border-l-4 border-primary px-4 mb-0">
+    <div class="border-l-4 border-primary px-4 mb-0 relative">
       <div class="flex items-start justify-between mb-2">
         <i class="font-semibold font-sans text-ctp-teal">{{ comment.username }}</i>
         <span class="text-sm text-base-content/60">
@@ -47,8 +47,10 @@
 
       <shop-replies
         [productId]="productId()"
-        [commendId]="comment.id"
-        [authenticated]="authenticated()"
+        [commenterId]="comment.userId"
+        [commentId]="comment.id"
+        [userRole]="userRole()"
+        (commentDeleted)="reloadComments()"
       />
     </div>
     } @if (!isLastPage(comments)) {

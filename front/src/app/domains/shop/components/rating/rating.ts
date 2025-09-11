@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, input } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Role } from '@core/auth/models/auth.model';
 import { AlertStore } from '@shared/stores/alert-store';
 import { CacheStore } from '@shared/stores/cache-store';
 import { LucideAngularModule, Star } from 'lucide-angular';
@@ -25,7 +26,7 @@ export class Rating {
   readonly Star = Star;
 
   readonly productId = input.required<number>();
-  readonly authenticated = input.required<boolean>();
+  readonly userRole = input<Role>();
 
   waiting = false;
   rating?: RatingStats;
@@ -45,7 +46,7 @@ export class Rating {
   }
 
   rate() {
-    if (!this.authenticated()) {
+    if (!this.userRole()) {
       this.cacheStore.set('redirect', this.router.url);
       this.router.navigate(['auth', 'login']);
       return;

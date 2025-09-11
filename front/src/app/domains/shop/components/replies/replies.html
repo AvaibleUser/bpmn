@@ -7,7 +7,17 @@
   <i-lucide [img]="Message" size="20" />
   Responder
 </button>
-} @else {
+
+@if (userRole() === 'ADMIN') {
+<button
+  type="button"
+  class="btn btn-xs btn-ghost btn-error not-hover:text-error/60 mb-4"
+  (click)="ban()"
+>
+  <i-lucide [img]="Ban" size="20" />
+  Eliminar
+</button>
+} } @else {
 <form [formGroup]="replyForm" (ngSubmit)="reply()" class="relative w-full mb-4">
   <fieldset class="fieldset">
     <textarea
@@ -52,8 +62,10 @@
 
       <shop-replies
         [productId]="productId()"
-        [commendId]="reply.id"
-        [authenticated]="authenticated()"
+        [commenterId]="reply.userId"
+        [commentId]="reply.id"
+        [userRole]="userRole()"
+        (commentDeleted)="reloadReplies()"
       />
     </div>
     } }

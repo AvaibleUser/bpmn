@@ -62,4 +62,8 @@ export class InteractionApi {
   deleteComment(id: number): Observable<void> {
     return this.http.delete<void>(`${this.api}/comments/${id}`);
   }
+
+  deleteCommentByAdmin(id: number, userId: number): Observable<void> {
+    return this.http.patch<void>(`${this.api}/users/${userId}/comments/${id}`, {});
+  }
 }

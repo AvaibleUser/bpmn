@@ -5,11 +5,11 @@ import { Rating } from '@/shop/components/rating/rating';
 import { Songs } from '@/shop/components/songs/songs';
 import { Cassette, DiscographyInfo, Format, Vinyl } from '@/shop/models/discography.model';
 import { Order } from '@/shop/models/order.model';
-import { Song } from '@/shop/models/song.model';
 import { CommonModule, formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
+import { Role } from '@core/auth/models/auth.model';
 import { AlertStore } from '@shared/stores/alert-store';
 import { AuthStore } from '@shared/stores/auth-store';
 import {
@@ -58,14 +58,12 @@ export class Detail {
   readonly id = input.required<number>({ alias: 'productId' });
 
   discography?: DiscographyInfo;
-  authenticated?: boolean;
-  userId?: number;
+  userRole?: Role;
   waiting = false;
 
   constructor() {
     effect(() => {
-      this.authenticated = !!this.authStore.session().token;
-      this.userId = this.authStore.session().id;
+      this.userRole = this.authStore.session().token ? this.authStore.session().role : undefined;
       this.productsApi.getDiscography(this.id()).subscribe({
         next: (discography) => (this.discography = discography),
         error: () => {
@@ -82,7 +80,7 @@ export class Detail {
           this.alertStore.addAlert({
             message: 'Producto agregado al carrito',
             type: 'success',
-          })
+          });
           this.waiting = false;
         },
         error: (error: HttpErrorResponse) => {

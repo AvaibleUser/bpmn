@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Role } from '@core/auth/models/auth.model';
 import { Page, Pageable, WithPage } from '@shared/models/pageable.model';
 import { AlertStore } from '@shared/stores/alert-store';
 import { CacheStore } from '@shared/stores/cache-store';
@@ -13,7 +14,7 @@ import {
   LucideAngularModule,
   MessageCircle,
   MessageCirclePlus,
-  SendHorizontal,
+  SendHorizontal
 } from 'lucide-angular';
 
 @Component({
@@ -34,7 +35,7 @@ export class Comments extends WithPage<Comment> {
   readonly Send = SendHorizontal;
 
   readonly productId = input.required<number>();
-  readonly authenticated = input.required<boolean>();
+  readonly userRole = input<Role>();
   readonly page = signal<number>(0);
 
   loading = false;
@@ -57,7 +58,7 @@ export class Comments extends WithPage<Comment> {
   }
 
   comment() {
-    if (!this.authenticated()) {
+    if (!this.userRole()) {
       this.cacheStore.set('redirect', this.router.url);
       this.router.navigate(['/auth', 'login']);
       return;
@@ -87,6 +88,11 @@ export class Comments extends WithPage<Comment> {
         this.waiting = false;
       },
     });
+  }
+
+  reloadComments() {
+    this.page.set(0);
+    this.loadComments({ page: this.page() }, false);
   }
 
   private loadComments(query: Pageable<{}> = {}, append = true) {

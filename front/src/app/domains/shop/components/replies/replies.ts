@@ -2,12 +2,18 @@ import { InteractionApi } from '@/shop/api/interaction-api';
 import { Comment } from '@/shop/models/comment.model';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Role } from '@core/auth/models/auth.model';
 import { Page, Pageable, WithPage } from '@shared/models/pageable.model';
 import { AlertStore } from '@shared/stores/alert-store';
-import { ModalStore } from '@shared/stores/modal-store';
-import { LucideAngularModule, MessageCirclePlus, MessageCircleReply, Reply } from 'lucide-angular';
+import {
+  Ban,
+  LucideAngularModule,
+  MessageCirclePlus,
+  MessageCircleReply,
+  Reply,
+} from 'lucide-angular';
 
 @Component({
   selector: 'shop-replies',
@@ -23,10 +29,13 @@ export class Replies extends WithPage<Comment> {
   readonly ShowMessage = MessageCirclePlus;
   readonly Message = MessageCircleReply;
   readonly Send = Reply;
+  readonly Ban = Ban;
 
   readonly productId = input.required<number>();
-  readonly commendId = input.required<number>();
-  readonly authenticated = input.required<boolean>();
+  readonly commenterId = input.required<number>();
+  readonly commentId = input.required<number>();
+  readonly userRole = input<Role>();
+  readonly commentDeleted = output<void>();
   readonly show = signal<boolean>(false);
   readonly page = signal<number>(0);
 
@@ -61,7 +70,7 @@ export class Replies extends WithPage<Comment> {
     }
 
     const reply: Comment = this.replyForm.getRawValue();
-    this.interactionApi.createReply(this.productId(), this.commendId(), reply).subscribe({
+    this.interactionApi.createReply(this.productId(), this.commentId(), reply).subscribe({
       next: () => {
         this.replyForm.reset();
         this.loadReplies({ page: this.page() }, false);
@@ -77,9 +86,32 @@ export class Replies extends WithPage<Comment> {
     });
   }
 
+  ban() {
+    this.interactionApi.deleteCommentByAdmin(this.commentId(), this.commenterId()).subscribe({
+      next: () => {
+        this.alertStore.addAlert({
+          message: 'Comentario eliminado',
+          type: 'success',
+        });
+        this.commentDeleted.emit();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertStore.addAlert({
+          message: error.error.message,
+          type: 'error',
+        });
+      },
+    });
+  }
+
+  reloadReplies() {
+    this.page.set(0);
+    this.loadReplies({ page: this.page() }, false);
+  }
+
   private loadReplies(query: Pageable<{}> = {}, append = true) {
     this.loading = true;
-    this.interactionApi.getReplies(this.productId(), this.commendId(), query).subscribe({
+    this.interactionApi.getReplies(this.productId(), this.commentId(), query).subscribe({
       next: (replies) => {
         if (append) {
           replies.content.unshift(...(this.replies?.content || []));

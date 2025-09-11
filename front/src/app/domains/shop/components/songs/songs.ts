@@ -3,6 +3,7 @@ import { Song } from '@/shop/models/song.model';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, input } from '@angular/core';
+import { Role } from '@core/auth/models/auth.model';
 import { AlertStore } from '@shared/stores/alert-store';
 import { LucideAngularModule, Music } from 'lucide-angular';
 
@@ -19,7 +20,6 @@ export class Songs {
   readonly Song = Music;
 
   readonly productId = input.required<number>();
-  readonly authenticated = input.required<boolean>();
 
   songs?: Song[];
 

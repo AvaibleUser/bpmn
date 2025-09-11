@@ -62,13 +62,13 @@
           } }
         </div>
 
-        <shop-songs [productId]="id()" [authenticated]="!!authenticated" />
+        <shop-songs [productId]="id()" />
       </div>
     </div>
 
     <div class="flex flex-col gap-6">
-      <shop-rating [productId]="id()" [authenticated]="!!authenticated" />
-      <shop-comments [productId]="id()" [authenticated]="!!authenticated" />
+      <shop-rating [productId]="id()" [userRole]="userRole" />
+      <shop-comments [productId]="id()" [userRole]="userRole" />
     </div>
   </div>
   }
