@@ -31,7 +31,7 @@ export type Token = UserDto & {
   token: string;
 };
 
-export const addUserDto = z.object({
+export const addUser = z.object({
   username: z.string().nonempty().nonoptional(),
   email: z.email().nonempty().nonoptional(),
   password: z.string().nonempty().nonoptional(),
@@ -39,28 +39,28 @@ export const addUserDto = z.object({
   lastname: z.string().nonempty().nonoptional(),
 });
 
-export type AddUserDto = z.infer<typeof addUserDto>;
+export type AddUserDto = z.infer<typeof addUser>;
 
-export const recoverDto = z.object({
+export const recover = z.object({
   email: z.email().nonempty().nonoptional(),
 });
 
-export const resetDto = z.object({
+export const reset = z.object({
   email: z.email().nonempty().nonoptional(),
   code: z.string().length(6).nonempty().nonoptional(),
   password: z.string().nonempty().nonoptional(),
   newPassword: z.string().nonempty().nonoptional(),
 });
 
-export const confirmDto = z.object({
+export const confirm = z.object({
   email: z.email().nonempty().nonoptional(),
   code: z.string().length(6).nonempty().nonoptional(),
 });
 
-export const changeActiveDto = z.object({
+export const changeActive = z.object({
   active: z.boolean().nonoptional(),
 });
 
-export const changeRoleDto = z.object({
+export const changeRole = z.object({
   role: z.enum(Object.values(Role)).nonoptional(),
 });

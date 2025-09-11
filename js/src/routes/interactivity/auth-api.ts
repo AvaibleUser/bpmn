@@ -2,11 +2,11 @@ import { authController as auth } from "@/controller/interactivity/auth.controll
 import { codesController as codes } from "@/controller/interactivity/codes.controller";
 import { userController as controller } from "@/controller/interactivity/user.controller";
 import {
-  addUserDto,
+  addUser,
   authDto,
-  confirmDto,
-  recoverDto,
-  resetDto,
+  confirm,
+  recover,
+  reset,
   Token,
 } from "@/models/interactivity/user.model";
 import {
@@ -33,7 +33,7 @@ const emails = createTransport({
   },
 });
 
-authApi.post("/sign-up", zv("json", addUserDto), async (c) => {
+authApi.post("/sign-up", zv("json", addUser), async (c) => {
   const user = c.req.valid("json");
   const savedUser = await controller.registerUser(user);
   const code = await codes.generateCode(savedUser.id);
@@ -50,7 +50,7 @@ authApi.post("/sign-up", zv("json", addUserDto), async (c) => {
   return c.body(null, 201);
 });
 
-authApi.put("/sign-up", zv("json", confirmDto), async (c) => {
+authApi.put("/sign-up", zv("json", confirm), async (c) => {
   const { email, code } = c.req.valid("json");
   const confirmed = await codes.confirmCode(email, code);
   if (!confirmed) {
@@ -78,7 +78,7 @@ authApi.post("/sign-in", zv("json", authDto), async (c) => {
   return c.body(null, 201);
 });
 
-authApi.put("/sign-in/2fa", zv("json", confirmDto), async (c) => {
+authApi.put("/sign-in/2fa", zv("json", confirm), async (c) => {
   const { email, code } = c.req.valid("json");
   const confirmed = await codes.confirmCode(email, code);
   if (!confirmed) {
@@ -89,7 +89,7 @@ authApi.put("/sign-in/2fa", zv("json", confirmDto), async (c) => {
   return c.json({ ...user, token } as Token, 200);
 });
 
-authApi.post("/password/recovery", zv("json", recoverDto), async (c) => {
+authApi.post("/password/recovery", zv("json", recover), async (c) => {
   const { email } = c.req.valid("json");
   const user = await controller.findByEmail(email);
   const code = await codes.generateCode(user.id);
@@ -106,7 +106,7 @@ authApi.post("/password/recovery", zv("json", recoverDto), async (c) => {
   return c.body(null, 201);
 });
 
-authApi.put("/password/recovery", zv("json", resetDto), async (c) => {
+authApi.put("/password/recovery", zv("json", reset), async (c) => {
   const { email, code, password, newPassword } = c.req.valid("json");
   const confirmed = await codes.confirmCode(email, code);
   if (!confirmed) {

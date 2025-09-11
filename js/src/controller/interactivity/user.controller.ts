@@ -62,14 +62,14 @@ export class UserController {
     });
   }
 
-  async changeActive(id: bigint, active: boolean): Promise<void> {
+  async changeActive(id: bigint): Promise<void> {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundException("No se ha encontrado el usuario");
     }
     await this.prisma.user.update({
       where: { id },
-      data: { active },
+      data: { active: !user.active },
     });
   }
 
