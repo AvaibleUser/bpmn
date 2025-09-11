@@ -24,7 +24,7 @@ import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RolesAllowed("CLIENT")
+@RolesAllowed({ "CLIENT", "ADMIN" })
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {

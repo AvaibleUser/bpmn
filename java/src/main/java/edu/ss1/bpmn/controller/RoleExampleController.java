@@ -10,7 +10,7 @@ import lombok.Generated;
 @RolesAllowed("ADMIN")
 public class RoleExampleController {
 
-    @RolesAllowed("CLIENT")
+    @RolesAllowed({ "CLIENT", "ADMIN" })
     @GetMapping("/1")
     @Generated
     public void get1() {

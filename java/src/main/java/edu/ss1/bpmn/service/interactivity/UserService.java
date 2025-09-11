@@ -61,7 +61,7 @@ public class UserService implements UserDetailsService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el usuario"));
 
-        user.setBanned(!user.isBanned());
+        user.setBanned(true);
         userRepository.save(user);
     }
 

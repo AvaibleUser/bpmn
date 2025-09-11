@@ -34,20 +34,20 @@ public class WishlistController {
         return wishlistService.findDiscographyWishlist(discographyId);
     }
 
-    @RolesAllowed("CLIENT")
+    @RolesAllowed({ "CLIENT", "ADMIN" })
     @GetMapping("/wishlists")
     public List<WishlistDto> findUserWishlist(@CurrentUserId long userId,
             @RequestParam(required = false) Boolean paid) {
         return wishlistService.findUserWishlist(userId, paid);
     }
 
-    @RolesAllowed("CLIENT")
+    @RolesAllowed({ "CLIENT", "ADMIN" })
     @GetMapping("/wishlists/{id}")
     public Optional<WishlistDto> findWishlistById(@PathVariable long id) {
         return wishlistService.findWishlistById(id);
     }
 
-    @RolesAllowed("CLIENT")
+    @RolesAllowed({ "CLIENT", "ADMIN" })
     @PostMapping("/discographies/{discographyId}/wishlists")
     @ResponseStatus(CREATED)
     public void createWishlist(@PathVariable long discographyId, @CurrentUserId long userId,
@@ -55,7 +55,7 @@ public class WishlistController {
         wishlistService.addWishlist(userId, discographyId, wishlist);
     }
 
-    @RolesAllowed("CLIENT")
+    @RolesAllowed({ "CLIENT", "ADMIN" })
     @PutMapping("/discographies/{discographyId}/wishlists")
     @ResponseStatus(NO_CONTENT)
     public void updateWishlist(@PathVariable long discographyId, @CurrentUserId long userId,
@@ -63,7 +63,7 @@ public class WishlistController {
         wishlistService.updateWishlist(userId, discographyId, wishlist);
     }
 
-    @RolesAllowed("CLIENT")
+    @RolesAllowed({ "CLIENT", "ADMIN" })
     @DeleteMapping("/discographies/{discographyId}/wishlists")
     @ResponseStatus(NO_CONTENT)
     public void deleteWishlist(@PathVariable long discographyId, @CurrentUserId long userId) {
