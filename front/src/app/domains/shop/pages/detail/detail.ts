@@ -1,12 +1,16 @@
+import { CommerceApi } from '@/shop/api/commerce-api';
 import { ProductsApi } from '@/shop/api/products-api';
 import { Comments } from '@/shop/components/comments/comments';
 import { Rating } from '@/shop/components/rating/rating';
 import { Songs } from '@/shop/components/songs/songs';
 import { Cassette, DiscographyInfo, Format, Vinyl } from '@/shop/models/discography.model';
+import { Order } from '@/shop/models/order.model';
 import { Song } from '@/shop/models/song.model';
 import { CommonModule, formatDate } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertStore } from '@shared/stores/alert-store';
 import { AuthStore } from '@shared/stores/auth-store';
 import {
   AudioWaveform,
@@ -33,6 +37,8 @@ import {
 export class Detail {
   private readonly authStore = inject(AuthStore);
   private readonly productsApi = inject(ProductsApi);
+  private readonly commerceApi = inject(CommerceApi);
+  private readonly alertStore = inject(AlertStore);
   private readonly router = inject(Router);
 
   readonly ShoppingCart = ShoppingCart;
@@ -52,9 +58,9 @@ export class Detail {
   readonly id = input.required<number>({ alias: 'productId' });
 
   discography?: DiscographyInfo;
-  songs?: Song[];
   authenticated?: boolean;
   userId?: number;
+  waiting = false;
 
   constructor() {
     effect(() => {
@@ -66,6 +72,63 @@ export class Detail {
           this.router.navigate(['/products']);
         },
       });
+    });
+  }
+
+  addToCart(discography: DiscographyInfo) {
+    const addToCart = (order: Order) => {
+      this.commerceApi.createDiscographyItem(order.id, discography.id, { quantity: 1 }).subscribe({
+        next: () => {
+          this.alertStore.addAlert({
+            message: 'Producto agregado al carrito',
+            type: 'success',
+          })
+          this.waiting = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.alertStore.addAlert({
+            message: error.error.message,
+            type: 'error',
+          });
+          this.waiting = false;
+        },
+      });
+    };
+    this.waiting = true;
+    this.commerceApi.getOrders().subscribe({
+      next: (orders) => {
+        const order = orders.find((order) => order.status === 'CART');
+        if (order) {
+          addToCart(order);
+        } else {
+          this.commerceApi.createOrder().subscribe({
+            next: () => {
+              this.commerceApi.getOrders().subscribe({
+                next: (orders) => {
+                  const order = orders.find((order) => order.status === 'CART');
+                  if (order) {
+                    addToCart(order);
+                  }
+                },
+              });
+            },
+            error: (error: HttpErrorResponse) => {
+              this.alertStore.addAlert({
+                message: error.error.message,
+                type: 'error',
+              });
+              this.waiting = false;
+            },
+          });
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertStore.addAlert({
+          message: error.error.message,
+          type: 'error',
+        });
+        this.waiting = false;
+      },
     });
   }
 

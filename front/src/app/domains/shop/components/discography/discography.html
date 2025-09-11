@@ -11,9 +11,16 @@
     <div
       class="absolute inset-0 bg-base-300/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
     >
-      <button class="btn btn-primary gap-4">
+      <button
+        class="btn btn-primary gap-4"
+        (click)="addToCart(discography$)"
+        [class.btn-disabled]="waiting"
+      >
+        @if (waiting) {
+        <span class="loading loading-spinner loading-xs"></span>
+        } @else{
         <i-lucide [img]="ShoppingCart" size="25" />
-        <span class="">Add to cart</span>
+        <span class="">Agregar al carrito</span>}
       </button>
     </div>
 
@@ -56,7 +63,7 @@
       class="absolute top-0 right-4 py-4 flex flex-col justify-around items-end h-full bg-base-100"
     >
       <span class="text-success font-semibold">
-        {{ discography$.price | currency : 'GTQ' : 'symbol-narrow' }}
+        {{ discounted(discography$) | currency : 'GTQ' : 'symbol-narrow' }}
       </span>
       <span class="text-base-content/70 text-xs">
         {{ discography$.release ? `Disponible el ${discography$.release | date : 'dd/MM'}` : discography$.year }}
