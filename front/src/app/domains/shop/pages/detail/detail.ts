@@ -24,8 +24,10 @@ import {
   Disc3,
   Gem,
   LucideAngularModule,
+  Pencil,
   Quote,
   ShoppingCart,
+  Trash2,
   Turntable,
 } from 'lucide-angular';
 
@@ -54,6 +56,8 @@ export class Detail {
   readonly Used = BatteryLow;
   readonly Size = Quote;
   readonly Special = Gem;
+  readonly Delete = Trash2;
+  readonly Edit = Pencil;
 
   readonly id = input.required<number>({ alias: 'productId' });
 
@@ -74,8 +78,8 @@ export class Detail {
   }
 
   addToCart(discography: DiscographyInfo) {
-    const addToCart = (order: Order) => {
-      this.commerceApi.createDiscographyItem(order.id, discography.id, { quantity: 1 }).subscribe({
+    const addToCart = (orderId: number) => {
+      this.commerceApi.createDiscographyItem(orderId, discography.id, { quantity: 1 }).subscribe({
         next: () => {
           this.alertStore.addAlert({
             message: 'Producto agregado al carrito',
@@ -97,18 +101,11 @@ export class Detail {
       next: (orders) => {
         const order = orders.find((order) => order.status === 'CART');
         if (order) {
-          addToCart(order);
+          addToCart(order.id);
         } else {
           this.commerceApi.createOrder().subscribe({
-            next: () => {
-              this.commerceApi.getOrders().subscribe({
-                next: (orders) => {
-                  const order = orders.find((order) => order.status === 'CART');
-                  if (order) {
-                    addToCart(order);
-                  }
-                },
-              });
+            next: ({ id }) => {
+              addToCart(id);
             },
             error: (error: HttpErrorResponse) => {
               this.alertStore.addAlert({
@@ -126,6 +123,30 @@ export class Detail {
           type: 'error',
         });
         this.waiting = false;
+      },
+    });
+  }
+
+  delete() {
+    this.alertStore.addAlert({
+      message: 'Estas seguro de eliminar el producto?',
+      type: 'error',
+      accept: () => {
+        this.productsApi.deleteDiscography(this.id()).subscribe({
+          next: () => {
+            this.alertStore.addAlert({
+              message: 'Producto eliminado',
+              type: 'success',
+            });
+            this.router.navigate(['/products']);
+          },
+          error: (error: HttpErrorResponse) => {
+            this.alertStore.addAlert({
+              message: error.error.message,
+              type: 'error',
+            });
+          },
+        });
       },
     });
   }

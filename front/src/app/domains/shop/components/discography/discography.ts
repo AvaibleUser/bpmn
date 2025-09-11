@@ -25,8 +25,8 @@ export class Discography {
   waiting = false;
 
   addToCart(discography: DiscographyInfo) {
-    const addToCart = (order: Order) => {
-      this.commerceApi.createDiscographyItem(order.id, discography.id, { quantity: 1 }).subscribe({
+    const addToCart = (orderId: number) => {
+      this.commerceApi.createDiscographyItem(orderId, discography.id, { quantity: 1 }).subscribe({
         next: () => {
           this.alertStore.addAlert({
             message: 'Producto agregado al carrito',
@@ -48,18 +48,11 @@ export class Discography {
       next: (orders) => {
         const order = orders.find((order) => order.status === 'CART');
         if (order) {
-          addToCart(order);
+          addToCart(order.id);
         } else {
           this.commerceApi.createOrder().subscribe({
-            next: () => {
-              this.commerceApi.getOrders().subscribe({
-                next: (orders) => {
-                  const order = orders.find((order) => order.status === 'CART');
-                  if (order) {
-                    addToCart(order);
-                  }
-                },
-              });
+            next: ({ id }) => {
+              addToCart(id);
             },
             error: (error: HttpErrorResponse) => {
               this.alertStore.addAlert({

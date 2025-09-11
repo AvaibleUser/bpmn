@@ -12,6 +12,7 @@ interface DiscographyCreate {
   stock?: number;
   format: Format;
   release?: Date;
+  visible?: boolean;
 }
 
 export type VinylSize = 7 | 10 | 12;
@@ -32,6 +33,8 @@ export type CassetteCreate = DiscographyCreate & {
 export type CdCreate = DiscographyCreate & {
   format: 'CD';
 };
+
+export type CreateDiscography = VinylCreate | CassetteCreate | CdCreate;
 
 interface DiscographyExtras {
   id: number;

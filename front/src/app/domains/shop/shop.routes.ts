@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { ShoppingCart } from 'lucide-angular';
+import { Music } from 'lucide-angular';
 
 const modules: Routes = [
   {
@@ -35,5 +35,5 @@ export const routes: Routes = [
 
 export const shopData = {
   baseUrl: '/',
-  sidebarItems: [{ name: 'Tienda', icon: ShoppingCart, path: '/products' }],
+  sidebarItems: [{ name: 'Productos', icon: Music, path: '/products' }],
 };

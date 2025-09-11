@@ -11,7 +11,7 @@
       class="select select-sm select-bordered w-full"
     >
       <option selected value="0">Cualquier género</option>
-      @for (genre of genres; track genre) {
+      @for (genre of genres; track genre.id) {
       <option [ngValue]="genre.id">{{ genre.name }}</option>
       }
     </select>

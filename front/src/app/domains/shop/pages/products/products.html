@@ -1,6 +1,15 @@
 <div class="py-12 px-4 flex flex-col justify-evenly md:flex-row gap-4">
-  <div class="bg-base-300 p-4 rounded-lg h-fit">
-    <shop-filters (filter)="filter($event)" [(waiting)]="waitingFilter" />
+  <div class="flex flex-col gap-4">
+    @if (userRole === 'ADMIN') {
+    <button class="btn btn-outline btn-block btn-primary" (click)="addProduct()">
+      <i-lucide [img]="Plus" size="20" class="mr-2" />
+      Crear producto
+    </button>
+    }
+
+    <div class="bg-base-300 p-4 rounded-lg h-fit">
+      <shop-filters (filter)="filter($event)" [(waiting)]="waitingFilter" />
+    </div>
   </div>
 
   <div class="md:max-w-6xl grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-3 w-full">

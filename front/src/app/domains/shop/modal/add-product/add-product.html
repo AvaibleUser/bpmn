@@ -1,0 +1,213 @@
+<div class="text-center mb-2">
+  <h1 class="text-3xl font-bold text-primary">Crear un nuevo producto</h1>
+</div>
+
+<form [formGroup]="addForm" (ngSubmit)="addProduct()" class="space-y-5">
+  <div class="max-h-[70vh] overflow-y-auto space-y-5 space-x-2 p-1">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Titulo</span>
+      </legend>
+      <input
+        type="text"
+        formControlName="title"
+        name="title"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('title')"
+      />
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Artista</span>
+      </legend>
+      <input
+        type="text"
+        formControlName="artist"
+        name="artist"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('artist')"
+      />
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Formato</span>
+      </legend>
+      <select
+        formControlName="format"
+        name="format"
+        class="select select-bordered w-full"
+        [class.select-error]="checkField('format')"
+      >
+        <option selected value="" disabled>Seleccione el tipo de formato</option>
+        @for (format of formats; track format.value) {
+        <option [ngValue]="format.value">{{ format.label }}</option>
+        }
+      </select>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Género</span>
+      </legend>
+      <select
+        formControlName="genreId"
+        name="genreId"
+        class="select select-bordered w-full"
+        [class.select-error]="checkField('genreId')"
+      >
+        <option selected value="0" disabled>Seleccione un género</option>
+        @for (genre of genres; track genre.id) {
+        <option [ngValue]="genre.id">{{ genre.name }}</option>
+        }
+      </select>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Portada</span>
+      </legend>
+      <input
+        type="file"
+        name="cover"
+        class="file-input input-bordered w-full"
+        (change)="onFileChange($event)"
+      />
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Año</span>
+      </legend>
+      <input
+        type="number"
+        formControlName="year"
+        name="year"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('year')"
+      />
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Precio</span>
+      </legend>
+      <input
+        type="number"
+        formControlName="price"
+        name="price"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('price')"
+      />
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend w-full">
+        <span>Existencias</span>
+        <span class="text-base-content/70 text-sm">
+          <input
+            type="checkbox"
+            name="limitedStock"
+            class="checkbox checkbox-xs"
+            (click)="limitedStock.set(!limitedStock())"
+          />
+          Ilimitadas
+        </span>
+      </legend>
+      @if (limitedStock()) {
+      <input
+        type="number"
+        formControlName="stock"
+        name="stock"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('stock')"
+      />
+      }
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend w-full">
+        <span>Lanzamiento</span>
+        <span class="text-base-content/70 text-sm">
+          <input
+            type="checkbox"
+            name="released"
+            class="checkbox checkbox-xs"
+            (click)="released.set(!limitedStock())"
+          />
+          Próximamente
+        </span>
+      </legend>
+      @if (!released()) {
+      <input
+        type="datetime-local"
+        formControlName="release"
+        name="release"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('release')"
+      />
+      }
+    </fieldset>
+
+    @switch (addForm.get('format')?.value) { @case ('CASSETTE') {
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Condición</span>
+      </legend>
+      <select
+        formControlName="condition"
+        name="condition"
+        class="select select-bordered w-full"
+        [class.select-error]="checkField('condition')"
+      >
+        <option selected value="" disabled>Seleccione la condición</option>
+        @for (condition of conditions; track condition.value) {
+        <option [ngValue]="condition.value">{{ condition.label }}</option>
+        }
+      </select>
+    </fieldset>
+    } @case ('VINYL') {
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Tamaño</span>
+      </legend>
+      <select
+        formControlName="size"
+        name="size"
+        class="select select-bordered w-full"
+        [class.select-error]="checkField('size')"
+      >
+        <option selected value="0" disabled>Seleccione el tamaño</option>
+        @for (size of sizes; track size.value) {
+        <option [ngValue]="size.value">{{ size.label }}</option>
+        }
+      </select>
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Edición Especial</span>
+      </legend>
+      <input
+        type="text"
+        formControlName="specialEdition"
+        name="specialEdition"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('specialEdition')"
+      />
+    </fieldset>
+    } @default {} }
+  </div>
+
+  <button
+    type="submit"
+    class="btn w-full font-semibold"
+    [class.btn-primary]="!waiting"
+    [class.btn-disabled]="waiting"
+  >
+    @if (waiting) {
+    <span class="loading loading-dots loading-xs"></span>
+    } @else { Crear }
+  </button>
+</form>

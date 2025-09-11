@@ -22,8 +22,8 @@ export class CommerceApi {
     return this.http.get<Order[]>(`${this.api}/orders`, { params });
   }
 
-  createOrder(): Observable<void> {
-    return this.http.post<void>(`${this.api}/orders`, {});
+  createOrder(): Observable<{ id: number }> {
+    return this.http.post<{ id: number }>(`${this.api}/orders`, {});
   }
 
   payOrder(orderId: number): Observable<void> {

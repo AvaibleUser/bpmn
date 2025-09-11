@@ -40,15 +40,18 @@
         </div>
 
         <button
-          class="btn btn-primary btn-xl"
+          class="btn btn-primary btn-xl gap-4"
           (click)="addToCart(discography)"
-          [class.btn-disabled]="waiting"
+          [class.btn-disabled]="waiting || (typeof discography.stock === 'number' && discography.stock <= 0)"
         >
           @if (waiting) {
           <span class="loading loading-spinner loading-xs"></span>
           } @else{
           <i-lucide [img]="ShoppingCart" size="25" />
-          <span class="">Agregar al carrito</span>}
+          <span>
+            {{ typeof discography.stock === 'number' && discography.stock <= 0 ? 'Agotado' : 'Agregar al carrito' }}
+          </span>
+          }
         </button>
 
         <div class="flex flex-col gap-3">
@@ -62,6 +65,19 @@
           } }
         </div>
 
+        @if (userRole === 'ADMIN') {
+        <div class="flex gap-4">
+          <button class="btn btn-soft btn-error btn-sm" (click)="delete()">
+            <i-lucide [img]="Delete" size="20" />
+            Eliminar
+          </button>
+
+          <button class="btn btn-soft btn-warning btn-sm">
+            <i-lucide [img]="Edit" size="20" />
+            Editar
+          </button>
+        </div>
+        }
         <shop-songs [productId]="id()" />
       </div>
     </div>

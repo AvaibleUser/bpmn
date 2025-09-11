@@ -1,12 +1,14 @@
-
 import { ProductsApi } from '@/shop/api/products-api';
 import { Discography } from '@/shop/components/discography/discography';
 import { Filters } from '@/shop/components/filters/filters';
 import { DiscographyInfo, DiscographyQuery } from '@/shop/models/discography.model';
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
+import { Role } from '@core/auth/models/auth.model';
 import { Page, WithPage } from '@shared/models/pageable.model';
-import { ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
+import { AuthStore } from '@shared/stores/auth-store';
+import { ModalStore } from '@shared/stores/modal-store';
+import { ChevronLeft, ChevronRight, LucideAngularModule, PackagePlus } from 'lucide-angular';
 
 @Component({
   selector: 'shop-products',
@@ -15,11 +17,16 @@ import { ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
 })
 export class Products extends WithPage<DiscographyInfo> {
   private readonly productsApi = inject(ProductsApi);
+  private readonly authStore = inject(AuthStore);
+  private readonly modalStore = inject(ModalStore);
 
   readonly Previous = ChevronLeft;
   readonly Next = ChevronRight;
+  readonly Plus = PackagePlus;
+
   readonly page = signal<number>(0);
 
+  userRole?: Role;
   waitingFilter = false;
   discographies?: Page<DiscographyInfo>;
 
@@ -27,6 +34,7 @@ export class Products extends WithPage<DiscographyInfo> {
     super();
     effect(() => {
       this.waitingFilter = true;
+      this.userRole = this.authStore.session().token ? this.authStore.session().role : undefined;
       this.filter({ page: this.page() });
     });
   }
@@ -37,5 +45,11 @@ export class Products extends WithPage<DiscographyInfo> {
       this.page.set(discographies.page.number);
       this.waitingFilter = false;
     });
+  }
+
+  addProduct() {
+    this.modalStore.openModal(() =>
+      import('@/shop/modal/add-product/add-product').then((m) => m.AddProduct)
+    );
   }
 }
