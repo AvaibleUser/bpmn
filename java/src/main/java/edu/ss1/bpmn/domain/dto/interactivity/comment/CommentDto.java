@@ -8,11 +8,11 @@ import lombok.Builder;
 
 @Builder(toBuilder = true)
 public record CommentDto(
-        long id,
+        Long id,
         String content,
-        long userId,
+        Long userId,
         @JsonProperty("username") String userUsername,
-        @JsonProperty("replyTo") long replyToId,
+        @JsonProperty("replyTo") Long replyToId,
         Instant createdAt,
         Instant updatedAt) {
 }

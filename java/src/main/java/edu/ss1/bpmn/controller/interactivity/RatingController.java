@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,14 +36,16 @@ public class RatingController {
     @RolesAllowed({ "CLIENT", "ADMIN" })
     @PostMapping
     @ResponseStatus(CREATED)
-    public void addRating(@PathVariable long discographyId, @CurrentUserId long userId, AddRatingDto rating) {
+    public void addRating(@PathVariable long discographyId, @CurrentUserId long userId,
+            @RequestBody AddRatingDto rating) {
         ratingService.addRating(discographyId, userId, rating);
     }
 
     @RolesAllowed({ "CLIENT", "ADMIN" })
     @PutMapping
     @ResponseStatus(NO_CONTENT)
-    public void updateRating(@PathVariable long discographyId, @CurrentUserId long userId, AddRatingDto rating) {
+    public void updateRating(@PathVariable long discographyId, @CurrentUserId long userId,
+            @RequestBody AddRatingDto rating) {
         ratingService.updateRating(discographyId, userId, rating);
     }
 

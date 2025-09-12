@@ -5,10 +5,14 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,38 +30,39 @@ public class PromotionController {
     private final PromotionService promotionService;
 
     @GetMapping("/promotions")
-    public List<PromotionDto> findPromotions() {
-        return promotionService.findPromotions();
+    public Page<PromotionDto.Complete> findPromotions(Pageable pageable) {
+        return promotionService.findPromotions(pageable);
     }
 
     @GetMapping("/promotions/{id}")
-    public PromotionDto findPromotion(long id) {
+    public PromotionDto.Complete findPromotion(@PathVariable long id) {
         return promotionService.findPromotion(id);
     }
 
     @GetMapping("/discographies/{discographyId}/promotions")
-    public List<PromotionDto> findPromotionsByCd(long discographyId) {
+    public List<PromotionDto> findPromotionsByCd(@PathVariable long discographyId) {
         return promotionService.findPromotionsByCd(discographyId);
     }
 
     @RolesAllowed("ADMIN")
     @PostMapping("/groups/{groupId}/promotions")
     @ResponseStatus(CREATED)
-    public void createPromotion(long groupId, @Valid UpsertPromotionDto promotionDto) {
+    public void createPromotion(@PathVariable long groupId, @RequestBody @Valid UpsertPromotionDto promotionDto) {
         promotionService.createPromotion(groupId, promotionDto);
     }
 
     @RolesAllowed("ADMIN")
     @PutMapping("/groups/{groupId}/promotions/{id}")
     @ResponseStatus(NO_CONTENT)
-    public void updatePromotion(long id, long groupId, UpsertPromotionDto promotionDto) {
+    public void updatePromotion(@PathVariable long id, @PathVariable long groupId,
+            @RequestBody UpsertPromotionDto promotionDto) {
         promotionService.updatePromotion(id, groupId, promotionDto);
     }
 
     @RolesAllowed("ADMIN")
     @DeleteMapping("/promotions/{id}")
     @ResponseStatus(NO_CONTENT)
-    public void deletePromotion(long id) {
+    public void deletePromotion(@PathVariable long id) {
         promotionService.deletePromotion(id);
     }
 }

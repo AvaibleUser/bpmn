@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +52,7 @@ public class WishlistController {
     @PostMapping("/discographies/{discographyId}/wishlists")
     @ResponseStatus(CREATED)
     public void createWishlist(@PathVariable long discographyId, @CurrentUserId long userId,
-            @Valid UpsertWishlistDto wishlist) {
+            @RequestBody @Valid UpsertWishlistDto wishlist) {
         wishlistService.addWishlist(userId, discographyId, wishlist);
     }
 
@@ -59,7 +60,7 @@ public class WishlistController {
     @PutMapping("/discographies/{discographyId}/wishlists")
     @ResponseStatus(NO_CONTENT)
     public void updateWishlist(@PathVariable long discographyId, @CurrentUserId long userId,
-            UpsertWishlistDto wishlist) {
+            @RequestBody UpsertWishlistDto wishlist) {
         wishlistService.updateWishlist(userId, discographyId, wishlist);
     }
 

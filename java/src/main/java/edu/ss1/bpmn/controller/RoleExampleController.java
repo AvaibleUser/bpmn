@@ -7,7 +7,6 @@ import jakarta.annotation.security.RolesAllowed;
 import lombok.Generated;
 
 @RestController
-@RolesAllowed("ADMIN")
 public class RoleExampleController {
 
     @RolesAllowed({ "CLIENT", "ADMIN" })
@@ -17,9 +16,16 @@ public class RoleExampleController {
 
     }
 
+    @RolesAllowed("ADMIN")
     @GetMapping("/2")
     @Generated
     public void get2() {
 
     }
+
+    @GetMapping("/")
+    public String getHello() {
+        return "Hello World!";
+    }
+
 }

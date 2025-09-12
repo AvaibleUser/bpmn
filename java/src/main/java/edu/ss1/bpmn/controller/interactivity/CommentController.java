@@ -52,8 +52,8 @@ public class CommentController {
     @RolesAllowed({ "CLIENT", "ADMIN" })
     @PostMapping("/{commentId}")
     @ResponseStatus(CREATED)
-    public void addCommentReply(@PathVariable long discographyId, @CurrentUserId long userId, long commentId,
-            UpsertCommentDto comment) {
+    public void addCommentReply(@PathVariable long discographyId, @CurrentUserId long userId,
+            @PathVariable long commentId, @RequestBody @Valid UpsertCommentDto comment) {
         commentService.addCommentReply(discographyId, userId, commentId, comment);
     }
 

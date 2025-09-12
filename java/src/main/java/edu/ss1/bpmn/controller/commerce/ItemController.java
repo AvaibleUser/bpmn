@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,14 +43,14 @@ public class ItemController {
     @PostMapping("/discographies/{discographyId}")
     @ResponseStatus(CREATED)
     public void createDiscographyItem(@CurrentUserId long userId, @PathVariable long orderId,
-            @PathVariable long discographyId, @Valid UpsertItemDto item) {
+            @PathVariable long discographyId, @RequestBody @Valid UpsertItemDto item) {
         itemService.createDiscographyItem(userId, orderId, discographyId, item);
     }
 
     @PostMapping("/promotions/{promotionId}")
     @ResponseStatus(CREATED)
     public void createPromotionItem(@CurrentUserId long userId, @PathVariable long orderId,
-            @PathVariable long promotionId, @Valid UpsertItemDto item) {
+            @PathVariable long promotionId, @RequestBody @Valid UpsertItemDto item) {
         itemService.createPromotionItem(userId, orderId, promotionId, item);
     }
 

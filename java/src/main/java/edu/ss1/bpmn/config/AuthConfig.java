@@ -53,19 +53,7 @@ public class AuthConfig {
                 .csrf(c -> c.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))
                 .userDetailsService(userDetailsService)
-                .authorizeHttpRequests(a -> a
-                        .requestMatchers("/auth/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/genres/**",
-                                "/discographies/**",
-                                "/songs/**",
-                                "/groups/**",
-                                "/promotions/**")
-                        .permitAll()
-                        .requestMatchers("/**").authenticated()
-                        .anyRequest().permitAll())
+                .authorizeHttpRequests(a -> a.anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtCustomizer -> jwtCustomizer
                                 .decoder(jwtDecoder)
