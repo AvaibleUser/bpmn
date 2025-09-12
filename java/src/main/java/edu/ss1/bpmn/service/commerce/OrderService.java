@@ -68,7 +68,7 @@ public class OrderService {
 
     @Transactional
     public void updateOrder(long userId, long orderId, UpdateOrderDto order) {
-        OrderEntity orderDb = orderRepository.findByIdAndUserId(orderId, userId, OrderEntity.class)
+        OrderEntity orderDb = orderRepository.findById(orderId, OrderEntity.class)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el pedido"));
 
         if (orderDb.getStatus().ordinal() + 1 != order.status().ordinal()) {
@@ -101,11 +101,11 @@ public class OrderService {
     }
 
     private Stream<DiscographyEntity> extractOrder(ItemEntity item, DiscographyEntity discography) {
-        if (discography.getStock() < item.getQuantity()) {
-            throw new RequestConflictException(
-                    "La cantidad solicitada es mayor que la existente en stock");
-        }
         if (discography.getStock() != null) {
+            if (discography.getStock() < item.getQuantity()) {
+                throw new RequestConflictException(
+                        "La cantidad solicitada es mayor que la existente en stock");
+            }
             discography.setStock(discography.getStock() - item.getQuantity());
         }
         return Stream.of(discography);

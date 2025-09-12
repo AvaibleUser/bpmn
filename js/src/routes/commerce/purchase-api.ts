@@ -47,7 +47,7 @@ purchaseApi.post(
     const userId = BigInt(c.get("jwtPayload").sub);
     const { discographyId } = c.req.valid("param");
     const { quantity } = c.req.valid("json");
-    await purchaseController.create(discographyId, userId, quantity);
+    await purchaseController.create(userId, discographyId, quantity);
     return c.body(null, 201);
   }
 );

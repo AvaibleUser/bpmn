@@ -43,13 +43,9 @@ export class OrderController {
     });
   }
 
-  async update(
-    userId: bigint,
-    orderId: bigint,
-    order: UpdateOrderDto
-  ): Promise<void> {
+  async update(orderId: bigint, order: UpdateOrderDto): Promise<void> {
     const actualOrder = await this.prisma.order.findFirst({
-      where: { id: orderId, userId },
+      where: { id: orderId },
       include: {
         items: {
           include: {
@@ -122,7 +118,7 @@ export class OrderController {
   }
 
   async pay(userId: bigint, orderId: bigint): Promise<void> {
-    await this.update(userId, orderId, { status: Status.PAID });
+    await this.update(orderId, { status: Status.PAID });
   }
 
   async delete(userId: bigint, orderId: bigint): Promise<void> {

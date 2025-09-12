@@ -33,7 +33,7 @@ export class PurchaseController {
 
   async create(userId: bigint, discographyId: bigint, quantity: number) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user || !user.active || !user.banned) {
+    if (!user || !user.active || user.banned) {
       throw new NotFoundException("No se ha encontrado el usuario");
     }
     const discography = await this.prisma.discography.findUnique({

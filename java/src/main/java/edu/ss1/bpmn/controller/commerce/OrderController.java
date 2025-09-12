@@ -57,10 +57,10 @@ public class OrderController {
     }
 
     @RolesAllowed("ADMIN")
-    @PutMapping("/{orderId}/user/{userId}")
+    @PutMapping("/{orderId}/send")
     @ResponseStatus(NO_CONTENT)
-    public void updateOrder(@PathVariable long userId, @PathVariable long orderId, @RequestBody UpdateOrderDto order) {
-        orderService.updateOrder(userId, orderId, order);
+    public void updateOrder(@PathVariable long orderId, @RequestBody UpdateOrderDto order) {
+        orderService.updateOrder(0L, orderId, order);
     }
 
     @DeleteMapping("/{orderId}")

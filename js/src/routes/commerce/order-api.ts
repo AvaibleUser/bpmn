@@ -39,15 +39,15 @@ orderApi.put(
 );
 
 orderApi.put(
-  "/:id/user/:userId",
+  "/:id/send",
   authenticated,
   rolesAllowed("ADMIN"),
-  zv("param", idParam.and(otherIdParam("userId"))),
+  zv("param", idParam),
   zv("json", updateOrder),
   async (c) => {
-    const { userId, id } = c.req.valid("param");
+    const { id } = c.req.valid("param");
     const order = c.req.valid("json");
-    await controller.update(id, userId, order);
+    await controller.update(id, order);
     return c.body(null, 204);
   }
 );
