@@ -5,7 +5,8 @@ export class GroupController {
   private prisma = new PrismaClient();
 
   async findAll(): Promise<GroupTypeDto[]> {
-    return (await this.prisma.groupingType.findMany()).map((g) => ({
+    const groups = await this.prisma.groupingType.findMany();
+    return groups.map((g) => ({
       id: Number(g.id),
       name: g.name,
       discount: g.discount.toNumber(),

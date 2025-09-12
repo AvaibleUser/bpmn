@@ -1,13 +1,14 @@
 import { promotionController as controller } from "@/controller/commerce/promotion.controller";
 import { upsertPromotion } from "@/models/commerce/promotion.model";
-import { App, idParam, otherIdParam } from "@/models/util/util.model";
+import { App, idParam, otherIdParam, pageable } from "@/models/util/util.model";
 import { authenticated, rolesAllowed, zv } from "@/routes/middleware";
 import { Hono } from "hono";
 
 export const promotionApi = new Hono<App>();
 
-promotionApi.get("/promotions", async (c) => {
-  const promotions = controller.findAll();
+promotionApi.get("/promotions", zv("query", pageable), async (c) => {
+  const pageable = c.req.valid("query");
+  const promotions = await controller.findAll(pageable);
   return c.json(promotions);
 });
 

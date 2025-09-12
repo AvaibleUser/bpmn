@@ -18,6 +18,8 @@ CREATE TABLE commerce.grouping_types (
 
 CREATE TABLE commerce.promotions (
     id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
     group_type_id BIGINT NOT NULL REFERENCES commerce.grouping_types (id),
     start_date DATE NOT NULL,
     end_date DATE NULL,

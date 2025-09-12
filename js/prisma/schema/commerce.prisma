@@ -27,6 +27,8 @@ model GroupingType {
 
 model Promotion {
   id          BigInt    @id @default(autoincrement())
+  name        String
+  description String
   groupTypeId BigInt    @map("group_type_id")
   startDate   DateTime  @map("start_date")
   endDate     DateTime? @map("end_date")

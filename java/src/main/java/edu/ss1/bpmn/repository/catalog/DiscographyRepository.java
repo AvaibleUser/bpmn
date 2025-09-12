@@ -2,6 +2,7 @@ package edu.ss1.bpmn.repository.catalog;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,4 +34,6 @@ public interface DiscographyRepository
     }
 
     <T> Optional<T> findById(Long id, Class<T> type);
+
+    <T> Set<T> findByCdPromotionsId(Long id, Class<T> type);
 }

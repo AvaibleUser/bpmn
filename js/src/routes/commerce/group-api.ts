@@ -5,6 +5,6 @@ import { Hono } from "hono";
 export const groupApi = new Hono<App>().basePath("/groups");
 
 groupApi.get("/", async (c) => {
-  const groups = controller.findAll();
+  const groups = await controller.findAll();
   return c.json(groups);
 });

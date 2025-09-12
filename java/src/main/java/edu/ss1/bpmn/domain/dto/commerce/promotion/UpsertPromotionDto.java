@@ -4,12 +4,15 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder(toBuilder = true)
 public record UpsertPromotionDto(
+        @NotNull @NotBlank String name,
+        @NotNull @NotBlank String description,
         @NotNull @Future LocalDate startDate,
         @Future LocalDate endDate,
         @NotNull @NotEmpty Set<Long> cdIds) {

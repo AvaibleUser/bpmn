@@ -44,6 +44,14 @@ public class PromotionEntity {
     private Long id;
 
     @NonNull
+    @Column(nullable = false)
+    private String name;
+
+    @NonNull
+    @Column(nullable = false)
+    private String description;
+
+    @NonNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "group_type_id", nullable = false)
     private GroupingTypeEntity groupType;

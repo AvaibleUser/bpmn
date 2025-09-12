@@ -2,9 +2,13 @@ package edu.ss1.bpmn.domain.entity.catalog;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.Set;
+
+import edu.ss1.bpmn.domain.entity.commerce.PromotionEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -34,4 +38,7 @@ public class CdEntity {
     @OneToOne(optional = false)
     @JoinColumn(name = "discography_id", nullable = false)
     private DiscographyEntity discography;
+
+    @ManyToMany(mappedBy = "cds")
+    private Set<PromotionEntity> promotions;
 }

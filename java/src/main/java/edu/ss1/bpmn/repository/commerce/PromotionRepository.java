@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,8 +21,8 @@ public interface PromotionRepository extends JpaRepository<PromotionEntity, Long
     <T> Optional<T> findByIdAndActiveTrueAndStartDateLessThanEqualAndEndDateGreaterThanEqual(long id,
             LocalDate startDate, LocalDate endDate, Class<T> type);
 
-    <T> List<T> findAllByActiveTrueAndStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate startDate,
-            LocalDate endDate, Class<T> type);
+    <T> Page<T> findAllByActiveTrueAndStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate startDate,
+            LocalDate endDate, Class<T> type, Pageable pageable);
 
     <T> List<T> findByCdsDiscographyIdAndActiveTrue(long discographyId, Class<T> type);
 
@@ -29,8 +31,8 @@ public interface PromotionRepository extends JpaRepository<PromotionEntity, Long
                 LocalDate.now(), type);
     }
 
-    default <T> List<T> findByAvailable(Class<T> type) {
+    default <T> Page<T> findByAvailable(Class<T> type, Pageable pageable) {
         return findAllByActiveTrueAndStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate.now(), LocalDate.now(),
-                type);
+                type, pageable);
     }
 }

@@ -1,25 +1,56 @@
-import { PromotionDto, UpsertPromotionDto } from "@/models/commerce/promotion.model";
+import {
+  PromotionDto,
+  UpsertPromotionDto,
+} from "@/models/commerce/promotion.model";
 import {
   BadRequestException,
   NotFoundException,
 } from "@/models/util/exception.model";
+import { Pageable, PageModel } from "@/models/util/util.model";
 import { PrismaClient } from "@prisma/client";
 
 export class PromotionController {
   private prisma = new PrismaClient();
 
-  async findAll(): Promise<PromotionDto[]> {
+  async findAll(pageable: Pageable): Promise<PageModel<PromotionDto>> {
     const promotions = await this.prisma.promotion.findMany({
       where: { active: true },
-      include: { promotedCds: { select: { cdId: true } } },
+      include: {
+        groupType: { select: { discount: true } },
+        promotedCds: {
+          include: {
+            cd: { include: { discography: { include: { genre: true } } } },
+          },
+        },
+      },
+      take: pageable.size,
+      skip: pageable.page * pageable.size,
     });
-    return promotions.map(this.toDto);
+    const totalElements = await this.prisma.promotion.count({
+      where: { active: true },
+    });
+    return {
+      content: promotions.map(this.toDto),
+      page: {
+        size: pageable.size,
+        number: pageable.page,
+        totalElements,
+        totalPages: Math.ceil(totalElements / pageable.size),
+      },
+    };
   }
 
   async findByCdId(cdId: bigint): Promise<PromotionDto[]> {
     const promotions = await this.prisma.promotion.findMany({
       where: { active: true, promotedCds: { some: { cdId } } },
-      include: { promotedCds: { select: { cdId: true } } },
+      include: {
+        groupType: { select: { discount: true } },
+        promotedCds: {
+          include: {
+            cd: { include: { discography: { include: { genre: true } } } },
+          },
+        },
+      },
     });
     return promotions.map(this.toDto);
   }
@@ -27,7 +58,14 @@ export class PromotionController {
   async findById(id: bigint): Promise<PromotionDto> {
     const promotion = await this.prisma.promotion.findUnique({
       where: { id, active: true },
-      include: { promotedCds: { select: { cdId: true } } },
+      include: {
+        groupType: { select: { discount: true } },
+        promotedCds: {
+          include: {
+            cd: { include: { discography: { include: { genre: true } } } },
+          },
+        },
+      },
     });
     if (!promotion) {
       throw new NotFoundException("No se ha encontrado la promoción");
@@ -72,6 +110,8 @@ export class PromotionController {
     }
     await this.prisma.promotion.create({
       data: {
+        name: promo.name,
+        description: promo.description,
         groupTypeId: groupId,
         startDate: promo.startDate,
         endDate: promo.endDate,
@@ -159,12 +199,23 @@ export class PromotionController {
   private toDto(w: any): PromotionDto {
     return {
       id: Number(w.id),
-      groupingTypeId: Number(w.groupingTypeId),
+      name: w.name,
+      description: w.description,
+      groupTypeId: Number(w.groupingTypeId),
       startDate: w.startDate,
       endDate: w.endDate,
       createdAt: w.createdAt,
       updatedAt: w.updatedAt,
-      cdsDiscographyId: w.promotedCds.map((cd: any) => Number(cd.cdId)),
+      groupTypeDiscount: w.groupType.discount.toNumber(),
+      cds: w.promotedCds.map((c: any) => ({
+        id: Number(c.cd.discography.id),
+        title: c.cd.discography.title,
+        artist: c.cd.discography.artist,
+        imageUrl: c.cd.discography.imageUrl,
+        genreName: c.cd.discography.genre.name,
+        price: c.cd.discography.price.toNumber(),
+        stock: c.cd.discography.stock,
+      })),
     };
   }
 }

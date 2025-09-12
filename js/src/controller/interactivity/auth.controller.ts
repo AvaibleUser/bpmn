@@ -17,7 +17,7 @@ export class AuthController {
       iss: "self",
       sub: `${userId}`,
       iat: now,
-      exp: now + 1000 * 60 * 60 * 24,
+      exp: now + 60 * 60 * 24,
       role: roles,
     };
     return await sign(payload, jwtConfig.secret.privateKey(), jwtConfig.alg);

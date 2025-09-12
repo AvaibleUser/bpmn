@@ -14,7 +14,7 @@ export const jwtConfig = {
         encoding: "utf-8",
       }),
   },
-  alg: "RS512" as const,
+  alg: "RS256" as const,
 };
 
 export async function verify(pass: string, hash: string): Promise<boolean> {
