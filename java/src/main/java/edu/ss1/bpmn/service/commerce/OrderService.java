@@ -103,7 +103,9 @@ public class OrderService {
             throw new RequestConflictException(
                     "La cantidad solicitada es mayor que la existente en stock");
         }
-        discography.setStock(discography.getStock() - item.getQuantity());
+        if (discography.getStock() != null) {
+            discography.setStock(discography.getStock() - item.getQuantity());
+        }
         return Stream.of(discography);
     }
 
@@ -111,7 +113,8 @@ public class OrderService {
         if (cds.stream()
                 .map(CdEntity::getDiscography)
                 .map(DiscographyEntity::getStock)
-                .anyMatch(s -> s != null && s < item.getQuantity())) {
+                .filter(s -> s != null)
+                .anyMatch(s -> s < item.getQuantity())) {
             throw new RequestConflictException(
                     "No hay stock suficiente para reclamar la promoción %s veces"
                             .formatted(item.getQuantity()));
@@ -119,7 +122,9 @@ public class OrderService {
         return cds.stream()
                 .map(CdEntity::getDiscography)
                 .map(d -> {
-                    d.setStock(d.getStock() - item.getQuantity());
+                    if (d.getStock() != null) {
+                        d.setStock(d.getStock() - item.getQuantity());
+                    }
                     return d;
                 });
     }

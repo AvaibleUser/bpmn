@@ -93,6 +93,9 @@ export class OrderController {
         if (d.stock !== null && d.stock < i.quantity) {
           throw new ConflictException("No hay stock suficiente");
         }
+        if (d.stock === null) {
+          return;
+        }
         return this.prisma.discography.update({
           where: { id: d.id },
           data: { stock: { decrement: i.quantity } },
@@ -115,7 +118,7 @@ export class OrderController {
         data: order,
       })
     );
-    await this.prisma.$transaction(updates);
+    await this.prisma.$transaction(updates.filter((u) => !!u));
   }
 
   async pay(userId: bigint, orderId: bigint): Promise<void> {
