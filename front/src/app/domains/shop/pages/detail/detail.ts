@@ -4,7 +4,6 @@ import { Comments } from '@/shop/components/comments/comments';
 import { Rating } from '@/shop/components/rating/rating';
 import { Songs } from '@/shop/components/songs/songs';
 import { Cassette, DiscographyInfo, Format, Vinyl } from '@/shop/models/discography.model';
-import { Order } from '@/shop/models/order.model';
 import { CommonModule, formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, input } from '@angular/core';
@@ -78,44 +77,14 @@ export class Detail {
   }
 
   addToCart(discography: DiscographyInfo) {
-    const addToCart = (orderId: number) => {
-      this.commerceApi.createDiscographyItem(orderId, discography.id, { quantity: 1 }).subscribe({
-        next: () => {
-          this.alertStore.addAlert({
-            message: 'Producto agregado al carrito',
-            type: 'success',
-          });
-          this.waiting = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          this.alertStore.addAlert({
-            message: error.error.message,
-            type: 'error',
-          });
-          this.waiting = false;
-        },
-      });
-    };
     this.waiting = true;
-    this.commerceApi.getOrders().subscribe({
-      next: (orders) => {
-        const order = orders.find((order) => order.status === 'CART');
-        if (order) {
-          addToCart(order.id);
-        } else {
-          this.commerceApi.createOrder().subscribe({
-            next: ({ id }) => {
-              addToCart(id);
-            },
-            error: (error: HttpErrorResponse) => {
-              this.alertStore.addAlert({
-                message: error.error.message,
-                type: 'error',
-              });
-              this.waiting = false;
-            },
-          });
-        }
+    this.commerceApi.createDiscographyItem(discography.id, { quantity: 1 }).subscribe({
+      next: () => {
+        this.alertStore.addAlert({
+          message: 'Producto agregado al carrito',
+          type: 'success',
+        });
+        this.waiting = false;
       },
       error: (error: HttpErrorResponse) => {
         this.alertStore.addAlert({

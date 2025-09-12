@@ -1,0 +1,46 @@
+@let promotion$ = promotion();
+
+<div class="card rounded-none overflow-hidden group shadow-xs shadow-base-content">
+  <div class="relative overflow-hidden aspect-square">
+    <div class="flex justify-stretch">
+      @for (cd of promotion$.cds; track cd.id; let i = $index, count = $count) {
+      <figure class="overflow-hidden" [ngClass]="`w-1/${count}`">
+        <img
+          [src]="cd.imageUrl || '/assets/images/default-album.png'"
+          [alt]="cd.title"
+          class="w-full h-full object-cover"
+        />
+      </figure>
+      }
+    </div>
+
+    <div
+      class="absolute inset-0 bg-base-300/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+    >
+      <button
+        class="btn btn-primary gap-4"
+        (click)="addToCart(promotion$)"
+        [class.btn-disabled]="waiting"
+      >
+        @if (waiting) {
+        <span class="loading loading-spinner loading-xs"></span>
+        } @else{
+        <i-lucide [img]="ShoppingCart" size="25" />
+        <span class="">Agregar al carrito</span>}
+      </button>
+    </div>
+  </div>
+
+  <a [routerLink]="['/promotions', promotion$.id]" class="relative p-4 hover:text-accent">
+    <h3 class="font-bold text-lg truncate">{{ promotion$.name }}</h3>
+    <p class="text-sm truncate">{{ promotion$.description }}</p>
+
+    <div
+      class="absolute top-0 right-4 py-4 flex flex-col justify-around items-end h-full bg-base-100"
+    >
+      <span class="text-success font-semibold">
+        {{ discounted(promotion$) | currency : 'GTQ' : 'symbol-narrow' }}
+      </span>
+    </div>
+  </a>
+</div>

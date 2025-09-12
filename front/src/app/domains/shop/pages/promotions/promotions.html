@@ -1,0 +1,47 @@
+<div class="py-12 px-4 flex flex-col justify-evenly md:flex-row gap-4">
+  <div class="flex flex-col gap-4">
+    @if (userRole === 'ADMIN') {
+    <button class="btn btn-outline btn-block btn-primary" (click)="addPromotion()">
+      <i-lucide [img]="Plus" size="20" class="mr-2" />
+      Crear promoción
+    </button>
+    }
+  </div>
+
+  <div class="md:max-w-6xl grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-3 w-full">
+    @if (!promotions || !promotions.content.length) {
+    <div class="text-center text-accent h-full flex items-center lg:col-span-2 xl:col-span-3">
+      <p class="text-5xl">
+        Buscando las mejores combinaciones de CDs para la mejor experiencia auditiva...
+      </p>
+    </div>
+    } @else { @for (promotion of promotions.content; track promotion.id) {
+    <shop-promotion [promotion]="promotion" />
+    }
+
+    <div class="flex justify-center items-center gap-2 mt-auto lg:col-span-2 xl:col-span-3">
+      <button
+        class="btn btn-sm btn-ghost btn-circle"
+        [class.btn-disabled]="isFirstPage(promotions)"
+        [class.text-primary]="!isFirstPage(promotions)"
+        (click)="onPrevious(promotions, page)"
+      >
+        <i-lucide [img]="Previous" size="24" />
+      </button>
+
+      <span class="text-xs text-center">
+        {{ promotions.page.number + 1 }} de {{ promotions.page.totalPages }}
+      </span>
+
+      <button
+        class="btn btn-sm btn-ghost btn-circle"
+        [class.btn-disabled]="isLastPage(promotions)"
+        [class.text-primary]="!isLastPage(promotions)"
+        (click)="onNext(promotions, page)"
+      >
+        <i-lucide [img]="Next" size="24" />
+      </button>
+    </div>
+    }
+  </div>
+</div>

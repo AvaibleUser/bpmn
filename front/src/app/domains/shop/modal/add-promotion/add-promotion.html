@@ -1,0 +1,149 @@
+<div class="text-center mb-2">
+  <h1 class="text-3xl font-bold text-primary">Crear una nueva promoción</h1>
+</div>
+
+<form [formGroup]="addForm" (ngSubmit)="addPromotion()" class="space-y-5">
+  <div class="max-h-[70vh] overflow-y-auto space-y-5 space-x-2 p-1">
+    <fieldset class="fieldset mb-2">
+      <legend class="fieldset-legend">
+        <span>Tipo de agrupación</span>
+      </legend>
+      <select
+        [formControl]="groupId"
+        name="groupId"
+        class="select select-bordered w-full"
+        [class.select-error]="checkField('groupId')"
+        (change)="changeGroup()"
+      >
+        <option selected value="0" disabled>Seleccione una agrupación</option>
+        @for (group of groups; track group.id) {
+        <option [ngValue]="group.id">{{ group.name }}</option>
+        }
+      </select>
+      @if (group) {
+      <p class="label ml-auto">Descuento: {{ group.discount | percent }}</p>
+      }
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Nombre</span>
+      </legend>
+      <input
+        type="text"
+        formControlName="name"
+        name="name"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('name')"
+      />
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Descripción</span>
+      </legend>
+      <textarea
+        rows="3"
+        formControlName="description"
+        name="description"
+        class="textarea textarea-bordered w-full"
+        [class.input-error]="checkField('description')"
+      ></textarea>
+    </fieldset>
+
+    @if (group && group.name === 'Por genero') {
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">
+        <span>Género</span>
+      </legend>
+      <select
+        [formControl]="genreId"
+        name="genreId"
+        class="select select-bordered w-full"
+        [class.select-error]="checkField('genreId')"
+        (change)="changeGroup()"
+      >
+        <option selected value="0" disabled>Seleccione un género</option>
+        @for (genre of genres; track genre.id) {
+        <option [ngValue]="genre.id">{{ genre.name }}</option>
+        }
+      </select>
+    </fieldset>
+    }
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend w-full">
+        <span>Fecha de lanzamiento de la promoción</span>
+      </legend>
+      <input
+        type="datetime-local"
+        formControlName="startDate"
+        name="startDate"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('startDate')"
+      />
+    </fieldset>
+
+    @if (group?.limitedTime) {
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend w-full">
+        <span>Fecha de finalización de la promoción</span>
+      </legend>
+      <input
+        type="datetime-local"
+        formControlName="endDate"
+        name="endDate"
+        class="input input-bordered w-full"
+        [class.input-error]="checkField('endDate')"
+      />
+    </fieldset>
+    } @if (group && (group.name !== 'Por genero' || genreId.valid)) {
+    <fieldset class="fieldset" formArrayName="cdIds">
+      <legend class="fieldset-legend w-full">
+        <span>CDs</span>
+        @if (availableCds?.length && cdIds.length < group.cdsLimit) {
+        <button type="button" class="btn btn-xs btn-ghost justify-center" (click)="addCd()">
+          <i-lucide [img]="Add" size="16" />
+          CD
+        </button>
+        }
+      </legend>
+
+      @for (cd of cdIds.controls; track $index; let i = $index) {
+      <div class="join">
+        <select
+          [formControlName]="i"
+          [name]="i"
+          class="select select-bordered w-full"
+          [class.select-error]="checkField('cdIds', i)"
+        >
+          <option selected value="0" disabled>Seleccione un CD</option>
+          @for (cd of cds; track cd.id) {
+          <option [ngValue]="cd.id" [disabled]="!availableCds?.includes(cd.id)">
+            {{ cd.title }}
+          </option>
+          }
+        </select>
+        @if (cdIds.length > 1) {
+        <button type="button" class="btn btn-xs btn-soft btn-error w-fit h-full" (click)="rmCd(i)">
+          <i-lucide [img]="Delete" size="16" />
+        </button>
+        }
+      </div>
+      }
+      <p class="label ml-auto">Limite de CDs: {{ group.cdsLimit }}</p>
+    </fieldset>
+    }
+  </div>
+
+  <button
+    type="submit"
+    class="btn w-full font-semibold"
+    [class.btn-primary]="!waiting"
+    [class.btn-disabled]="waiting"
+  >
+    @if (waiting) {
+    <span class="loading loading-dots loading-xs"></span>
+    } @else { Crear }
+  </button>
+</form>

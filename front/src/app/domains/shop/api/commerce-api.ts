@@ -1,9 +1,12 @@
+import { GroupType } from '@/shop/models/group.model';
 import { UpsertItem } from '@/shop/models/item.model';
 import { Order, Status } from '@/shop/models/order.model';
+import { CreatePromotion, Promotion } from '@/shop/models/promotion.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environment/environment.development';
-import { Observable } from 'rxjs';
+import { Page, Pageable } from '@shared/models/pageable.model';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -38,25 +41,54 @@ export class CommerceApi {
     return this.http.get<Order>(`${this.api}/orders/${orderId}/items`);
   }
 
-  createDiscographyItem(
-    orderId: number,
-    discographyId: number,
-    item: UpsertItem
-  ): Observable<void> {
-    return this.http.post<void>(
-      `${this.api}/orders/${orderId}/items/discographies/${discographyId}`,
-      item
-    );
+  createItem(productId: number, product: string, item: UpsertItem): Observable<void> {
+    const item$ = new Subject<void>();
+    this.getOrders('CART').subscribe({
+      next: (orders) => {
+        const sendItem = (orderId: number) => {
+          this.http
+            .post<void>(`${this.api}/orders/${orderId}/items/${product}/${productId}`, item)
+            .subscribe({
+              next: () => item$.next(),
+              error: (error) => item$.error(error),
+            });
+        };
+        const order = orders.find((o) => o.status === 'CART');
+        if (order) {
+          sendItem(order.id);
+          return;
+        }
+        this.createOrder().subscribe({
+          next: ({ id }) => sendItem(id),
+          error: (error) => item$.error(error),
+        });
+      },
+      error: (error) => item$.error(error),
+    });
+    return item$.asObservable();
   }
 
-  createPromotionItem(orderId: number, promotionId: number, item: UpsertItem): Observable<void> {
-    return this.http.post<void>(
-      `${this.api}/orders/${orderId}/items/promotions/${promotionId}`,
-      item
-    );
+  createDiscographyItem(discographyId: number, item: UpsertItem): Observable<void> {
+    return this.createItem(discographyId, 'discographies', item);
+  }
+
+  createPromotionItem(promotionId: number, item: UpsertItem): Observable<void> {
+    return this.createItem(promotionId, 'promotions', item);
   }
 
   deleteItem(orderId: number, itemId: number): Observable<void> {
     return this.http.delete<void>(`${this.api}/orders/${orderId}/items/${itemId}`);
+  }
+
+  getPromotions(pageable: Pageable<{}> = {}): Observable<Page<Promotion>> {
+    return this.http.get<Page<Promotion>>(`${this.api}/promotions`, { params: pageable });
+  }
+
+  createPromotion(groupId: number, promotion: CreatePromotion): Observable<void> {
+    return this.http.post<void>(`${this.api}/groups/${groupId}/promotions`, promotion);
+  }
+
+  getGroups(): Observable<GroupType[]> {
+    return this.http.get<GroupType[]>(`${this.api}/groups`);
   }
 }

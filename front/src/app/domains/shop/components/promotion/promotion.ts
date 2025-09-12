@@ -1,34 +1,34 @@
 import { CommerceApi } from '@/shop/api/commerce-api';
-import { DiscographyInfo } from '@/shop/models/discography.model';
+import { Promotion as PromotionInfo } from '@/shop/models/promotion.model';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AlertStore } from '@shared/stores/alert-store';
-import { LucideAngularModule, ShoppingCart, Star } from 'lucide-angular';
+import { LucideAngularModule, ShoppingCart } from 'lucide-angular';
 
 @Component({
-  selector: 'shop-discography',
+  selector: 'shop-promotion',
   imports: [CommonModule, RouterModule, LucideAngularModule],
-  templateUrl: './discography.html',
+  templateUrl: './promotion.html',
+  styles: ``,
 })
-export class Discography {
+export class Promotion {
   private readonly commerceApi = inject(CommerceApi);
   private readonly alertStore = inject(AlertStore);
 
   readonly ShoppingCart = ShoppingCart;
-  readonly Star = Star;
 
-  discography = input.required<DiscographyInfo>();
+  promotion = input.required<PromotionInfo>();
 
   waiting = false;
 
-  addToCart(discography: DiscographyInfo) {
+  addToCart(promotion: PromotionInfo) {
     this.waiting = true;
-    this.commerceApi.createDiscographyItem(discography.id, { quantity: 1 }).subscribe({
+    this.commerceApi.createPromotionItem(promotion.id, { quantity: 1 }).subscribe({
       next: () => {
         this.alertStore.addAlert({
-          message: 'Producto agregado al carrito',
+          message: 'Promoción agregado al carrito',
           type: 'success',
         });
         this.waiting = false;
@@ -43,17 +43,7 @@ export class Discography {
     });
   }
 
-  discounted(discography: DiscographyInfo): number {
-    if (discography.format !== 'CASSETTE') {
-      return discography.price;
-    }
-    switch (discography.cassetteCondition) {
-      case 'SEMI_USED':
-        return discography.price * 0.8; // 20% discount
-      case 'USED':
-        return discography.price * 0.5; // 50% discount
-      default:
-        return discography.price;
-    }
+  discounted(promotion: PromotionInfo): number {
+    return (1 - promotion.groupTypeDiscount) * promotion.cds.reduce((acc, b) => acc + b.price, 0);
   }
 }

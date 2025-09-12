@@ -8,19 +8,12 @@ import {
 import { Genre } from '@/shop/models/genre.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertStore } from '@shared/stores/alert-store';
 
 @Component({
   selector: 'shop-add-product',
-  imports: [ReactiveFormsModule, RouterModule, FormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './add-product.html',
   styles: ``,
 })
@@ -93,10 +86,10 @@ export class AddProduct implements OnInit {
 
     const product: CreateDiscography = this.addForm.getRawValue();
     product.visible = true;
-    if (!product.release) {
+    if (!product.release || this.released()) {
       delete product.release;
     }
-    if (!product.stock) {
+    if (!product.stock || !this.limitedStock()) {
       delete product.stock;
     }
     if ('condition' in product && !product.condition) {

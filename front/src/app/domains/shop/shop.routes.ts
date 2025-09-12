@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { Music } from 'lucide-angular';
+import { Boxes, Music } from 'lucide-angular';
 
 const modules: Routes = [
   {
@@ -13,6 +13,10 @@ const modules: Routes = [
   {
     path: 'products/:productId',
     loadComponent: () => import('./pages/detail/detail').then((m) => m.Detail),
+  },
+  {
+    path: 'promotions',
+    loadComponent: () => import('./pages/promotions/promotions').then((m) => m.Promotions),
   },
 ];
 
@@ -35,5 +39,8 @@ export const routes: Routes = [
 
 export const shopData = {
   baseUrl: '/',
-  sidebarItems: [{ name: 'Productos', icon: Music, path: '/products' }],
+  sidebarItems: [
+    { name: 'Productos', icon: Music, path: '/products' },
+    { name: 'Promociones', icon: Boxes, path: '/promotions' },
+  ],
 };

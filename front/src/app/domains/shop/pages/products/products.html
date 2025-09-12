@@ -13,7 +13,7 @@
   </div>
 
   <div class="md:max-w-6xl grid grid-cols-1 gap-8 lg:grid-cols-2 xl:grid-cols-3 w-full">
-    @if (!discographies) {
+    @if (!discographies || !discographies.content.length) {
     <div class="text-center text-accent h-full flex items-center lg:col-span-2 xl:col-span-3">
       <p class="text-5xl">
         Buscando artistas que cambien el juego para tener existencias disponibles...

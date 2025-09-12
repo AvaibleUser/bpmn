@@ -8,7 +8,7 @@ import { Role } from '@core/auth/models/auth.model';
 import { Page, WithPage } from '@shared/models/pageable.model';
 import { AuthStore } from '@shared/stores/auth-store';
 import { ModalStore } from '@shared/stores/modal-store';
-import { ChevronLeft, ChevronRight, LucideAngularModule, PackagePlus } from 'lucide-angular';
+import { ChevronLeft, ChevronRight, LucideAngularModule, Music, PackagePlus } from 'lucide-angular';
 
 @Component({
   selector: 'shop-products',
@@ -23,6 +23,7 @@ export class Products extends WithPage<DiscographyInfo> {
   readonly Previous = ChevronLeft;
   readonly Next = ChevronRight;
   readonly Plus = PackagePlus;
+  readonly Music = Music;
 
   readonly page = signal<number>(0);
 
