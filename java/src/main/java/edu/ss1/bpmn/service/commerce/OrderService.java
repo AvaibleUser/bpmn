@@ -24,6 +24,7 @@ import edu.ss1.bpmn.domain.exception.RequestConflictException;
 import edu.ss1.bpmn.domain.exception.ValueNotFoundException;
 import edu.ss1.bpmn.domain.type.StatusType;
 import edu.ss1.bpmn.repository.catalog.DiscographyRepository;
+import edu.ss1.bpmn.repository.commerce.ItemRepository;
 import edu.ss1.bpmn.repository.commerce.OrderRepository;
 import edu.ss1.bpmn.repository.interactivity.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final DiscographyRepository discographyRepository;
+    private final ItemRepository itemRepository;
 
     public OrderDto findByIdAndUserId(long userId, long orderId) {
         return orderRepository.findByIdAndUserId(orderId, userId, OrderDto.class)
@@ -69,7 +71,7 @@ public class OrderService {
         OrderEntity orderDb = orderRepository.findByIdAndUserId(orderId, userId, OrderEntity.class)
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el pedido"));
 
-        if (orderDb.getStatus().ordinal() != order.status().ordinal() + 1) {
+        if (orderDb.getStatus().ordinal() + 1 != order.status().ordinal()) {
             throw new RequestConflictException("La orden debe ser actualizada en el orden correcto");
         }
         if (orderDb.getStatus() == CART) {
@@ -141,6 +143,7 @@ public class OrderService {
                     if (order.getStatus() != CART) {
                         throw new RequestConflictException("El pedido no puede ser borrado, ni ser cancelado");
                     }
+                    itemRepository.deleteAll(order.getItems());
                     orderRepository.delete(order);
                 });
     }

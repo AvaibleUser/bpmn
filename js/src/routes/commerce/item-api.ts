@@ -9,10 +9,10 @@ export const itemApi = new Hono<App>().basePath("/orders/:orderId/items");
 itemApi.get(
   "/",
   authenticated,
-  zv("query", otherIdParam("orderId")),
+  zv("param", otherIdParam("orderId")),
   async (c) => {
     const userId = BigInt(c.get("jwtPayload").sub);
-    const { orderId } = c.req.valid("query");
+    const { orderId } = c.req.valid("param");
     const items = await controller.findByOrderId(userId, orderId);
     return c.json(items);
   }

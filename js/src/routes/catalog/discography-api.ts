@@ -3,7 +3,7 @@ import {
   addDiscography,
   filterDiscography,
 } from "@/models/catalog/discography.model";
-import { App, idParam, image } from "@/models/util/util.model";
+import { App, idParam, image, otherIdParam } from "@/models/util/util.model";
 import { authenticated, rolesAllowed, zv } from "@/routes/middleware";
 import { Hono } from "hono";
 
@@ -14,6 +14,16 @@ discographyApi.get("/", zv("query", filterDiscography), async (c) => {
   const page = await controller.findAll(filter);
   return c.json(page, 200);
 });
+
+discographyApi.get(
+  "/promotions/:promotionId",
+  zv("param", otherIdParam("promotionId")),
+  async (c) => {
+    const { promotionId } = c.req.valid("param");
+    const discographies = await controller.findByPromotionId(promotionId);
+    return c.json(discographies, 200);
+  }
+);
 
 discographyApi.get("/:id", zv("param", idParam), async (c) => {
   const { id } = c.req.valid("param");

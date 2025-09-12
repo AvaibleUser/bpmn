@@ -1,9 +1,11 @@
 package edu.ss1.bpmn.service.commerce;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +34,16 @@ public class PromotionService {
     private final DiscographyRepository discographyRepository;
 
     public Page<PromotionDto.Complete> findPromotions(Pageable pageable) {
-        return promotionRepository.findByAvailable(PromotionDto.class, pageable)
+        Page<PromotionDto> promotions = promotionRepository.findByAvailable(PromotionDto.class, pageable);
+        return new PageImpl<PromotionDto.Complete>(promotions.getContent()
+                .stream()
+                .filter(promo -> promo.endDate() == null || promo.endDate().isAfter(LocalDate.now()))
                 .map(promo -> PromotionDto.Complete.builder()
                         .cds(discographyRepository.findByCdPromotionsId(promo.id(), DiscographyDto.class))
                         .promotion(promo)
-                        .build());
+                        .build())
+                .toList(),
+                promotions.getPageable(), promotions.getTotalElements());
     }
 
     public List<PromotionDto> findPromotionsByCd(long discographyId) {

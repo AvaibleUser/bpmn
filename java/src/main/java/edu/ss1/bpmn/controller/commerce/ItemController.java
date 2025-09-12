@@ -31,12 +31,13 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemDto> findOrderItems(@PathVariable long orderId, @CurrentUserId long userId) {
+    public List<ItemDto.Complete> findOrderItems(@PathVariable long orderId, @CurrentUserId long userId) {
         return itemService.findOrderItems(userId, orderId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findById(@CurrentUserId long userId, @PathVariable long orderId, @PathVariable long itemId) {
+    public ItemDto.Complete findById(@CurrentUserId long userId, @PathVariable long orderId,
+            @PathVariable long itemId) {
         return itemService.findOrderItem(userId, orderId, itemId);
     }
 

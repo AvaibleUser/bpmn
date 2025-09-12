@@ -1,3 +1,5 @@
+import { DiscographyController } from "@/controller/catalog/discography.controller";
+import { PromotionController } from "@/controller/commerce/promotion.controller";
 import { ItemDto } from "@/models/commerce/item.model";
 import {
   BadRequestException,
@@ -17,9 +19,16 @@ export class ItemController {
     const item = await this.prisma.item.findFirst({
       where: { order: { userId }, orderId, id: itemId },
       include: {
-        discography: true,
+        discography: { include: { genre: true } },
         promotion: {
-          include: { groupType: true, promotedCds: { select: { cdId: true } } },
+          include: {
+            groupType: true,
+            promotedCds: {
+              include: {
+                cd: { include: { discography: { include: { genre: true } } } },
+              },
+            },
+          },
         },
       },
     });
@@ -33,9 +42,16 @@ export class ItemController {
     const items = await this.prisma.item.findMany({
       where: { order: { userId }, orderId },
       include: {
-        discography: true,
+        discography: { include: { genre: true } },
         promotion: {
-          include: { groupType: true, promotedCds: { select: { cdId: true } } },
+          include: {
+            groupType: true,
+            promotedCds: {
+              include: {
+                cd: { include: { discography: { include: { genre: true } } } },
+              },
+            },
+          },
         },
       },
     });
@@ -155,26 +171,10 @@ export class ItemController {
   }
 
   private toDto(i: any): ItemDto {
-    const d = {
-      discographyId: i.discographyId === null ? null : Number(i.discographyId),
-      discographyTitle: i.discography?.title,
-      discographyArtist: i.discography?.artist,
-      discographyImageUrl: i.discography?.imageUrl,
-      discographyPrice: i.discography?.price.toNumber(),
-      discographyRelease: i.discography?.release,
-    };
-    const p = {
-      promotionId: i.promotionId === null ? null : Number(i.promotionId),
-      promotionGroupTypeName: i.promotion?.groupType.name,
-      promotionGroupTypeDiscount: i.promotion?.groupType.discount.toNumber(),
-      promotionCdsDiscographyId: i.promotion?.promotedCds.map(
-        (c: any) => c.cdId
-      ),
-    };
     return {
       id: Number(i.id),
-      ...d,
-      ...p,
+      discography: i.discography && DiscographyController.toDto(i.discography),
+      promotion: i.promotion && PromotionController.toDto(i.promotion),
       quantity: Number(i.quantity),
       unitPrice: i.unitPrice.toNumber(),
       subtotal: i.subtotal.toNumber(),

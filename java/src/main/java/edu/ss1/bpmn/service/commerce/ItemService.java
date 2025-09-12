@@ -3,12 +3,14 @@ package edu.ss1.bpmn.service.commerce;
 import static edu.ss1.bpmn.domain.type.StatusType.CART;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
+import edu.ss1.bpmn.domain.dto.catalog.discography.DiscographyDto;
 import edu.ss1.bpmn.domain.dto.commerce.item.ItemDto;
 import edu.ss1.bpmn.domain.dto.commerce.item.UpsertItemDto;
 import edu.ss1.bpmn.domain.entity.catalog.CdEntity;
@@ -34,14 +36,31 @@ public class ItemService {
     private final OrderRepository orderRepository;
     private final DiscographyRepository discographyRepository;
     private final PromotionRepository promotionRepository;
+    private final PromotionService promotionService;
 
-    public ItemDto findOrderItem(long userId, long orderId, long itemId) {
+    public ItemDto.Complete findOrderItem(long userId, long orderId, long itemId) {
         return itemRepository.findByIdAndOrderUserIdAndOrderId(itemId, userId, orderId, ItemDto.class)
+                .map(item -> ItemDto.Complete.builder()
+                        .item(item)
+                        .discography(discographyRepository
+                                .findById(item.discographyId(), DiscographyDto.class).orElse(null))
+                        .promotion(promotionService.findPromotion(item.promotionId()))
+                        .build())
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró el detalle de la factura"));
     }
 
-    public List<ItemDto> findOrderItems(long userId, long orderId) {
-        return itemRepository.findByOrderUserIdAndOrderId(userId, orderId, ItemDto.class);
+    public List<ItemDto.Complete> findOrderItems(long userId, long orderId) {
+        return itemRepository.findByOrderUserIdAndOrderId(userId, orderId, ItemDto.class)
+                .stream()
+                .map(item -> ItemDto.Complete.builder()
+                        .item(item)
+                        .discography(item.discographyId() == null ? null
+                                : discographyRepository.findById(item.discographyId(), DiscographyDto.class)
+                                        .orElse(null))
+                        .promotion(
+                                item.promotionId() == null ? null : promotionService.findPromotion(item.promotionId()))
+                        .build())
+                .toList();
     }
 
     @Transactional
@@ -73,6 +92,7 @@ public class ItemService {
     @Transactional
     public void createPromotionItem(long userId, long orderId, long promotionId, UpsertItemDto item) {
         PromotionEntity promotion = promotionRepository.findByIdAndAvailable(promotionId, PromotionEntity.class)
+                .filter(p -> p.getEndDate() == null || p.getEndDate().isAfter(LocalDate.now()))
                 .orElseThrow(() -> new ValueNotFoundException("No se encontró la promoción o ya terminó"));
 
         if (itemRepository.existsByOrderIdAndPromotionId(orderId, promotionId)) {

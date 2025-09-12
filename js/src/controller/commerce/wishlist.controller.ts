@@ -85,6 +85,11 @@ export class WishlistController {
     if (!prev) {
       return;
     }
+    if (prev.paid) {
+      throw new ConflictException(
+        "No puedes eliminar una discografía pagada de pre venta"
+      );
+    }
     await this.prisma.wishlist.delete({ where: { id: prev.id } });
   }
 

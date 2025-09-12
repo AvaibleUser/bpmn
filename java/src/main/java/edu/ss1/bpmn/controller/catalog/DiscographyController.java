@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +40,11 @@ public class DiscographyController {
     @GetMapping
     public Page<DiscographyDto.Complete> findAllDiscographies(FilterDiscographyDto filter, Pageable pageable) {
         return discographyService.findAllDiscographies(filter, pageable);
+    }
+
+    @GetMapping("/promotions/{promotionId}")
+    public Set<DiscographyDto> findByPromotionId(@PathVariable long promotionId) {
+        return discographyService.findByPromotionId(promotionId);
     }
 
     @GetMapping("/{id}")

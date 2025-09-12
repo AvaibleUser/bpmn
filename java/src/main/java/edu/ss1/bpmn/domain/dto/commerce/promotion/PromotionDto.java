@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import edu.ss1.bpmn.domain.dto.catalog.discography.DiscographyDto;
 import lombok.Builder;
 
@@ -22,7 +24,7 @@ public record PromotionDto(
 
     @Builder(toBuilder = true)
     public static record Complete(
-            PromotionDto promotion,
+            @JsonUnwrapped PromotionDto promotion,
             Set<DiscographyDto> cds) {
     }
 }

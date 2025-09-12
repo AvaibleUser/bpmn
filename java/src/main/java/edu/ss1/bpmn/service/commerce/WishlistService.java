@@ -71,6 +71,12 @@ public class WishlistService {
 
     @Transactional
     public void deleteWishlist(long userId, long discographyId) {
-        wishlistRepository.deleteByUserIdAndDiscographyId(userId, discographyId);
+        wishlistRepository.findByUserIdAndDiscographyId(userId, discographyId, WishlistEntity.class)
+                .ifPresent(w -> {
+                    if (w.isPaid()) {
+                        throw new RequestConflictException("No puedes eliminar una discografía pagada de pre venta");
+                    }
+                    wishlistRepository.delete(w);
+                });
     }
 }

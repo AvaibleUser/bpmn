@@ -16,6 +16,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -72,6 +73,10 @@ public class DiscographyService {
                 .discography(discography)
                 .rating(ratings.get(discography.id()).rating())
                 .build());
+    }
+
+    public Set<DiscographyDto> findByPromotionId(Long promotionId) {
+        return discographyRepository.findByCdPromotionsId(promotionId, DiscographyDto.class);
     }
 
     public DiscographyDto findDiscographyById(Long id) {

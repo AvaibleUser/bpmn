@@ -132,7 +132,10 @@ export class OrderController {
     if (!order) {
       return;
     }
-    await this.prisma.order.delete({ where: { id: orderId } });
+    await this.prisma.$transaction([
+      this.prisma.item.deleteMany({ where: { orderId } }),
+      this.prisma.order.delete({ where: { id: orderId } }),
+    ]);
   }
 
   private toDto(o: any): OrderDto {

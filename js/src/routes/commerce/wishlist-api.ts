@@ -43,7 +43,7 @@ wishlistApi.post(
     const userId = BigInt(c.get("jwtPayload").sub);
     const { discographyId } = c.req.valid("param");
     const { paid } = c.req.valid("json");
-    await controller.create(discographyId, userId, paid);
+    await controller.create(userId, discographyId, paid);
     return c.body(null, 201);
   }
 );

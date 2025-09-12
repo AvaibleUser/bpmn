@@ -1,17 +1,11 @@
+import { DiscographyDto } from "@/models/catalog/discography.model";
+import { PromotionDto } from "@/models/commerce/promotion.model";
 import * as z from "zod";
 
 export interface ItemDto {
   id: number;
-  discographyId: number | null;
-  discographyTitle: string | null;
-  discographyArtist: string | null;
-  discographyImageUrl: string | null;
-  discographyPrice: number | null;
-  discographyRelease: Date | null;
-  promotionId: number | null;
-  promotionGroupTypeName: string | null;
-  promotionGroupTypeDiscount: number | null;
-  promotionCdsDiscographyId: number[] | null;
+  discography: DiscographyDto | null;
+  promotion: PromotionDto | null;
   quantity: number;
   unitPrice: number;
   subtotal: number;

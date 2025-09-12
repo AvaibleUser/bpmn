@@ -118,6 +118,31 @@ export class DiscographyController {
     };
   }
 
+  async findByPromotionId(promotionId: bigint): Promise<DiscographyDto[]> {
+    const result: any = await this.prisma.discography.findMany({
+      where: { cd: { promotedCds: { some: { promotionId } } } },
+      select: {
+        id: true,
+        title: true,
+        artist: true,
+        imageUrl: true,
+        year: true,
+        price: true,
+        stock: true,
+        format: true,
+        visible: true,
+        release: true,
+        createdAt: true,
+        updatedAt: true,
+        genre: { select: { name: true } },
+        cassette: { select: { condition: true } },
+        vinyl: { select: { size: true, specialEdition: true } },
+        ratings: { select: { rating: true } },
+      },
+    });
+    return result.map(DiscographyController.toDto);
+  }
+
   async findById(id: bigint): Promise<DiscographyDto> {
     const result: any = await this.prisma.discography.findUnique({
       where: { id },
@@ -143,7 +168,7 @@ export class DiscographyController {
     if (!result) {
       throw new NotFoundException("No se ha encontrado la discografía");
     }
-    return this.toDto(result);
+    return DiscographyController.toDto(result);
   }
 
   async create(d: AddDiscographyDto): Promise<number> {
@@ -294,24 +319,31 @@ export class DiscographyController {
     });
   }
 
-  private toDto(d: any): DiscographyDto {
-    d.id = Number(d.id);
-    d.price = d.price.toNumber();
-    d.genreName = d.genre.name;
-    delete d.genre;
-    d.cassetteCondition = d.cassette?.condition;
-    delete d.cassette;
-    d.vinylSize = d.vinyl?.size;
-    d.vinylSpecialEdition = d.vinyl?.specialEdition;
-    delete d.vinyl;
-    d.rating = !d.ratings?.length
-      ? 0
-      : d.ratings.reduce(
-          (acc: number, r: { rating: number }) => acc + r.rating,
-          0
-        ) / d.ratings.length;
-    delete d.ratings;
-    return d;
+  static toDto(d: any): DiscographyDto {
+    return {
+      id: Number(d.id),
+      title: d.title,
+      artist: d.artist,
+      imageUrl: d.imageUrl,
+      genreName: d.genre.name,
+      year: d.year,
+      price: d.price.toNumber(),
+      stock: d.stock,
+      format: d.format,
+      visible: d.visible,
+      release: d.release,
+      createdAt: d.createdAt,
+      updatedAt: d.updatedAt,
+      cassetteCondition: d.cassette?.condition,
+      vinylSize: d.vinyl?.size,
+      vinylSpecialEdition: d.vinyl?.specialEdition,
+      rating: !d.ratings?.length
+        ? 0
+        : d.ratings.reduce(
+            (acc: number, r: { rating: number }) => acc + r.rating,
+            0
+          ),
+    };
   }
 }
 

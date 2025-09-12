@@ -14,7 +14,11 @@ export class PromotionController {
 
   async findAll(pageable: Pageable): Promise<PageModel<PromotionDto>> {
     const promotions = await this.prisma.promotion.findMany({
-      where: { active: true },
+      where: {
+        active: true,
+        startDate: { lte: new Date() },
+        OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
+      },
       include: {
         groupType: { select: { discount: true } },
         promotedCds: {
@@ -30,7 +34,7 @@ export class PromotionController {
       where: { active: true },
     });
     return {
-      content: promotions.map(this.toDto),
+      content: promotions.map(PromotionController.toDto),
       page: {
         size: pageable.size,
         number: pageable.page,
@@ -52,7 +56,7 @@ export class PromotionController {
         },
       },
     });
-    return promotions.map(this.toDto);
+    return promotions.map(PromotionController.toDto);
   }
 
   async findById(id: bigint): Promise<PromotionDto> {
@@ -70,7 +74,7 @@ export class PromotionController {
     if (!promotion) {
       throw new NotFoundException("No se ha encontrado la promoción");
     }
-    return this.toDto(promotion);
+    return PromotionController.toDto(promotion);
   }
 
   async create(groupId: bigint, promo: UpsertPromotionDto): Promise<void> {
@@ -196,7 +200,7 @@ export class PromotionController {
     });
   }
 
-  private toDto(w: any): PromotionDto {
+  static toDto(w: any): PromotionDto {
     return {
       id: Number(w.id),
       name: w.name,
