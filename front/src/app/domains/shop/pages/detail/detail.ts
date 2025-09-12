@@ -1,9 +1,12 @@
+import { CommerceApi } from '@/shop/api/commerce-api';
 import { ProductsApi } from '@/shop/api/products-api';
 import { AddItem } from '@/shop/components/add-item/add-item';
 import { Comments } from '@/shop/components/comments/comments';
+import { Promotion } from '@/shop/components/promotion/promotion';
 import { Rating } from '@/shop/components/rating/rating';
 import { Songs } from '@/shop/components/songs/songs';
 import { Cassette, DiscographyInfo, Format, Vinyl } from '@/shop/models/discography.model';
+import { PromotionInfo } from '@/shop/models/promotion.model';
 import { CommonModule, formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, input } from '@angular/core';
@@ -32,12 +35,13 @@ import {
 
 @Component({
   selector: 'shop-detail',
-  imports: [CommonModule, LucideAngularModule, Comments, Rating, Songs, AddItem],
+  imports: [CommonModule, LucideAngularModule, Comments, Rating, Songs, AddItem, Promotion],
   templateUrl: './detail.html',
 })
 export class Detail {
   private readonly authStore = inject(AuthStore);
   private readonly productsApi = inject(ProductsApi);
+  private readonly commerceApi = inject(CommerceApi);
   private readonly alertStore = inject(AlertStore);
   private readonly router = inject(Router);
 
@@ -62,12 +66,21 @@ export class Detail {
   discography?: DiscographyInfo;
   userRole?: Role;
   waiting = false;
+  promotions?: PromotionInfo[];
 
   constructor() {
     effect(() => {
       this.userRole = this.authStore.session().token ? this.authStore.session().role : undefined;
       this.productsApi.getDiscography(this.id()).subscribe({
-        next: (discography) => (this.discography = discography),
+        next: (discography) => {
+          this.discography = discography;
+          if (discography.format !== 'CD') {
+            return;
+          }
+          this.commerceApi.getCdPromotions(discography.id).subscribe((promotions) => {
+            this.promotions = promotions;
+          });
+        },
         error: () => {
           this.router.navigate(['/products']);
         },

@@ -80,6 +80,10 @@ export class CommerceApi {
     return this.http.get<Page<PromotionInfo>>(`${this.api}/promotions`, { params: pageable });
   }
 
+  getCdPromotions(cdId: number): Observable<PromotionInfo[]> {
+    return this.http.get<PromotionInfo[]>(`${this.api}/discographies/${cdId}/promotions`);
+  }
+
   getPromotion(promotionId: number): Observable<PromotionInfo> {
     return this.http.get<PromotionInfo>(`${this.api}/promotions/${promotionId}`);
   }

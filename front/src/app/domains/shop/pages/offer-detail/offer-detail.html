@@ -70,6 +70,22 @@
         }
       </div>
     </div>
+
+    <div class="bg-base-200 p-6 rounded-lg max-w-3xl mx-auto">
+      <h3 class="text-2xl font-bold mb-6 text-center">CDs</h3>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 w-full">
+        @if (!discographies || !discographies.content.length) {
+        <div class="text-center text-accent h-full flex items-center lg:col-span-2 xl:col-span-3">
+          <p class="text-5xl">
+            Buscando artistas que cambien el juego para tener existencias disponibles...
+          </p>
+        </div>
+        } @else { @for (discography of discographies.content; track discography.id) {
+        <shop-discography [discography]="discography" />
+        } }
+      </div>
+    </div>
   </div>
   }
 </div>
