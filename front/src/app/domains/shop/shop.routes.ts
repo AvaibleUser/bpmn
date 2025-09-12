@@ -18,6 +18,10 @@ const modules: Routes = [
     path: 'promotions',
     loadComponent: () => import('./pages/promotions/promotions').then((m) => m.Promotions),
   },
+  {
+    path: 'promotions/:promotionId',
+    loadComponent: () => import('./pages/offer-detail/offer-detail').then((m) => m.OfferDetail),
+  },
 ];
 
 export const routes: Routes = [

@@ -1,47 +1,20 @@
-import { CommerceApi } from '@/shop/api/commerce-api';
+import { AddItem } from '@/shop/components/add-item/add-item';
 import { DiscographyInfo } from '@/shop/models/discography.model';
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AlertStore } from '@shared/stores/alert-store';
 import { LucideAngularModule, ShoppingCart, Star } from 'lucide-angular';
 
 @Component({
   selector: 'shop-discography',
-  imports: [CommonModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, RouterModule, LucideAngularModule, AddItem],
   templateUrl: './discography.html',
 })
 export class Discography {
-  private readonly commerceApi = inject(CommerceApi);
-  private readonly alertStore = inject(AlertStore);
-
   readonly ShoppingCart = ShoppingCart;
   readonly Star = Star;
 
   discography = input.required<DiscographyInfo>();
-
-  waiting = false;
-
-  addToCart(discography: DiscographyInfo) {
-    this.waiting = true;
-    this.commerceApi.createDiscographyItem(discography.id, { quantity: 1 }).subscribe({
-      next: () => {
-        this.alertStore.addAlert({
-          message: 'Producto agregado al carrito',
-          type: 'success',
-        });
-        this.waiting = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.alertStore.addAlert({
-          message: error.error.message,
-          type: 'error',
-        });
-        this.waiting = false;
-      },
-    });
-  }
 
   discounted(discography: DiscographyInfo): number {
     if (discography.format !== 'CASSETTE') {

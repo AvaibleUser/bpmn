@@ -1,5 +1,5 @@
-import { CommerceApi } from '@/shop/api/commerce-api';
 import { ProductsApi } from '@/shop/api/products-api';
+import { AddItem } from '@/shop/components/add-item/add-item';
 import { Comments } from '@/shop/components/comments/comments';
 import { Rating } from '@/shop/components/rating/rating';
 import { Songs } from '@/shop/components/songs/songs';
@@ -32,13 +32,12 @@ import {
 
 @Component({
   selector: 'shop-detail',
-  imports: [CommonModule, LucideAngularModule, Comments, Rating, Songs],
+  imports: [CommonModule, LucideAngularModule, Comments, Rating, Songs, AddItem],
   templateUrl: './detail.html',
 })
 export class Detail {
   private readonly authStore = inject(AuthStore);
   private readonly productsApi = inject(ProductsApi);
-  private readonly commerceApi = inject(CommerceApi);
   private readonly alertStore = inject(AlertStore);
   private readonly router = inject(Router);
 
@@ -73,26 +72,6 @@ export class Detail {
           this.router.navigate(['/products']);
         },
       });
-    });
-  }
-
-  addToCart(discography: DiscographyInfo) {
-    this.waiting = true;
-    this.commerceApi.createDiscographyItem(discography.id, { quantity: 1 }).subscribe({
-      next: () => {
-        this.alertStore.addAlert({
-          message: 'Producto agregado al carrito',
-          type: 'success',
-        });
-        this.waiting = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.alertStore.addAlert({
-          message: error.error.message,
-          type: 'error',
-        });
-        this.waiting = false;
-      },
     });
   }
 

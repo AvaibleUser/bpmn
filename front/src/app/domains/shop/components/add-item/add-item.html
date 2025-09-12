@@ -1,0 +1,37 @@
+@let stock$ = stock(); @let withoutStock = typeof stock$ === 'number' && stock$ <= 0;
+
+<div class="flex justify-center gap-6 w-fit my-4">
+  @if (!withoutStock) {
+  <div class="mx-auto flex justify-center gap-2">
+    <button
+      class="btn btn-ghost btn-circle"
+      (click)="quantity.set(quantity() - 1)"
+      [class.btn-disabled]="waiting || quantity() <= 1"
+    >
+      <i-lucide [img]="Minus" size="25" />
+    </button>
+    <span class="font-bold text-2xl my-auto">{{ quantity() }}{{ amount(stock$) }}</span>
+    <button
+      class="btn btn-ghost btn-circle"
+      (click)="quantity.set(quantity() + 1)"
+      [class.btn-disabled]="waiting || (stock$ && quantity() >= stock$)"
+    >
+      <i-lucide [img]="Add" size="25" />
+    </button>
+  </div>
+
+  <button
+    class="btn btn-soft btn-primary gap-4"
+    [ngClass]="{ 'btn-secondary pointer-events-none': waiting || withoutStock, btnClass: true }"
+    (click)="addToCart()"
+  >
+    @if (waiting) {
+    <span class="loading loading-spinner loading-xs"></span>
+    } @else{
+    <i-lucide [img]="ShoppingCart" size="25" />
+    }
+  </button>
+  } @else {
+  <span class="badge badge-error badge-xl">Agotado</span>
+  }
+</div>

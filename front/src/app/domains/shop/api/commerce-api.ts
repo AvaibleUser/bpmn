@@ -1,7 +1,7 @@
 import { GroupType } from '@/shop/models/group.model';
 import { UpsertItem } from '@/shop/models/item.model';
 import { Order, Status } from '@/shop/models/order.model';
-import { CreatePromotion, Promotion } from '@/shop/models/promotion.model';
+import { CreatePromotion, PromotionInfo } from '@/shop/models/promotion.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environment/environment.development';
@@ -41,7 +41,11 @@ export class CommerceApi {
     return this.http.get<Order>(`${this.api}/orders/${orderId}/items`);
   }
 
-  createItem(productId: number, product: string, item: UpsertItem): Observable<void> {
+  createItem(
+    productId: number,
+    product: 'discographies' | 'promotions',
+    item: UpsertItem
+  ): Observable<void> {
     const item$ = new Subject<void>();
     this.getOrders('CART').subscribe({
       next: (orders) => {
@@ -68,24 +72,24 @@ export class CommerceApi {
     return item$.asObservable();
   }
 
-  createDiscographyItem(discographyId: number, item: UpsertItem): Observable<void> {
-    return this.createItem(discographyId, 'discographies', item);
-  }
-
-  createPromotionItem(promotionId: number, item: UpsertItem): Observable<void> {
-    return this.createItem(promotionId, 'promotions', item);
-  }
-
   deleteItem(orderId: number, itemId: number): Observable<void> {
     return this.http.delete<void>(`${this.api}/orders/${orderId}/items/${itemId}`);
   }
 
-  getPromotions(pageable: Pageable<{}> = {}): Observable<Page<Promotion>> {
-    return this.http.get<Page<Promotion>>(`${this.api}/promotions`, { params: pageable });
+  getPromotions(pageable: Pageable<{}> = {}): Observable<Page<PromotionInfo>> {
+    return this.http.get<Page<PromotionInfo>>(`${this.api}/promotions`, { params: pageable });
+  }
+
+  getPromotion(promotionId: number): Observable<PromotionInfo> {
+    return this.http.get<PromotionInfo>(`${this.api}/promotions/${promotionId}`);
   }
 
   createPromotion(groupId: number, promotion: CreatePromotion): Observable<void> {
     return this.http.post<void>(`${this.api}/groups/${groupId}/promotions`, promotion);
+  }
+
+  deletePromotion(promotionId: number): Observable<void> {
+    return this.http.delete<void>(`${this.api}/promotions/${promotionId}`);
   }
 
   getGroups(): Observable<GroupType[]> {

@@ -1,53 +1,51 @@
 <div class="min-h-screen bg-base-100 py-8">
-  @if (!discography) {
+  @if (!promotion) {
   <div class="flex justify-center items-center h-96">
     <div class="loading loading-spinner loading-lg text-primary"></div>
   </div>
-  } @else if (discography) {
+  } @else if (promotion) {
   <div class="container mx-auto px-4 xl:max-w-5xl 2xl:max-w-7xl">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-      <figure class="overflow-hidden aspect-square">
-        <img
-          [src]="discography.imageUrl || '/assets/images/default-album.png'"
-          [alt]="discography.title"
-          class="w-full h-full object-cover"
-        />
-      </figure>
+      <div class="flex justify-stretch">
+        @for (cd of promotion.cds; track cd.id; let i = $index, count = $count) {
+        <figure class="overflow-hidden" [ngClass]="`w-1/${count}`">
+          <img
+            [src]="cd.imageUrl || '/assets/images/default-album.png'"
+            [alt]="cd.title"
+            class="w-full h-full object-cover"
+          />
+        </figure>
+        }
+      </div>
 
       <div class="space-y-6">
         <div>
-          <h1 class="text-6xl font-bold font-serif mb-4">{{ discography.title }}</h1>
-          <h2 class="text-3xl text-base-content/70 mb-6">{{ discography.artist }}</h2>
+          <h1 class="text-6xl font-bold font-serif mb-4">{{ promotion.name }}</h1>
+          <h2 class="text-3xl text-base-content/70 mb-6">{{ promotion.description }}</h2>
           <div class="flex flex-wrap gap-4 items-center mb-4 text-xl">
-            @if (discography.format === 'CASSETTE' && discography.cassetteCondition !== 'NEW') {
             <span class="line-through text-base-content/60">
-              {{ discography.price | currency : 'GTQ' : 'symbol-narrow' }}
+              {{ price(promotion) | currency : 'GTQ' : 'symbol-narrow' }}
             </span>
             <span class="font-bold text-2xl">
-              {{ discounted(discography) | currency : 'GTQ' : 'symbol-narrow' }}
+              {{ discounted(promotion) | currency : 'GTQ' : 'symbol-narrow' }}
             </span>
             <span class="badge badge-success badge-soft rounded-bl-3xl rounded-tl-3xl">
               <span class="animate-ping rounded-full bg-error size-1"></span>
               <i-lucide [img]="Discount" size="18" />
-              {{ discount(discography) | percent }}
+              {{ promotion.groupTypeDiscount | percent }}
             </span>
-            } @else {
-            <span class="font-bold text-2xl">
-              {{ discography.price | currency : 'GTQ' : 'symbol-narrow' }}
-            </span>
-            }
           </div>
         </div>
 
         <shop-add-item
-          [id]="discography.id"
+          [id]="promotion.id"
           productType="discographies"
-          [stock]="discography.stock"
+          [stock]="stock(promotion)"
           btnClass="btn-xl"
         />
 
         <div class="flex flex-col gap-3">
-          @for(detail of details(discography); track detail.label) { @if (detail.condition ===
+          @for(detail of details(promotion); track detail.label) { @if (detail.condition ===
           undefined || detail.condition) {
           <div class="flex items-center gap-2">
             <i-lucide [img]="detail.icon" size="24" class="text-ctp-teal" />
@@ -70,13 +68,7 @@
           </button>
         </div>
         }
-        <shop-songs [productId]="id()" />
       </div>
-    </div>
-
-    <div class="flex flex-col gap-6">
-      <shop-rating [productId]="id()" [userRole]="userRole" />
-      <shop-comments [productId]="id()" [userRole]="userRole" />
     </div>
   </div>
   }

@@ -1,6 +1,6 @@
 import { CommerceApi } from '@/shop/api/commerce-api';
 import { Promotion } from '@/shop/components/promotion/promotion';
-import { Promotion as PromotionInfo } from '@/shop/models/promotion.model';
+import { PromotionInfo } from '@/shop/models/promotion.model';
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
 import { Role } from '@core/auth/models/auth.model';

@@ -6,7 +6,7 @@ export interface CreatePromotion {
   cdIds: number[];
 }
 
-export interface Promotion {
+export interface PromotionInfo {
   id: number;
   name: string;
   description: string;

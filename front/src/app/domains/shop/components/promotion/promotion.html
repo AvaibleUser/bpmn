@@ -17,17 +17,7 @@
     <div
       class="absolute inset-0 bg-base-300/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
     >
-      <button
-        class="btn btn-primary gap-4"
-        (click)="addToCart(promotion$)"
-        [class.btn-disabled]="waiting"
-      >
-        @if (waiting) {
-        <span class="loading loading-spinner loading-xs"></span>
-        } @else{
-        <i-lucide [img]="ShoppingCart" size="25" />
-        <span class="">Agregar al carrito</span>}
-      </button>
+      <shop-add-item [id]="promotion$.id" productType="promotions" [stock]="stock(promotion$)" />
     </div>
   </div>
 
