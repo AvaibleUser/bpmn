@@ -1,0 +1,142 @@
+<div class="min-h-screen bg-base-100 py-8">
+  <div class="container mx-auto px-4 xl:max-w-6xl 2xl:max-w-7xl">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-5xl font-bold font-serif mb-4">Mi Lista de Deseos</h1>
+      <p class="text-xl text-base-content/70">
+        Gestiona tus productos favoritos y preventas
+      </p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs tabs-boxed mb-8 bg-base-200">
+      <button 
+        class="tab"
+        [class.tab-active]="activeTab === 'wishlist'"
+        (click)="setActiveTab('wishlist')"
+      >
+        <i-lucide [img]="Heart" size="20" class="mr-2" />
+        Lista de Deseos
+        @if (wishlistCount > 0) {
+        <span class="badge badge-primary ml-2">{{ wishlistCount }}</span>
+        }
+      </button>
+      
+      <button 
+        class="tab"
+        [class.tab-active]="activeTab === 'preventa'"
+        (click)="setActiveTab('preventa')"
+      >
+        <i-lucide [img]="Preventa" size="20" class="mr-2" />
+        Preventas
+        @if (preventaCount > 0) {
+        <span class="badge badge-warning ml-2">{{ preventaCount }}</span>
+        }
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading) {
+    <div class="flex justify-center items-center h-96">
+      <div class="loading loading-spinner loading-lg text-primary"></div>
+    </div>
+    }
+
+    <!-- Content -->
+    @else {
+      <!-- Empty State -->
+      @if (filteredItems.length === 0) {
+      <div class="text-center py-16">
+        <div class="mb-6">
+          @if (activeTab === 'wishlist') {
+          <i-lucide [img]="Heart" size="80" class="text-base-content/30 mx-auto" />
+          } @else {
+          <i-lucide [img]="Preventa" size="80" class="text-base-content/30 mx-auto" />
+          }
+        </div>
+        
+        <h3 class="text-2xl font-bold mb-4">
+          @if (activeTab === 'wishlist') {
+          Tu lista de deseos está vacía
+          } @else {
+          No tienes preventas activas
+          }
+        </h3>
+        
+        <p class="text-base-content/60 mb-6">
+          @if (activeTab === 'wishlist') {
+          Explora nuestro catálogo y agrega productos que te interesen
+          } @else {
+          Las preventas aparecerán aquí cuando realices pedidos anticipados
+          }
+        </p>
+        
+        <button 
+          class="btn btn-primary"
+        >
+          <i-lucide [img]="ShoppingBag" size="20" />
+          Explorar Productos
+        </button>
+      </div>
+      }
+
+      <!-- Items Grid -->
+      @else {
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold">
+          @if (activeTab === 'wishlist') {
+          Lista de Deseos ({{ wishlistCount }})
+          } @else {
+          Preventas ({{ preventaCount }})
+          }
+        </h2>
+        
+        @if (activeTab === 'preventa') {
+        <p class="text-base-content/70 mt-2">
+          Estos productos han sido marcados como preventas (pagados por adelantado)
+        </p>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        @for (item of filteredItems; track item.id) {
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <figure class="aspect-square overflow-hidden" (click)="navigateToProduct(item.discographyId)">
+            <img
+              [src]="item.discographyImageUrl || '/assets/images/default-album.png'"
+              [alt]="item.discographyTitle"
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+            />
+          </figure>
+          
+          <div class="card-body p-4">
+            <h3 class="card-title text-lg font-bold line-clamp-2 cursor-pointer" (click)="navigateToProduct(item.discographyId)">
+              {{ item.discographyTitle }}
+            </h3>
+            <p class="text-base-content/70 font-medium">{{ item.discographyArtist }}</p>
+            
+            @if (item.paid) {
+            <div class="badge badge-warning badge-sm mb-2">Preventa</div>
+            }
+            
+            <div class="flex items-center justify-between mt-auto">
+              <span class="text-xl font-bold text-ctp-green">
+                {{ item.discographyPrice | currency : 'GTQ' : 'symbol-narrow' }}
+              </span>
+              
+              <button 
+                class="btn btn-error btn-sm"
+                (click)="removeFromWishlist(item.discographyId)"
+              >
+                <i-lucide [img]="Delete" size="16" />
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,142 @@
+<div class="min-h-screen bg-base-100 py-8">
+  <div class="container mx-auto xl:max-w-6xl 2xl:max-w-7xl">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-5xl font-bold font-serif mb-4">Carrito de Compras</h1>
+      <p class="text-xl text-base-content/70">Revisa y gestiona los productos en tu carrito</p>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading) {
+    <div class="flex justify-center items-center h-96">
+      <div class="loading loading-spinner loading-lg text-primary"></div>
+    </div>
+    }
+
+    <!-- Empty Cart -->
+    @else if (!cart || items?.length === 0) {
+    <div class="text-center py-16">
+      <div class="mb-6">
+        <i-lucide [img]="ShoppingCart" size="80" class="text-base-content/30 mx-auto" />
+      </div>
+
+      <h3 class="text-2xl font-bold mb-4">Tu carrito está vacío</h3>
+      <p class="text-base-content/60 mb-6">
+        Agrega algunos productos increíbles a tu carrito para comenzar
+      </p>
+
+      <a class="a-accent flex justify-center gap-2 w-fit mx-auto" routerLink="/products">
+        <i-lucide [img]="ShoppingBag" size="20" />
+        Continuar Comprando
+      </a>
+    </div>
+    }
+
+    <!-- Cart Content -->
+    @else {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Cart Items -->
+      <div class="lg:col-span-2">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">Productos en tu carrito ({{ totalItems }})</h2>
+
+          <button class="btn btn-error btn-outline btn-sm" (click)="clearCart()">
+            <i-lucide [img]="Delete" size="16" />
+            Vaciar Carrito
+          </button>
+        </div>
+
+        <div class="space-y-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          @for (item of items; track item.id) {
+          <div class="card bg-base-200 shadow-md">
+            <div class="card-body p-4">
+              <div class="flex justify-between items-start mb-4">
+                <div class="flex-grow">
+                  <div class="text-lg font-bold text-ctp-green">
+                    Subtotal: {{ item.subtotal | currency : 'GTQ' : 'symbol-narrow' }}
+                  </div>
+                  <div class="text-sm text-base-content/60 mb-2">Cantidad: {{ item.quantity }}</div>
+                </div>
+
+                <button class="btn btn-error btn-sm" (click)="removeItem(item.id)">
+                  <i-lucide [img]="Delete" size="16" />
+                  Eliminar
+                </button>
+              </div>
+
+              <!-- Display discography or promotion -->
+              @if (item.discography) {
+              <shop-discography [discography]="item.discography" />
+              } @else if (item.promotion) {
+              <shop-promotion [promotion]="item.promotion" />
+              } @else {
+              <div class="text-center p-4 bg-base-300 rounded">
+                <p class="text-base-content/60">Producto no disponible</p>
+              </div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+
+        <!-- Continue Shopping -->
+        <div class="mt-8">
+          <a class="a-accent flex justify-center gap-2 w-fit mx-auto" routerLink="/products">
+            <i-lucide [img]="ShoppingBag" size="20" />
+            Continuar Comprando
+          </a>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="lg:col-span-1">
+        <div class="card bg-base-200 shadow-lg sticky top-8">
+          <div class="card-body">
+            <h3 class="card-title text-xl mb-4">Resumen del Pedido</h3>
+
+            <div class="space-y-3 mb-6">
+              <div class="flex justify-between">
+                <span>Subtotal ({{ totalItems }} productos)</span>
+                <span class="font-medium">
+                  {{ totalPrice | currency : 'GTQ' : 'symbol-narrow' }}
+                </span>
+              </div>
+
+              <div class="flex justify-between">
+                <span>Envío</span>
+                <span class="font-medium">Gratis</span>
+              </div>
+
+              <div class="divider my-2"></div>
+
+              <div class="flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span class="text-ctp-green">
+                  {{ totalPrice | currency : 'GTQ' : 'symbol-narrow' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Payment Button -->
+            <button
+              class="btn btn-primary btn-block"
+              (click)="processPayment()"
+              [disabled]="waiting"
+            >
+              @if (waiting) {
+              <span class="loading loading-spinner loading-sm"></span>
+              Procesando... } @else {
+              <i-lucide [img]="CreditCard" size="20" />
+              Proceder al Pago }
+            </button>
+
+            <div class="text-center mt-4">
+              <p class="text-sm text-base-content/60">Pago seguro y protegido</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>

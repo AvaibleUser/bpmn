@@ -7,6 +7,7 @@ const modules: Routes = [
     path: 'admin',
     canActivate: [authGuard],
     loadComponent: () => import('@core/auth/layouts/base/base').then((m) => m.Base),
+    data: { role: 'ADMIN' },
   },
   {
     path: '',

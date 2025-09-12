@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
-import { Boxes, Music } from 'lucide-angular';
+import { authGuard } from '@shared/guard/auth-guard';
+import { Boxes, HeartHandshake, Music, ShoppingCart } from 'lucide-angular';
 
 const modules: Routes = [
   {
@@ -21,6 +22,16 @@ const modules: Routes = [
   {
     path: 'promotions/:promotionId',
     loadComponent: () => import('./pages/offer-detail/offer-detail').then((m) => m.OfferDetail),
+  },
+  {
+    path: 'cart',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/cart/cart').then((m) => m.Cart),
+  },
+  {
+    path: 'wishlist',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/wishlist/wishlist').then((m) => m.Wishlist),
   },
 ];
 
@@ -46,5 +57,12 @@ export const shopData = {
   sidebarItems: [
     { name: 'Productos', icon: Music, path: '/products' },
     { name: 'Promociones', icon: Boxes, path: '/promotions' },
+    { name: 'Carrito', icon: ShoppingCart, path: '/cart', roles: ['CLIENT', 'ADMIN'] },
+    {
+      name: 'Lista de deseos',
+      icon: HeartHandshake,
+      path: '/wishlist',
+      roles: ['CLIENT', 'ADMIN'],
+    },
   ],
 };

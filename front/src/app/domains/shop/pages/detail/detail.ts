@@ -25,9 +25,11 @@ import {
   CassetteTape,
   Disc3,
   Gem,
+  Heart,
   LucideAngularModule,
   Pencil,
   Quote,
+  Receipt,
   ShoppingCart,
   Trash2,
   Turntable,
@@ -60,6 +62,8 @@ export class Detail {
   readonly Special = Gem;
   readonly Delete = Trash2;
   readonly Edit = Pencil;
+  readonly Heart = Heart;
+  readonly Money = Receipt;
 
   readonly id = input.required<number>({ alias: 'productId' });
 
@@ -85,6 +89,23 @@ export class Detail {
           this.router.navigate(['/products']);
         },
       });
+    });
+  }
+
+  addToWishlist(paid: boolean) {
+    this.commerceApi.createWishlist(this.id(), { paid }).subscribe({
+      next: () => {
+        this.alertStore.addAlert({
+          message: paid ? 'Producto agregado a la lista de preventa' : 'Producto agregado a la lista de deseos',
+          type: 'success',
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertStore.addAlert({
+          message: error.error.message,
+          type: 'error',
+        });
+      },
     });
   }
 

@@ -14,17 +14,16 @@
     [ngClass]="{ 'hidden md:flex': collapsed() }"
   >
     @for (item of items(); track item.name) {
+    <!-- Check if the user has the required role -->
+    @if (!item.roles || (role && item.roles.includes(role))) {
     <li [ngClass]="{ 'tooltip tooltip-right': collapsed() }" [attr.data-tip]="item.name">
-      <a
-        class="btn btn-ghost px-4 justify-start w-full"
-        [routerLink]="`${item.path}`"
-      >
+      <a class="btn btn-ghost px-4 justify-start w-full" [routerLink]="`${item.path}`">
         <i-lucide [img]="item.icon" />
         @if (!collapsed()) {
         <span class="truncate">{{ item.name }}</span>
         }
       </a>
     </li>
-    }
+    } }
   </ul>
 </aside>

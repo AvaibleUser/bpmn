@@ -1,7 +1,8 @@
 import { GroupType } from '@/shop/models/group.model';
-import { UpsertItem } from '@/shop/models/item.model';
+import { Item, UpsertItem } from '@/shop/models/item.model';
 import { Order, Status } from '@/shop/models/order.model';
 import { CreatePromotion, PromotionInfo } from '@/shop/models/promotion.model';
+import { UpsertWishlist, WishlistInfo } from '@/shop/models/wishlist.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environment/environment.development';
@@ -37,8 +38,8 @@ export class CommerceApi {
     return this.http.delete<void>(`${this.api}/orders/${orderId}`);
   }
 
-  getItems(orderId: number): Observable<Order> {
-    return this.http.get<Order>(`${this.api}/orders/${orderId}/items`);
+  getItems(orderId: number): Observable<Item[]> {
+    return this.http.get<Item[]>(`${this.api}/orders/${orderId}/items`);
   }
 
   createItem(
@@ -98,5 +99,27 @@ export class CommerceApi {
 
   getGroups(): Observable<GroupType[]> {
     return this.http.get<GroupType[]>(`${this.api}/groups`);
+  }
+
+  getWishlists(paid?: boolean): Observable<WishlistInfo[]> {
+    const params = Object.entries({ paid }).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null) {
+        acc[key] = value.toString();
+      }
+      return acc;
+    }, {} as Record<string, string | number | boolean>);
+    return this.http.get<WishlistInfo[]>(`${this.api}/wishlists`, { params });
+  }
+
+  createWishlist(discographyId: number, request: UpsertWishlist): Observable<void> {
+    return this.http.post<void>(`${this.api}/discographies/${discographyId}/wishlists`, request);
+  }
+
+  updateWishlist(discographyId: number, request: UpsertWishlist): Observable<void> {
+    return this.http.put<void>(`${this.api}/discographies/${discographyId}/wishlists`, request);
+  }
+
+  removeFromWishlist(discographyId: number): Observable<void> {
+    return this.http.delete<void>(`${this.api}/discographies/${discographyId}/wishlists`);
   }
 }
