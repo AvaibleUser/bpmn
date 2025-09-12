@@ -1,3 +1,4 @@
+import { AddPurchase, Purchase } from '@/admin/models/purchase.model';
 import { GroupType } from '@/shop/models/group.model';
 import { Item, UpsertItem } from '@/shop/models/item.model';
 import { Order, Status } from '@/shop/models/order.model';
@@ -32,6 +33,10 @@ export class CommerceApi {
 
   payOrder(orderId: number): Observable<void> {
     return this.http.put<void>(`${this.api}/orders/${orderId}/complete`, {});
+  }
+
+  sendOrder(orderId: number): Observable<void> {
+    return this.http.put<void>(`${this.api}/orders/${orderId}/send`, { status: 'SENT' });
   }
 
   deleteOrder(orderId: number): Observable<void> {
@@ -121,5 +126,13 @@ export class CommerceApi {
 
   removeFromWishlist(discographyId: number): Observable<void> {
     return this.http.delete<void>(`${this.api}/discographies/${discographyId}/wishlists`);
+  }
+
+  getPurchases(): Observable<Purchase[]> {
+    return this.http.get<Purchase[]>(`${this.api}/purchases`);
+  }
+
+  createPurchase(discographyId: number, purchase: AddPurchase): Observable<void> {
+    return this.http.post<void>(`${this.api}/discographies/${discographyId}/purchases`, purchase);
   }
 }

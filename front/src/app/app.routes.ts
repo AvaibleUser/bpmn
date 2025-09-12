@@ -1,22 +1,25 @@
+import { adminData } from '@/admin/admin.routes';
 import { shopData } from '@/shop/shop.routes';
 import { Routes } from '@angular/router';
 import { authGuard } from '@shared/guard/auth-guard';
 
+const sidebarItems = [...shopData.sidebarItems, ...adminData.sidebarItems];
+
 const modules: Routes = [
   {
     path: 'admin',
+    data: { ...shopData, sidebarItems },
     canActivate: [authGuard],
-    loadComponent: () => import('@core/auth/layouts/base/base').then((m) => m.Base),
-    data: { role: 'ADMIN' },
+    loadChildren: () => import('@/admin/admin.routes').then((m) => m.adminRoutes),
   },
   {
     path: '',
-    data: shopData,
+    data: { ...shopData, sidebarItems },
     loadChildren: () => import('@/shop/shop.routes').then((m) => m.routes),
   },
   {
     path: 'client',
-    redirectTo: 'shop',
+    redirectTo: '',
     pathMatch: 'full',
   },
 ];

@@ -47,11 +47,19 @@
         />
 
         <div class="flex gap-4">
-          <button class="relative btn btn-soft btn-primary btn-circle btn-lg" (click)="addToWishlist(false)">
+          <button
+            class="relative btn btn-soft btn-primary btn-circle btn-lg tooltip tooltip-primary"
+            data-tip="Agregar a lista de deseos"
+            (click)="addToWishlist(false)"
+          >
             <i-lucide [img]="Heart" size="28" />
           </button>
 
-          <button class="relative btn btn-soft btn-success btn-circle btn-lg" (click)="addToWishlist(true)">
+          <button
+            class="relative btn btn-soft btn-success btn-circle btn-lg tooltip tooltip-success"
+            data-tip="Comprar en pre venta"
+            (click)="addToWishlist(true)"
+          >
             <i-lucide [img]="Money" size="28" />
           </button>
         </div>
