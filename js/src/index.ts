@@ -6,14 +6,9 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 const app = new Hono<App>()
+  .use("/*", cors())
   .use(logger())
   .onError(exceptionHandler())
-  .use(
-    cors({
-      origin: "*",
-      allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    })
-  )
   .route("/api", routes);
 
 export default {
