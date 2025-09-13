@@ -2,7 +2,7 @@ import { Comment, CommentCreate } from '@/shop/models/comment.model';
 import { RatingCreate, RatingStats } from '@/shop/models/rating.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '@environment/environment.development';
+import { environment } from '@environment/environment';
 import { Page, Pageable } from '@shared/models/pageable.model';
 import { Observable } from 'rxjs';
 

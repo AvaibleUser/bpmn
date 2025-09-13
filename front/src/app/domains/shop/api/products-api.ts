@@ -7,7 +7,7 @@ import { Genre } from '@/shop/models/genre.model';
 import { Song } from '@/shop/models/song.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '@environment/environment.development';
+import { environment } from '@environment/environment';
 import { Page } from '@shared/models/pageable.model';
 import { Observable } from 'rxjs';
 

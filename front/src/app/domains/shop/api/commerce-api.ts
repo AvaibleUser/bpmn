@@ -6,7 +6,7 @@ import { CreatePromotion, PromotionInfo } from '@/shop/models/promotion.model';
 import { UpsertWishlist, WishlistInfo } from '@/shop/models/wishlist.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '@environment/environment.development';
+import { environment } from '@environment/environment';
 import { Page, Pageable } from '@shared/models/pageable.model';
 import { Observable, Subject } from 'rxjs';
 

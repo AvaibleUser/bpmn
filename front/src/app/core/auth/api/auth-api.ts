@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { CheckCode, LoginInfo, SignupInfo, Session, ResetInfo } from '@core/auth/models/auth.model';
-import { environment } from '@environment/environment.development';
+import { environment } from '@environment/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({
