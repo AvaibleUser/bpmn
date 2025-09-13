@@ -17,6 +17,14 @@ const innerRoutes: Routes = [
     path: '2fa',
     loadComponent: () => import('./pages/mfa/mfa').then((m) => m.Mfa),
   },
+  {
+    path: 'recover',
+    loadComponent: () => import('./pages/recover/recover').then((m) => m.Recover),
+  },
+  {
+    path: 'reset',
+    loadComponent: () => import('./pages/reset/reset').then((m) => m.Reset),
+  },
 ];
 
 export const routes: Routes = [

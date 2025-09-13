@@ -1,0 +1,86 @@
+<div class="text-center mb-6">
+  <h1 class="text-3xl font-bold text-primary">Restablecer Contraseña</h1>
+  <p class="text-base-content/70 mt-2">
+    Ingresa el código que te hemos enviado a
+    <span class="font-bold">{{ resetForm.get('email')?.value }}</span>
+  </p>
+</div>
+
+<form [formGroup]="resetForm" (ngSubmit)="reset()" class="space-y-5">
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">
+      <span>Código</span>
+    </legend>
+    <input
+      type="text"
+      formControlName="code"
+      name="code"
+      minlength="6"
+      maxlength="6"
+      class="input input-bordered w-full"
+      [class.input-error]="checkField('code')"
+    />
+  </fieldset>
+
+  <fieldset class="fieldset relative">
+    <legend class="fieldset-legend">
+      <span>Contraseña</span>
+    </legend>
+    <input
+      [type]="showPassword ? 'text' : 'password'"
+      formControlName="password"
+      name="password"
+      minlength="2"
+      class="input input-bordered w-full"
+      [class.input-error]="checkField('password')"
+    />
+
+    <button
+      type="button"
+      class="absolute right-1 bottom-3 btn btn-ghost btn-circle btn-accent btn-xs z-50"
+      (click)="showPassword = !showPassword"
+    >
+      <i-lucide [img]="showPassword ? invisible : visible" size="18" />
+    </button>
+  </fieldset>
+
+  <fieldset class="fieldset relative">
+    <legend class="fieldset-legend">
+      <span>Confirmación de Contraseña</span>
+    </legend>
+    <input
+      [type]="showPassword ? 'text' : 'password'"
+      formControlName="newPassword"
+      name="newPassword"
+      minlength="2"
+      class="input input-bordered w-full"
+      [class.input-error]="checkField('newPassword')"
+    />
+
+    <button
+      type="button"
+      class="absolute right-1 bottom-3 btn btn-ghost btn-circle btn-accent btn-xs z-50"
+      (click)="showPassword = !showPassword"
+    >
+      <i-lucide [img]="showPassword ? invisible : visible" size="18" />
+    </button>
+  </fieldset>
+
+  <button
+    type="submit"
+    class="btn w-full font-semibold"
+    [class.btn-primary]="!waiting"
+    [class.btn-disabled]="waiting"
+  >
+    @if (waiting) {
+    <span class="loading loading-dots loading-xs"></span>
+    } @else { Restablecer Contraseña }
+  </button>
+
+  <div class="text-start">
+    <a class="text-sm a-ghost flex items-center gap-2" routerLink="/auth/login">
+      <i-lucide [img]="Back" size="18" />
+      Regresar
+    </a>
+  </div>
+</form>

@@ -16,11 +16,11 @@ export interface CheckCode {
   code: string;
 }
 
-export interface Reset {
+export interface ResetInfo {
   email: string;
   code: string;
   password: string;
-  confirmPassword: string;
+  newPassword: string;
 }
 
 export interface Session {

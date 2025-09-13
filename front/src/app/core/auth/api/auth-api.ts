@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { CheckCode, LoginInfo, SignupInfo, Session } from '@core/auth/models/auth.model';
+import { CheckCode, LoginInfo, SignupInfo, Session, ResetInfo } from '@core/auth/models/auth.model';
 import { environment } from '@environment/environment.development';
 import { Observable } from 'rxjs';
 
@@ -25,5 +25,13 @@ export class AuthApi {
 
   confirmation(confirmation: CheckCode): Observable<Session> {
     return this.http.put<Session>(`${this.api}/sign-up`, confirmation);
+  }
+
+  recover(email: string): Observable<void> {
+    return this.http.post<void>(`${this.api}/password/recovery`, { email });
+  }
+
+  reset(reset: ResetInfo): Observable<Session> {
+    return this.http.put<Session>(`${this.api}/password/recovery`, reset);
   }
 }
